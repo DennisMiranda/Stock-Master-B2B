@@ -9,7 +9,7 @@ import {
   Package,
   Box,
 } from 'lucide-angular';
-import type { Product } from '../../../../core/models/product.model';
+import type { Product } from '../../../../core/domain/models/product.model'; 
 
 interface PriceTypeIcon {
   label: string;

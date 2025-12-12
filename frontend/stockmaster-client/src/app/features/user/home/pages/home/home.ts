@@ -8,7 +8,7 @@ import {
   Shield,
 } from 'lucide-angular';
 import productsData from '../../../../../data/productData.json';
-import type { Product } from '../../../../../core/models/product.model';
+import type { Product } from '../../../../../core/domain/models/product.model';
 
 interface Feature {
   title: string;
