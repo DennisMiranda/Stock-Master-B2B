@@ -3,6 +3,7 @@
     "id": "prod-001",
     "sku": "AUD-BT-2024-001",
     "name": "Auriculares Bluetooth Pro",
+    "searchName": "AURICULARES BLUETOOTH PRO",
     "categoryId": "cat-electronics-001",
     "brand": "SoundTech",
     "prices": [
@@ -24,6 +25,7 @@
     "id": "prod-002",
     "sku": "LAP-PRO-2024-002",
     "name": "Laptop Gaming Elite X15",
+    "searchName": "LAPTOP GAMING ELITE X15",
     "categoryId": "cat-electronics-001",
     "brand": "TechPro",
     "prices": [
@@ -44,6 +46,7 @@
     "id": "prod-003",
     "sku": "MOU-WL-2024-003",
     "name": "Mouse Inalámbrico Ergonómico",
+    "searchName": "MOUSE INALÁMBRICO ERGONÓMICO",
     "categoryId": "cat-accessories-002",
     "brand": "ErgoTech",
     "prices": [
@@ -65,6 +68,7 @@
     "id": "prod-004",
     "sku": "TEC-MEC-2024-004",
     "name": "Teclado Mecánico RGB",
+    "searchName": "TECLADO MECÁNICO RGB",
     "categoryId": "cat-accessories-002",
     "brand": "KeyMaster",
     "prices": [
@@ -86,6 +90,7 @@
     "id": "prod-005",
     "sku": "MON-4K-2024-005",
     "name": "Monitor 4K UHD 27 pulgadas",
+    "searchName": "MONITOR 4K UHD 27 PULGADAS",
     "categoryId": "cat-electronics-001",
     "brand": "ViewMax",
     "prices": [
@@ -106,6 +111,7 @@
     "id": "prod-006",
     "sku": "WEB-HD-2024-006",
     "name": "Cámara Web Full HD 1080p",
+    "searchName": "CÁMARA WEB FULL HD 1080P",
     "categoryId": "cat-accessories-002",
     "brand": "ClearView",
     "prices": [
@@ -115,7 +121,7 @@
     ],
     "unitPerBox": 12,
     "images": [
-"https://m.media-amazon.com/images/I/71iNwni9TsL._AC_SL1500_.jpg"
+      "https://m.media-amazon.com/images/I/71iNwni9TsL._AC_SL1500_.jpg"
     ],
     "isActive": true,
     "createdAt": 1704499200000,
@@ -127,6 +133,7 @@
     "id": "prod-007",
     "sku": "MIC-USB-2024-007",
     "name": "Micrófono USB Profesional",
+    "searchName": "MICRÓFONO USB PROFESIONAL",
     "categoryId": "cat-audio-003",
     "brand": "AudioPro",
     "prices": [
@@ -148,6 +155,7 @@
     "id": "prod-008",
     "sku": "HUB-USB-2024-008",
     "name": "Hub USB-C 7 en 1",
+    "searchName": "HUB USB-C 7 EN 1",
     "categoryId": "cat-accessories-002",
     "brand": "ConnectHub",
     "prices": [
@@ -169,6 +177,7 @@
     "id": "prod-009",
     "sku": "CAR-WL-2024-009",
     "name": "Cargador Inalámbrico Rápido",
+    "searchName": "CARGADOR INALÁMBRICO RÁPIDO",
     "categoryId": "cat-accessories-002",
     "brand": "PowerFast",
     "prices": [
@@ -178,7 +187,7 @@
     ],
     "unitPerBox": 12,
     "images": [
-"https://images.pexels.com/photos/4790269/pexels-photo-4790269.jpeg?auto=compress&cs=tinysrgb&w=400"
+      "https://images.pexels.com/photos/4790269/pexels-photo-4790269.jpeg?auto=compress&cs=tinysrgb&w=400"
     ],
     "isActive": true,
     "createdAt": 1704758400000,
@@ -190,6 +199,7 @@
     "id": "prod-010",
     "sku": "TAB-10-2024-010",
     "name": "Tablet Android 10.1 pulgadas",
+    "searchName": "TABLET ANDROID 10.1 PULGADAS",
     "categoryId": "cat-electronics-001",
     "brand": "SmartTab",
     "prices": [
@@ -211,6 +221,7 @@
     "id": "prod-011",
     "sku": "SSD-1TB-2024-011",
     "name": "SSD NVMe 1TB Alta Velocidad",
+    "searchName": "SSD NVME 1TB ALTA VELOCIDAD",
     "categoryId": "cat-storage-004",
     "brand": "SpeedDrive",
     "prices": [
@@ -232,6 +243,7 @@
     "id": "prod-012",
     "sku": "SPK-BT-2024-012",
     "name": "Altavoz Bluetooth Portátil",
+    "searchName": "ALTAVOZ BLUETOOTH PORTÁTIL",
     "categoryId": "cat-audio-003",
     "brand": "BoomSound",
     "prices": [
