@@ -1,0 +1,21 @@
+{
+  "name": "stock-master-b2b",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend/stockmaster-client"
+  ],
+  "scripts": {
+    "dev": "bun run dev:backend & bun run dev:frontend",
+    "dev:backend": "bun --cwd backend run dev",
+    "dev:frontend": "bun --cwd frontend/stockmaster-client start",
+    "build": "bun run build:backend && bun run build:frontend",
+    "build:backend": "bun --cwd backend run build",
+    "build:frontend": "bun --cwd frontend/stockmaster-client build",
+    "install:all": "bun install"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.2"
+  }
+}
