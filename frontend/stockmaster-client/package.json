@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "config": "node ./config/set-env.config.js",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "bun run config -- --environment=prod && ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -29,6 +30,7 @@
     "@angular/forms": "^21.0.0",
     "@angular/platform-browser": "^21.0.0",
     "@angular/router": "^21.0.0",
+    "lucide-angular": "^0.560.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },

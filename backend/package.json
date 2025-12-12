@@ -3,17 +3,28 @@
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "main": "dist/index.js",
   "scripts": {
-    "dev": "bun run --hot index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "bun tsc && node dist/index.js",
+    "start": "node dist/index.js",
+    "build-deploy": "tsc",
     "build": "bun build index.ts --outdir ./dist"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "zod": "^4.1.12"
   }
 }
