@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-user-layout',
   imports: [],
   templateUrl: './user-layout.html',
-  styleUrl: './user-layout.css',
+  styleUrls: ['./user-layout.css'],
 })
 export class UserLayout {
 

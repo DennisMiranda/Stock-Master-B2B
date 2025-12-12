@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-product-grid',
   imports: [],
   templateUrl: './product-grid.html',
-  styleUrl: './product-grid.css',
+  styleUrls: ['./product-grid.css'],
 })
 export class ProductGrid {
 

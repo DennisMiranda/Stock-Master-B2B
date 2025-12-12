@@ -1,0 +1,9 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+input[type="checkbox"] {
+  accent-color: #3b82f6;
+}
+
