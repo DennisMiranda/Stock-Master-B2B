@@ -1,1 +1,77 @@
-<p>product-filter-sidebar works!</p>
+<div class="bg-gray-800 text-white p-6 rounded-lg h-full">
+  <h2 class="text-xl font-bold mb-6">Filtros</h2>
+
+  <!-- Filtro de Categorías -->
+  <div class="mb-8">
+    <h3 class="text-lg font-semibold mb-4">Categorías</h3>
+    <div class="space-y-3">
+      @for (category of filterOptions().categories; track category) {
+        <label class="flex items-center space-x-3 cursor-pointer hover:text-blue-300 transition-colors">
+          <input
+            type="checkbox"
+            [checked]="isCategorySelected(category)"
+            (change)="onCategoryChange(category, $event)"
+            class="w-5 h-5 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+          />
+          <span class="text-sm">{{ category }}</span>
+        </label>
+      }
+    </div>
+  </div>
+
+  <!-- Filtro de Marcas -->
+  <div class="mb-8">
+    <h3 class="text-lg font-semibold mb-4">Marcas</h3>
+    <div class="space-y-3">
+      @for (brand of filterOptions().brands; track brand) {
+        <label class="flex items-center space-x-3 cursor-pointer hover:text-blue-300 transition-colors">
+          <input
+            type="checkbox"
+            [checked]="isBrandSelected(brand)"
+            (change)="onBrandChange(brand, $event)"
+            class="w-5 h-5 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+          />
+          <span class="text-sm">{{ brand }}</span>
+        </label>
+      }
+    </div>
+  </div>
+
+  <!-- Filtro de Disponibilidad -->
+  <div class="mb-8">
+    <h3 class="text-lg font-semibold mb-4">Disponibilidad</h3>
+    <label class="flex items-center space-x-3 cursor-pointer hover:text-blue-300 transition-colors">
+      <input
+        type="checkbox"
+        [checked]="inStockOnly()"
+        (change)="onInStockChange($event)"
+        class="w-5 h-5 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+      />
+      <span class="text-sm">Solo mostrar en stock</span>
+    </label>
+  </div>
+
+  <!-- Botón Limpiar Filtros -->
+  @if (hasActiveFilters()) {
+    <button
+      (click)="clearFilters()"
+      class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+        />
+      </svg>
+      <span>Limpiar Filtros</span>
+    </button>
+  }
+</div>
