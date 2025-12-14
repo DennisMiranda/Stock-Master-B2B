@@ -1,7 +1,13 @@
 const { writeFile, existsSync, mkdirSync } = require('fs');
 const dotenv = require('dotenv');
 
-dotenv.config();
+const path = require('path');
+const dotenvResult = dotenv.config({ path: path.resolve(__dirname, '../.env') }); // Buscar en la raíz del proyecto
+if (dotenvResult.error) {
+  console.error('Error cargando .env:', dotenvResult.error);
+} else {
+  console.log('Dotenv cargado correctamente via script.');
+}
 
 // Detecta el argumento --environment=development o --environment=prod
 const environmentArg = process.argv.find(arg => arg.startsWith('--environment='));
