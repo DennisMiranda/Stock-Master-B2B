@@ -1,10 +1,5 @@
-import { Injectable } from '@angular/core';
 import { Product } from '../../../domain/models/product.model';
 import { ProductRepository } from '../../../domain/repositories/product.repository';
-
-@Injectable({
-  providedIn: 'root',
-})
 
 /**
  * Esta clase establece las reglas de interfaz anteriormente declaradas en el repositorio del dominio.
