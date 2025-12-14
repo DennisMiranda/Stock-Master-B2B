@@ -1,15 +1,8 @@
-import { Component, input, signal } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
+import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import {
-  LucideAngularModule,
-  ShoppingCart,
-  LucideIconNode,
-  Tag,
-  Package,
-  Box,
-} from 'lucide-angular';
-import type { Product } from '../../../../core/domain/models/product.model'; 
+import { Box, LucideAngularModule, Package, ShoppingCart, Tag } from 'lucide-angular';
+import type { Product } from '../../../../core/models/product.model';
 
 interface PriceTypeIcon {
   label: string;

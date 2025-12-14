@@ -1,14 +1,8 @@
 import { Component, signal } from '@angular/core';
-import { CardProduct } from '../../../../../shared/ui/cards/card-product/card-product';
-import {
-  LucideAngularModule,
-  LucideIconNode,
-  Package,
-  Truck,
-  Shield,
-} from 'lucide-angular';
+import { LucideAngularModule, LucideIconNode, Package, Shield, Truck } from 'lucide-angular';
+import type { Product } from '../../../../../core/models/product.model';
 import productsData from '../../../../../data/productData.json';
-import type { Product } from '../../../../../core/domain/models/product.model';
+import { CardProduct } from '../../../../../shared/ui/cards/card-product/card-product';
 
 interface Feature {
   title: string;

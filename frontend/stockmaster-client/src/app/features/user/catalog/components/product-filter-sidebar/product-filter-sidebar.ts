@@ -1,8 +1,8 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CatalogFilterService } from '../../services/catalog-filter.service';
 import { FilterOptions } from '../../../../../core/models/catalog-filter.model';
+import { CatalogFilterService } from '../../services/catalog-filter.service';
 
 @Component({
   selector: 'app-product-filter-sidebar',
@@ -25,9 +25,7 @@ export class ProductFilterSidebar implements OnInit {
   // Computed: verifica si hay filtros activos
   hasActiveFilters = computed(() => {
     return (
-      this.selectedCategories().size > 0 ||
-      this.selectedBrands().size > 0 ||
-      this.inStockOnly()
+      this.selectedCategories().size > 0 || this.selectedBrands().size > 0 || this.inStockOnly()
     );
   });
 
