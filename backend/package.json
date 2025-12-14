@@ -6,7 +6,7 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsc && node dist/index.js",
+    "dev": "concurrently \"tsc --watch\" \"bun --watch dist/index.js\"",
     "start": "node dist/index.js",
     "build-deploy": "tsc",
     "build": "bun build index.ts --outdir ./dist"
@@ -15,6 +15,7 @@
     "@types/bun": "latest",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
+    "concurrently": "^9.2.1",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2"
   },
