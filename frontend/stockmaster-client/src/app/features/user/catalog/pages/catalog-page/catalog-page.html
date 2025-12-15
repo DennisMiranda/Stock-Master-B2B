@@ -1,1 +1,34 @@
-<app-product-search (searchChange)="onSearchChange($event)"></app-product-search>
+<section class="h-full">
+  <div class="flex h-full">
+    <aside class="h-full w-1/4">
+      <app-product-filter-sidebar></app-product-filter-sidebar>
+    </aside>
+    <div class="flex-1 p-4">
+      <h1 class="text-2xl font-bold pb-4">Catálogo de productos</h1>
+
+      <!-- Búsqueda -->
+      <app-product-search
+        [term]="term()"
+        (searchChange)="onSearchChange($event)"
+      ></app-product-search>
+
+      <!-- Cards -->
+      <div class="mt-4 mb-4">
+        <ul class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          @if (products().length === 0) {
+          <li>No hay productos</li>
+          } @else{@for (product of products(); track product.id) {
+          <li>
+            <app-card-product [product]="product"></app-card-product>
+          </li>
+          }}
+        </ul>
+      </div>
+      <app-basic-pagination
+        [page]="currentPage()"
+        [totalPages]="metadata().pages"
+        (pageChange)="currentPage.set($event)"
+      ></app-basic-pagination>
+    </div>
+  </div>
+</section>
