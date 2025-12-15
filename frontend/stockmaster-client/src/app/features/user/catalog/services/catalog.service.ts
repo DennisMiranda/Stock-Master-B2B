@@ -1,26 +1,26 @@
 import { inject, Injectable, OnDestroy, signal } from '@angular/core';
 import {
+  BehaviorSubject,
   catchError,
   debounceTime,
   distinctUntilChanged,
   filter,
-  from,
   map,
   Subject,
   switchMap,
   takeUntil,
   tap,
 } from 'rxjs';
-import { SearchProductsUseCase } from '../../../../core/application/use-cases/product/search-product.usecase';
-import { Product } from '../../../../core/domain/models/product.model';
+import { ApiService } from '../../../../core/http/api.service';
+import { Product } from '../../../../core/models/product.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CatalogService implements OnDestroy {
-  private searchProductsUseCase = inject(SearchProductsUseCase);
+  private api = inject(ApiService);
 
-  private search$ = new Subject<string>();
+  private search$ = new BehaviorSubject<string>('');
   private destroy$ = new Subject<void>();
 
   products = signal<Product[]>([]);
@@ -47,13 +47,22 @@ export class CatalogService implements OnDestroy {
           this.error.set(null);
         }),
         switchMap((term) =>
-          from(this.searchProductsUseCase.execute({ search: term, limit: 10 })).pipe(
-            catchError((err) => {
-              console.error(err);
-              this.error.set('Error al buscar productos');
-              return [[] as Product[]];
+          this.api
+            .get<Product[]>('/products', {
+              params: {
+                search: term,
+                page: 1,
+                limit: 10,
+              },
             })
-          )
+            .pipe(
+              map((response) => response.data || []),
+              catchError((err) => {
+                console.error(err);
+                this.error.set('Error al buscar productos');
+                return [[] as Product[]];
+              })
+            )
         ),
         takeUntil(this.destroy$)
       )
