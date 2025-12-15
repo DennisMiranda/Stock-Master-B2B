@@ -17,12 +17,12 @@ class ProductController {
         page: Number(page),
       };
 
-      const products = await this.productService.searchProducts(params);
-      console.log(products);
+      const { products, metadata } = await this.productService.searchProducts(
+        params
+      );
 
-      res.status(200).json({ success: true, data: products });
+      res.status(200).json({ success: true, data: { products, metadata } });
     } catch (error) {
-      console.log(error);
       res.status(500).json({
         success: false,
         error: {
