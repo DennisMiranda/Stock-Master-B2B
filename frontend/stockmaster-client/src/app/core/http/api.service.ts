@@ -17,7 +17,7 @@ type HttpOptions = {
 export class ApiService {
   http = inject(HttpClient);
 
-  apiUrl = environment.apiUrl;
+  apiUrl = environment.apiURL;
 
   get<T>(path: string, options?: HttpOptions): Observable<ApiResponse<T>> {
     return this.http.get<ApiResponse<T>>(this.apiUrl + path, options);

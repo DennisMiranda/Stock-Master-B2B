@@ -21,7 +21,7 @@
   </header>
 
   <ul class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-    @for (product of products(); track product.id) {
+    @for (product of home.products(); track product.id) {
     <li>
       <app-card-product [product]="product"></app-card-product>
     </li>
@@ -29,10 +29,11 @@
   </ul>
 
   <div class="text-center mt-12">
-    <button
-      class="bg-gray-900 text-white px-10 py-2 md:py-4 rounded-sm font-light hover:bg-gray-800 transition-all hover:scale-105 shadow-lg"
+    <a 
+    [routerLink]="['/shop/catalog']"
+      class="bg-gray-600 text-white px-10 py-2 md:py-4 rounded-sm font-light hover:bg-azul transition-all active:scale-95 shadow-lg"
     >
       Ver Más Productos
-    </button>
+    </a>
   </div>
 </section>

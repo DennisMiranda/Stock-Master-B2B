@@ -1,0 +1,114 @@
+<header class="sticky top-0 z-50 bg-white border-b border-gray-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <a routerLink="/" class="flex font-mono font-semibold items-center gap-2 group">
+        Stock Master
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hidden md:flex items-center gap-1">
+        @for (link of navLinks; track link.path) {
+        <a
+          [routerLink]="link.path"
+          routerLinkActive="text-gray-900 bg-gray-50"
+          class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
+        >
+          {{ link.label }}
+        </a>
+        }
+      </nav>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-2">
+        <!-- Search Button 
+        <button
+          (click)="toggleSearch()"
+          class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
+          aria-label="Buscar"
+        >
+          <lucide-icon [img]="SearchIcon" class="w-5 h-5" />
+        </button>
+-->
+        <!-- Cart Button -->
+        <button
+          routerLink="/cart"
+          class="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
+          aria-label="Carrito"
+        >
+          <lucide-icon [img]="ShoppingCartIcon" class="w-5 h-5" />
+          @if (cartCount() > 0) {
+          <span
+            class="absolute -top-1 -right-1 w-5 h-5 bg-gray-900 text-white text-xs font-semibold rounded-full flex items-center justify-center"
+          >
+            {{ cartCount() }}
+          </span>
+          }
+        </button>
+
+        <!-- User Button -->
+        <button
+          routerLink="/profile"
+          class="hidden sm:flex p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
+          aria-label="Perfil"
+        >
+          <lucide-icon [img]="UserIcon" class="w-5 h-5" />
+        </button>
+
+        <!-- Mobile Menu Button -->
+        <button
+          (click)="toggleMenu()"
+          class="md:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
+          aria-label="Menú"
+        >
+          <lucide-icon [img]="isMenuOpen() ? XIcon : MenuIcon" class="w-5 h-5" />
+        </button>
+      </div>
+    </div>
+
+    <!-- Search Bar (Expandible) 
+    @if (isSearchOpen()) {
+    <div class="pb-4 animate-slideDown">
+      <div class="relative">
+        <lucide-icon
+          [img]="SearchIcon"
+          class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+        />
+        <input
+          type="text"
+          placeholder="Buscar productos..."
+          class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+          autofocus
+        />
+      </div>
+    </div>
+    }-->
+  </div>
+
+  <!-- Mobile Menu -->
+  @if (isMenuOpen()) {
+  <div class="md:hidden border-t border-gray-200 bg-white animate-slideDown">
+    <nav class="px-4 py-3 space-y-1">
+      @for (link of navLinks; track link.path) {
+      <a
+        [routerLink]="link.path"
+        routerLinkActive="text-gray-900 bg-gray-50"
+        (click)="closeMenu()"
+        class="block px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
+      >
+        {{ link.label }}
+      </a>
+      }
+      <a
+        routerLink="/profile"
+        routerLinkActive="text-gray-900 bg-gray-50"
+        (click)="closeMenu()"
+        class="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors sm:hidden"
+      >
+        <lucide-icon [img]="UserIcon" class="w-5 h-5" />
+        Mi Cuenta
+      </a>
+    </nav>
+  </div>
+  }
+</header>

@@ -1,8 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { LucideAngularModule, LucideIconNode, Package, Shield, Truck } from 'lucide-angular';
 import type { Product } from '../../../../../core/models/product.model';
 import productsData from '../../../../../data/productData.json';
 import { CardProduct } from '../../../../../shared/ui/cards/card-product/card-product';
+import { RouterLink } from '@angular/router';
+import { HomeService } from '../../services/home-service';
 
 interface Feature {
   title: string;
@@ -12,16 +14,20 @@ interface Feature {
 
 @Component({
   selector: 'app-home',
-  imports: [CardProduct, LucideAngularModule],
+  imports: [CardProduct, LucideAngularModule, RouterLink],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
-export class Home {
+export class Home implements OnInit {
   readonly PackageIcon = Package;
   readonly TruckIcon = Truck;
   readonly ShieldIcon = Shield;
+  home = inject(HomeService);
+  
+  ngOnInit(): void {
+    this.home.getProducts(1, 12);
+  }
 
-  products = signal<Product[]>(productsData as Product[]);
   features = [
     {
       title: 'Envío Rápido',

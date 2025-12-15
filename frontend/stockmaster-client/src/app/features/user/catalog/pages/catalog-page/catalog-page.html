@@ -1,5 +1,5 @@
 <section class="h-full">
-  <div class="flex h-full">
+  <div class="flex h-full p-4">
     <aside class="h-full w-1/4">
       <app-product-filter-sidebar></app-product-filter-sidebar>
     </aside>
@@ -14,7 +14,7 @@
 
       <!-- Cards -->
       <div class="mt-4 mb-4">
-        <ul class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           @if (products().length === 0) {
           <li>No hay productos</li>
           } @else{@for (product of products(); track product.id) {
