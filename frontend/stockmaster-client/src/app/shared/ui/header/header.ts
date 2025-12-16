@@ -1,23 +1,13 @@
 import { Component,signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { LucideAngularModule, Menu, X, ShoppingCart, User, Search } from 'lucide-angular';
-
 
 @Component({
   selector: 'app-header',
-  imports: [LucideAngularModule,RouterLink,RouterLinkActive],
+  imports: [RouterLink,RouterLinkActive],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
 export class Header {
-
-  readonly MenuIcon = Menu;
-  readonly XIcon = X;
-  readonly ShoppingCartIcon = ShoppingCart;
-  readonly UserIcon = User;
-  readonly SearchIcon = Search;
-
-
   isMenuOpen = signal(false);
   isSearchOpen = signal(false);
   cartCount = signal(3); 

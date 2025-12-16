@@ -32,4 +32,8 @@ export class CatalogPage implements OnInit {
   onSearchChange(searchTerm: string) {
     this.catalogService.searchProducts(searchTerm);
   }
+
+  trackByProductId(index: number, product: any): any {
+    return product.id;
+  }
 }

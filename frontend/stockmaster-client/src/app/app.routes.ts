@@ -7,6 +7,15 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
   {
+    path: 'catalog',
+    loadComponent: () =>
+      import('./layouts/user-layout/user-layout').then(c => c.UserLayout),
+    children: [{
+      path: '',
+      loadComponent: () => import('./features/user/catalog/pages/catalog-page/catalog-page').then(c => c.CatalogPage)
+    }]
+  },
+  {
     path: 'shop', 
     loadComponent: () =>
       import('./layouts/user-layout/user-layout').then(c => c.UserLayout),
