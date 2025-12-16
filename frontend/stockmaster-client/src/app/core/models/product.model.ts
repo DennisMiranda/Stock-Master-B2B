@@ -8,9 +8,15 @@ export interface Product {
   id: string;
   sku: string;
   name: string;
-  searchName:string;
+  searchName: string;
+  categoryId?: string;
   brand?: string;
   prices: PriceTier[];
   unitPerBox?: number;
   images?: string[];
+  isActive?: boolean;
+  createdAt?: number;
+  updatedAt?: number;
+  stockUnits?: number;
+  stockBoxes?: number;
 }

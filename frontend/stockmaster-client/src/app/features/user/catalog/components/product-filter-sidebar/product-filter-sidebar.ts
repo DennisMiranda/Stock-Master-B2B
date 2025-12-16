@@ -14,7 +14,7 @@ import { CatalogFilterService } from '../../services/catalog-filter.service';
 export class ProductFilterSidebar implements OnInit {
   private filterService = inject(CatalogFilterService);
 
-  // Opciones disponibles de filtros (cargadas desde el servicio)
+  // Opciones disponibles de filtros (se actualizan dinámicamente desde el servicio)
   filterOptions = signal<FilterOptions>({ categories: [], brands: [] });
 
   // Estado local de selecciones (sincronizado con el servicio)
@@ -30,9 +30,10 @@ export class ProductFilterSidebar implements OnInit {
   });
 
   ngOnInit(): void {
-    // Cargar opciones disponibles desde el servicio (mock)
-    const options = this.filterService.getFilterOptions();
-    this.filterOptions.set(options);
+    // Suscribirse a cambios en las opciones de filtros (dinámicas)
+    this.filterService.filterOptions$.subscribe((options) => {
+      this.filterOptions.set(options);
+    });
 
     // Suscribirse a cambios en los filtros del servicio para mantener sincronización
     this.filterService.filters$.subscribe((filters) => {
@@ -45,15 +46,15 @@ export class ProductFilterSidebar implements OnInit {
   /**
    * Maneja el cambio en el checkbox de categoría
    */
-  onCategoryChange(category: string, event: Event): void {
+  onCategoryChange(categoryId: string, event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
     const current = this.selectedCategories();
     const updated = new Set(current);
 
     if (checked) {
-      updated.add(category);
+      updated.add(categoryId);
     } else {
-      updated.delete(category);
+      updated.delete(categoryId);
     }
 
     this.selectedCategories.set(updated);
@@ -90,8 +91,8 @@ export class ProductFilterSidebar implements OnInit {
   /**
    * Verifica si una categoría está seleccionada
    */
-  isCategorySelected(category: string): boolean {
-    return this.selectedCategories().has(category);
+  isCategorySelected(categoryId: string): boolean {
+    return this.selectedCategories().has(categoryId);
   }
 
   /**

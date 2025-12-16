@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { CatalogFilters, FilterOptions } from '../../../../core/models/catalog-filter.model';
+import { Product } from '../../../../core/models/product.model';
 
 /**
  * Servicio reactivo para manejar el estado de los filtros del catálogo.
- * Usa datos mock locales y emite cambios a través de observables.
+ * Extrae opciones de filtros dinámicamente de los productos actuales de la búsqueda.
  */
 @Injectable({
   providedIn: 'root',
@@ -17,8 +18,17 @@ export class CatalogFilterService {
     inStockOnly: false,
   });
 
+  // Opciones de filtros dinámicas basadas en los productos actuales
+  private filterOptionsSubject = new BehaviorSubject<FilterOptions>({
+    categories: [],
+    brands: [],
+  });
+
   // Observable público para suscribirse a cambios en los filtros
   public readonly filters$: Observable<CatalogFilters> = this.filtersSubject.asObservable();
+
+  // Observable público para las opciones disponibles de filtros (dinámicas)
+  public readonly filterOptions$: Observable<FilterOptions> = this.filterOptionsSubject.asObservable();
 
   /**
    * Obtiene el estado actual de los filtros (valor sincrónico)
@@ -72,13 +82,79 @@ export class CatalogFilterService {
   }
 
   /**
-   * Obtiene las opciones disponibles de filtros (datos mock)
-   * En el futuro, esto vendrá del backend
+   * Actualiza las opciones de filtros dinámicamente basado en los productos actuales
+   * Extrae categorías únicas y marcas de los productos de búsqueda
+   */
+  updateFilterOptions(products: Product[]): void {
+    const categories = this.extractUniqueCategoriesFromProducts(products);
+    const brands = this.extractUniqueBrandsFromProducts(products);
+
+    this.filterOptionsSubject.next({
+      categories,
+      brands,
+    });
+  }
+
+  /**
+   * Obtiene las opciones actuales de filtros de forma síncrona
    */
   getFilterOptions(): FilterOptions {
-    return {
-      categories: ['Bebidas', 'Alimentos', 'Limpieza', 'Cuidado Personal'],
-      brands: ['ZumoFresh', 'Snacko', 'CleanHome'],
+    return this.filterOptionsSubject.value;
+  }
+
+  /**
+   * Extrae categorías únicas de los productos
+   */
+  private extractUniqueCategoriesFromProducts(
+    products: Product[]
+  ): { id: string; name: string }[] {
+    const categoriesMap = new Map<string, string>();
+
+    products.forEach((product) => {
+      if (product.categoryId && product.categoryId !== '') {
+        // Mapeo de categoryId a nombres legibles
+        const categoryName = this.getCategoryNameFromId(product.categoryId);
+        if (!categoriesMap.has(product.categoryId)) {
+          categoriesMap.set(product.categoryId, categoryName);
+        }
+      }
+    });
+
+    return Array.from(categoriesMap.entries()).map(([id, name]) => ({
+      id,
+      name,
+    }));
+  }
+
+  /**
+   * Extrae marcas únicas de los productos
+   */
+  private extractUniqueBrandsFromProducts(products: Product[]): string[] {
+    const brandsSet = new Set<string>();
+
+    products.forEach((product) => {
+      if (product.brand) {
+        brandsSet.add(product.brand);
+      }
+    });
+
+    return Array.from(brandsSet).sort();
+  }
+
+  /**
+   * Convierte categoryId a nombre legible
+   * Esta función mapea los IDs de categorías del backend a nombres en español
+   */
+  private getCategoryNameFromId(categoryId: string): string {
+    const categoryMap: Record<string, string> = {
+      'cat-accessories-002': 'Accesorios',
+      'cat-audio-003': 'Audio',
+      'cat-storage-004': 'Almacenamiento',
+      'cat-computing': 'Computación',
+      'cat-networking': 'Redes',
+      'cat-peripherals': 'Periféricos',
     };
+
+    return categoryMap[categoryId] || categoryId;
   }
 }

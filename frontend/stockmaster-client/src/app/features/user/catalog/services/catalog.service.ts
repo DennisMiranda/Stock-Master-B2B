@@ -12,6 +12,7 @@ import {
 } from 'rxjs';
 import { ApiService } from '../../../../core/http/api.service';
 import { Product } from '../../../../core/models/product.model';
+import { CatalogFilterService } from './catalog-filter.service';
 
 interface SearchProductsResponse {
   products: Product[];
@@ -28,6 +29,7 @@ const defaultResponse: SearchProductsResponse = {
 })
 export class CatalogService implements OnDestroy {
   private api = inject(ApiService);
+  private filterService = inject(CatalogFilterService);
 
   private search$ = new Subject<string>();
   private destroy$ = new Subject<void>();
@@ -98,6 +100,9 @@ export class CatalogService implements OnDestroy {
         this.products.set(data.products || []);
         this.metadata.set(data.metadata);
         this.loading.set(false);
+        
+        // Actualizar opciones de filtros dinámicamente basado en los productos actuales
+        this.filterService.updateFilterOptions(data.products || []);
       });
   }
 
