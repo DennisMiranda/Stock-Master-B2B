@@ -15,13 +15,17 @@ export class ProductService {
   constructor() {}
 
   /**
-   * Servicio para buscar productos (listado + paginación)
-   * Ligero para búsquedas rápidas en B2B.
+   * Servicio para buscar productos con filtros opcionales (listado + paginación)
+   * Los filtros se aplican en Firestore antes de la paginación para mantener consistencia
    */
   async searchProducts(params: {
-    search: string;
-    limit: number;
-    page: number;
+    search?: string;
+    limit?: number;
+    page?: number;
+    categoryId?: string;
+    subcategoryId?: string;
+    brand?: string;
+    inStockOnly?: boolean;
   }) {
     try {
       const searchTerm = params.search?.toUpperCase() ?? "";
@@ -29,9 +33,26 @@ export class ProductService {
       const limit = params.limit || 10;
       const offset = (page - 1) * limit;
 
-      let query = this.productsCollection;
+      let query: any = this.productsCollection;
 
-      // Sin término de búsqueda: solo paginación
+      // Aplicar filtros de igualdad primero (Firestore requiere que estos se apliquen antes de OR)
+      if (params.categoryId) {
+        query = query.where("categoryId", "==", params.categoryId);
+      }
+
+      if (params.subcategoryId) {
+        query = query.where("subcategoryId", "==", params.subcategoryId);
+      }
+
+      if (params.brand) {
+        query = query.where("brand", "==", params.brand);
+      }
+
+      if (params.inStockOnly) {
+        query = query.where("stockUnits", ">", 0);
+      }
+
+      // Sin término de búsqueda: solo paginación con filtros aplicados
       if (!searchTerm) {
         const snapshotTotal = await query.count().get();
         const totalProducts = snapshotTotal.data().count;
@@ -52,24 +73,20 @@ export class ProductService {
         };
       }
 
-      // Con término de búsqueda: searchName, sku y searchArray
+      // Con término de búsqueda: usar solo el primer término para evitar problemas con Firestore
+      // Nota: Firestore tiene limitaciones con múltiples términos, por lo que se usa solo el primero
+      const firstTerm = searchTerm.split(" ")[0];
       const baseQuery = query.where(
         Filter.or(
-          ...searchTerm
-            .split(" ")
-            .map((term) =>
-              Filter.and(
-                Filter.where("searchName", ">=", term),
-                Filter.where("searchName", "<=", term + "\uf8ff")
-              )
-            ),
+          Filter.and(
+            Filter.where("searchName", ">=", firstTerm),
+            Filter.where("searchName", "<=", firstTerm + "\uf8ff")
+          ),
           Filter.and(
             Filter.where("sku", ">=", searchTerm),
             Filter.where("sku", "<=", searchTerm + "\uf8ff")
           ),
-          Filter.and(
-            Filter.where("searchArray", "array-contains", searchTerm)
-          )
+          Filter.where("searchArray", "array-contains", searchTerm)
         )
       );
 

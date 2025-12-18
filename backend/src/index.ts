@@ -4,6 +4,7 @@ import { errorMiddleware } from "./middlewares/error.middleware";
 import authRoutes from "./routes/auth.routes";
 import orderRoutes from "./routes/order.routes";
 import productRoutes from "./routes/product.routes";
+import categoryRoutes from "./routes/category.routes";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,6 +17,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/v1/api/products", productRoutes);
+app.use("/v1/api/categories", categoryRoutes);
 app.use("/v1/api/orders", orderRoutes);
 app.use("/v1/api/auth", authRoutes);
 
