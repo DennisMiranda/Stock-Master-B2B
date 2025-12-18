@@ -1,1 +1,114 @@
-<p>login works!</p>
+<div [class]="!isModal ? 'min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8' : ''">
+  <div [class]="!isModal ? 'sm:mx-auto sm:w-full sm:max-w-md' : 'text-center mb-6'">
+    <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+      @if (isModal) {
+      Bienvenido
+      } @else {
+      Iniciar Sesión
+      }
+    </h2>
+    <p class="mt-2 text-center text-sm text-gray-600">
+      @if (!isModal) { O }
+      @if (!isModal) {
+      <a routerLink="/auth/register" class="font-medium text-blue-600 hover:text-blue-500">
+        regístrate como cliente B2B
+      </a>
+      }
+      @if (isModal) {
+      Ingresa tus datos o
+      <button type="button" (click)="changeMode.emit()"
+        class="font-medium text-blue-600 hover:text-blue-500 focus:outline-none">
+        crea una cuenta nueva
+      </button>
+      }
+    </p>
+  </div>
+
+  <div [class]="!isModal ? 'mt-8 sm:mx-auto sm:w-full sm:max-w-md' : ''">
+    <!-- Card Wrapper: Only apply shadow/bg if NOT modal (modal provides its own) -->
+    <div [class]="!isModal ? 'bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10' : ''">
+
+      <!-- Error Message -->
+      @if (errorMessage()) {
+      <div class="mb-4 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded relative">
+        {{ errorMessage() }}
+      </div>
+      }
+
+      <form class="space-y-6" (ngSubmit)="onLogin()" #loginForm="ngForm">
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+          <div class="mt-1 relative rounded-md shadow-sm">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <lucide-icon [img]="MailIcon" class="h-5 w-5 text-gray-400"></lucide-icon>
+            </div>
+            <input id="email" name="email" type="email" autocomplete="email" required email [ngModel]="email()"
+              (ngModelChange)="email.set($event)" #emailRef="ngModel"
+              class="appearance-none block w-full pl-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              [class.border-red-500]="emailRef.invalid && (emailRef.dirty || emailRef.touched)">
+
+            @if (emailRef.invalid && (emailRef.dirty || emailRef.touched)) {
+            <div class="text-red-500 text-xs mt-1 absolute -bottom-5 left-0">
+              @if (emailRef.errors?.['required']) { El email es requerido. }
+              @if (emailRef.errors?.['email']) { Ingresa un email válido. }
+            </div>
+            }
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
+          <div class="mt-1 relative rounded-md shadow-sm">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <lucide-icon [img]="LockIcon" class="h-5 w-5 text-gray-400"></lucide-icon>
+            </div>
+            <input id="password" name="password" type="password" autocomplete="current-password" required minlength="6"
+              [ngModel]="password()" (ngModelChange)="password.set($event)" #passwordRef="ngModel"
+              class="appearance-none block w-full pl-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              [class.border-red-500]="passwordRef.invalid && (passwordRef.dirty || passwordRef.touched)">
+
+            @if (passwordRef.invalid && (passwordRef.dirty || passwordRef.touched)) {
+            <div class="text-red-500 text-xs mt-1 absolute -bottom-5 left-0">
+              @if (passwordRef.errors?.['required']) { La contraseña es requerida. }
+              @if (passwordRef.errors?.['minlength']) { Mínimo 6 caracteres. }
+            </div>
+            }
+          </div>
+        </div>
+
+        <div>
+          <button type="submit" [disabled]="loginForm.invalid || isLoading()"
+            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed">
+            @if (isLoading()) {
+            <span>Cargando...</span>
+            }
+            @if (!isLoading()) {
+            <span>Ingresar</span>
+            }
+          </button>
+        </div>
+      </form>
+
+      <div class="mt-6">
+        <div class="relative">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-gray-300"></div>
+          </div>
+          <div class="relative flex justify-center text-sm">
+            <span class="px-2 bg-white text-gray-500">
+              O continúa con
+            </span>
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <button type="button" (click)="onGoogleLogin()" [disabled]="isLoading()"
+            class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50">
+            <img class="h-5 w-5 mr-2" src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google">
+            Google
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

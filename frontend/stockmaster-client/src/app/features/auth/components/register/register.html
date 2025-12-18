@@ -1,1 +1,150 @@
-<p>register works!</p>
+<div [class]="!isModal ? 'min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8' : ''">
+    <div [class]="!isModal ? 'sm:mx-auto sm:w-full sm:max-w-md' : 'text-center mb-6'">
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Registro B2B
+        </h2>
+        <p class="mt-2 text-center text-sm text-gray-600">
+            ¿Ya tienes cuenta?
+            @if (!isModal) {
+            <a routerLink="/auth/login" class="font-medium text-blue-600 hover:text-blue-500">
+                Inicia sesión aquí
+            </a>
+            }
+            @if (isModal) {
+            <button type="button" (click)="changeMode.emit()"
+                class="font-medium text-blue-600 hover:text-blue-500 focus:outline-none">
+                Inicia sesión aquí
+            </button>
+            }
+        </p>
+    </div>
+
+    <div [class]="!isModal ? 'mt-8 sm:mx-auto sm:w-full sm:max-w-md' : ''">
+        <div [class]="!isModal ? 'bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10' : ''">
+
+            <!-- Error Message -->
+            @if (errorMessage()) {
+            <div class="mb-4 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded relative">
+                {{ errorMessage() }}
+            </div>
+            }
+
+            <form class="space-y-6" (ngSubmit)="onRegister()" #registerForm="ngForm">
+
+                <!-- RUC -->
+                <div>
+                    <label for="ruc" class="block text-sm font-medium text-gray-700">RUC (11 dígitos)</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <lucide-icon [img]="BuildingIcon" class="h-5 w-5 text-gray-400"></lucide-icon>
+                        </div>
+                        <input id="ruc" name="ruc" type="text" required minlength="11" maxlength="11" pattern="[0-9]*"
+                            [ngModel]="ruc()" (ngModelChange)="ruc.set($event)" #rucRef="ngModel"
+                            class="appearance-none block w-full pl-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            [class.border-red-500]="rucRef.invalid && (rucRef.dirty || rucRef.touched)">
+
+                        @if (rucRef.invalid && (rucRef.dirty || rucRef.touched)) {
+                        <div class="text-red-500 text-xs mt-1 absolute -bottom-5 left-0">
+                            @if (rucRef.errors?.['required']) { El RUC es requerido. }
+                            @if (rucRef.errors?.['minlength'] || rucRef.errors?.['maxlength']) { Debe tener 11 dígitos.
+                            }
+                            @if (rucRef.errors?.['pattern']) { Solo números permitidos. }
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <label for="companyName" class="block text-sm font-medium text-gray-700">Razón Social</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <lucide-icon [img]="BuildingIcon" class="h-5 w-5 text-gray-400"></lucide-icon>
+                        </div>
+                        <input id="companyName" name="companyName" type="text" required [ngModel]="companyName()"
+                            (ngModelChange)="companyName.set($event)" #companyRef="ngModel"
+                            class="appearance-none block w-full pl-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            [class.border-red-500]="companyRef.invalid && (companyRef.dirty || companyRef.touched)">
+
+                        @if (companyRef.invalid && (companyRef.dirty || companyRef.touched)) {
+                        <div class="text-red-500 text-xs mt-1 absolute -bottom-5 left-0">
+                            @if (companyRef.errors?.['required']) { Razón Social requerida. }
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <label for="contactName" class="block text-sm font-medium text-gray-700">Nombre de Contacto</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <lucide-icon [img]="UserIcon" class="h-5 w-5 text-gray-400"></lucide-icon>
+                        </div>
+                        <input id="contactName" name="contactName" type="text" required [ngModel]="contactName()"
+                            (ngModelChange)="contactName.set($event)" #contactRef="ngModel"
+                            class="appearance-none block w-full pl-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            [class.border-red-500]="contactRef.invalid && (contactRef.dirty || contactRef.touched)">
+
+                        @if (contactRef.invalid && (contactRef.dirty || contactRef.touched)) {
+                        <div class="text-red-500 text-xs mt-1 absolute -bottom-5 left-0">
+                            @if (contactRef.errors?.['required']) { Nombre de contacto requerido. }
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email Corporativo</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <lucide-icon [img]="MailIcon" class="h-5 w-5 text-gray-400"></lucide-icon>
+                        </div>
+                        <input id="email" name="email" type="email" autocomplete="email" required email
+                            [ngModel]="email()" (ngModelChange)="email.set($event)" #emailRef="ngModel"
+                            class="appearance-none block w-full pl-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            [class.border-red-500]="emailRef.invalid && (emailRef.dirty || emailRef.touched)">
+
+                        @if (emailRef.invalid && (emailRef.dirty || emailRef.touched)) {
+                        <div class="text-red-500 text-xs mt-1 absolute -bottom-5 left-0">
+                            @if (emailRef.errors?.['required']) { Email requerido. }
+                            @if (emailRef.errors?.['email']) { Email inválido. }
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <lucide-icon [img]="LockIcon" class="h-5 w-5 text-gray-400"></lucide-icon>
+                        </div>
+                        <input id="password" name="password" type="password" autocomplete="new-password" required
+                            minlength="6" [ngModel]="password()" (ngModelChange)="password.set($event)"
+                            #passRef="ngModel"
+                            class="appearance-none block w-full pl-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            [class.border-red-500]="passRef.invalid && (passRef.dirty || passRef.touched)">
+
+                        @if (passRef.invalid && (passRef.dirty || passRef.touched)) {
+                        <div class="text-red-500 text-xs mt-1 absolute -bottom-5 left-0">
+                            @if (passRef.errors?.['required']) { Contraseña requerida. }
+                            @if (passRef.errors?.['minlength']) { Mínimo 6 caracteres. }
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit" [disabled]="registerForm.invalid || isLoading()"
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed">
+                        @if (isLoading()) {
+                        <span>Registrando...</span>
+                        }
+                        @if (!isLoading()) {
+                        <span>Crear Cuenta</span>
+                        }
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

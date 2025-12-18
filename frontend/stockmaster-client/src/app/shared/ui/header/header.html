@@ -9,11 +9,11 @@
       <!-- Desktop Navigation -->
       <nav class="hidden md:flex items-center gap-1">
         @for (link of navLinks; track link.path) {
-        <a
-          [routerLink]="link.path"
+        <a 
+          [routerLink]="link.path" 
           routerLinkActive="text-gray-900 bg-gray-50"
           class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
-        >
+          >
           {{ link.label }}
         </a>
         }
@@ -31,36 +31,50 @@
         </button>
 -->
         <!-- Cart Button -->
-        <button
-          routerLink="/cart"
+        <button 
+        routerLink="/cart"
           class="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
           aria-label="Carrito"
-        >
+          >
           <lucide-icon [img]="ShoppingCartIcon" class="w-5 h-5" />
           @if (cartCount() > 0) {
           <span
             class="absolute -top-1 -right-1 w-5 h-5 bg-gray-900 text-white text-xs font-semibold rounded-full flex items-center justify-center"
-          >
+            >
             {{ cartCount() }}
           </span>
           }
         </button>
 
         <!-- User Button -->
-        <button
-          routerLink="/profile"
-          class="hidden sm:flex p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
-          aria-label="Perfil"
-        >
+
+        <!-- Condición previa: El usuario no debe estar logueado (!currentUser()).
+          Acción: El evento (click) ejecuta directamente layoutService.openLogin().
+          Efecto: La señal cambia a true y Angular renderiza el modal.
+        -->
+        @if (!currentUser()) {
+
+        <button (click)="layoutService.openLogin()"
+          class="hidden sm:flex p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer"
+          aria-label="Iniciar Sesión">
           <lucide-icon [img]="UserIcon" class="w-5 h-5" />
         </button>
+        }
+
+        @if (currentUser()) {
+        <a routerLink="/profile"
+          class="hidden sm:flex p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer"
+          aria-label="Perfil">
+          <lucide-icon [img]="UserIcon" class="w-5 h-5" />
+        </a>
+        }
 
         <!-- Mobile Menu Button -->
-        <button
-          (click)="toggleMenu()"
+        <button 
+        (click)="toggleMenu()"
           class="md:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
           aria-label="Menú"
-        >
+          >
           <lucide-icon [img]="isMenuOpen() ? XIcon : MenuIcon" class="w-5 h-5" />
         </button>
       </div>
@@ -90,24 +104,40 @@
   <div class="md:hidden border-t border-gray-200 bg-white animate-slideDown">
     <nav class="px-4 py-3 space-y-1">
       @for (link of navLinks; track link.path) {
-      <a
-        [routerLink]="link.path"
-        routerLinkActive="text-gray-900 bg-gray-50"
-        (click)="closeMenu()"
-        class="block px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
+      <a 
+      [routerLink]="link.path"
+      routerLinkActive="text-gray-900 bg-gray-50" 
+      (click)="closeMenu()"
+      class="block px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
       >
         {{ link.label }}
       </a>
       }
-      <a
-        routerLink="/profile"
-        routerLinkActive="text-gray-900 bg-gray-50"
-        (click)="closeMenu()"
-        class="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors sm:hidden"
+      
+      <!-- Acción: Al hacer click en el menú móvil, se ejecutan dos funciones secuenciales: abre el modal y cierra el menú lateral.-->
+      @if (!currentUser()) {
+      <button (click)="layoutService.openLogin(); closeMenu()"
+        class="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors sm:hidden">
+        <lucide-icon [img]="UserIcon" class="w-5 h-5" />
+        Iniciar Sesión
+      </button>
+      }
+      @if (currentUser()) {
+      <a 
+      routerLink="/profile" 
+      routerLinkActive="text-gray-900 bg-gray-50" 
+      (click)="closeMenu()"
+      class="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors sm:hidden"
       >
         <lucide-icon [img]="UserIcon" class="w-5 h-5" />
         Mi Cuenta
       </a>
+      <button (click)="logout(); closeMenu()"
+      class="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors sm:hidden">
+        <lucide-icon [img]="LogOutIcon" class="w-5 h-5" />
+        Cerrar Sesión
+      </button>
+      }
     </nav>
   </div>
   }

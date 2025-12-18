@@ -2,3 +2,32 @@
 <main>
     <router-outlet/>
 </main>
+
+<!-- Auth Modals -->
+ <!-- si el modal de Login es true, se muestra el modal de login -->
+@if (layoutService.showLoginModal()) {
+    <!-- Eventos: 
+     (close): Si el usuario cierra el modal, ejecuta layoutService.closeAuth() (apaga todo). 
+     (changeMode): Si el usuario dice "No tengo cuenta", ejecuta layoutService.openRegister() (cierra este y abre el otro).
+     -->
+    <app-modal (close)="layoutService.closeAuth()">
+    <!-- el modal contiene el componente login -->
+    <!-- [isModal]: Indica que el login se debe mostrar como un modal. -->
+    <!-- (changeMode): Si el usuario cambia de modo, ejecuta layoutService.openRegister() (abre el modal de registro). -->
+    <app-login [isModal]="true" (changeMode)="layoutService.openRegister()" />
+</app-modal>
+}
+
+<!-- si el modal de Register es true, se muestra el modal de register -->
+@if (layoutService.showRegisterModal()) {
+    <!-- Eventos: 
+     (close): Si el usuario cierra el modal, ejecuta layoutService.closeAuth() (apaga todo). 
+     (changeMode): Si el usuario dice "Tengo cuenta", ejecuta layoutService.openLogin() (cierra este y abre el otro).
+     -->
+    <app-modal (close)="layoutService.closeAuth()">
+    <!-- el modal contiene el componente register -->
+    <!-- el modal recibe el parametro isModal para indicar que es un modal -->
+    <!-- el modal recibe el parametro changeMode para indicar que al cambiar de modo se debe cerrar el modal -->
+    <app-register [isModal]="true" (changeMode)="layoutService.openLogin()" />
+</app-modal>
+}
