@@ -10,6 +10,7 @@ export interface Product {
   name: string;
   searchName: string;
   categoryId?: string;
+  subcategoryId?: string;
   brand?: string;
   prices: PriceTier[];
   unitPerBox?: number;

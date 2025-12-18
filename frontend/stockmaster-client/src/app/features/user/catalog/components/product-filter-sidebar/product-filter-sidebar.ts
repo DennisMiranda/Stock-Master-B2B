@@ -1,18 +1,21 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { LucideAngularModule, Trash2 } from 'lucide-angular';
 import { FilterOptions } from '../../../../../core/models/catalog-filter.model';
 import { CatalogFilterService } from '../../services/catalog-filter.service';
+import { getCategoryName } from '../../constants/category-mapping';
 
 @Component({
   selector: 'app-product-filter-sidebar',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './product-filter-sidebar.html',
   styleUrl: './product-filter-sidebar.css',
 })
 export class ProductFilterSidebar implements OnInit {
   private filterService = inject(CatalogFilterService);
+  readonly TrashIcon = Trash2;
 
   // Opciones disponibles de filtros (se actualizan dinámicamente desde el servicio)
   filterOptions = signal<FilterOptions>({ categories: [], brands: [] });
@@ -93,6 +96,13 @@ export class ProductFilterSidebar implements OnInit {
    */
   isCategorySelected(categoryId: string): boolean {
     return this.selectedCategories().has(categoryId);
+  }
+
+  /**
+   * Obtiene el nombre legible de una categoría
+   */
+  getCategoryDisplayName(categoryId: string): string {
+    return getCategoryName(categoryId);
   }
 
   /**

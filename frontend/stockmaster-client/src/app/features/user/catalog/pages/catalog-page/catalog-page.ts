@@ -14,7 +14,7 @@ import { CatalogService } from '../../services/catalog.service';
 })
 export class CatalogPage implements OnInit {
   catalogService = inject(CatalogService);
-  private route = inject(ActivatedRoute); // Changed to ActivatedRoute
+  private route = inject(ActivatedRoute);
 
   term = this.catalogService.term;
   currentPage = this.catalogService.page;
@@ -31,9 +31,5 @@ export class CatalogPage implements OnInit {
 
   onSearchChange(searchTerm: string) {
     this.catalogService.searchProducts(searchTerm);
-  }
-
-  trackByProductId(index: number, product: any): any {
-    return product.id;
   }
 }

@@ -16,16 +16,15 @@
       <div class="mt-4 mb-4">
         <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           @if (products().length === 0) {
-            <li>No hay productos</li>
-          } @else {
-            @for (product of products(); track product.id) {
-              <li>
-                <app-card-product [product]="product"></app-card-product>
-              </li>
-            }
-          }
+          <li>No hay productos</li>
+          } @else{@for (product of products(); track product.id) {
+          <li>
+            <app-card-product [product]="product"></app-card-product>
+          </li>
+          }}
         </ul>
       </div>
+
       <app-basic-pagination
         [page]="currentPage()"
         [totalPages]="metadata().pages"

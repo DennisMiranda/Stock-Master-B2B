@@ -112,10 +112,10 @@ export class CatalogFilterService {
 
     products.forEach((product) => {
       if (product.categoryId && product.categoryId !== '') {
-        // Mapeo de categoryId a nombres legibles
-        const categoryName = this.getCategoryNameFromId(product.categoryId);
+        // Usar categoryId como id, y el mismo para el nombre
+        // El backend debería proporcionar el nombre en futuro
         if (!categoriesMap.has(product.categoryId)) {
-          categoriesMap.set(product.categoryId, categoryName);
+          categoriesMap.set(product.categoryId, product.categoryId);
         }
       }
     });
@@ -139,22 +139,5 @@ export class CatalogFilterService {
     });
 
     return Array.from(brandsSet).sort();
-  }
-
-  /**
-   * Convierte categoryId a nombre legible
-   * Esta función mapea los IDs de categorías del backend a nombres en español
-   */
-  private getCategoryNameFromId(categoryId: string): string {
-    const categoryMap: Record<string, string> = {
-      'cat-accessories-002': 'Accesorios',
-      'cat-audio-003': 'Audio',
-      'cat-storage-004': 'Almacenamiento',
-      'cat-computing': 'Computación',
-      'cat-networking': 'Redes',
-      'cat-peripherals': 'Periféricos',
-    };
-
-    return categoryMap[categoryId] || categoryId;
   }
 }
