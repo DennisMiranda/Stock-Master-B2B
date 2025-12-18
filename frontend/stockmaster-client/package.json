@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "dev": "bun run config -- --environment=dev && ng serve --configuration development",
     "config": "node ./config/set-env.config.js",
     "start": "ng serve",
     "build": "bun run config -- --environment=prod && ng build --configuration production",
