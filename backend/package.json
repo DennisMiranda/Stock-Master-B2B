@@ -9,7 +9,7 @@
     "dev": "concurrently \"tsc --watch\" \"bun --watch dist/index.js\"",
     "start": "node dist/index.js",
     "build-deploy": "tsc",
-    "build": "bun build index.ts --outdir ./dist"
+    "build": "bun build src/index.ts --outdir ./dist --target node"
   },
   "devDependencies": {
     "@types/bun": "latest",

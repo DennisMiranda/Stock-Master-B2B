@@ -1,0 +1,141 @@
+<form [formGroup]="orderForm" (ngSubmit)="submit()" class="space-y-8">
+  <!-- ================= EMPRESA ================= -->
+  <section class="rounded-2xl border border-gray-100 bg-gray-50 p-6">
+    <h2 class="mb-4 text-lg font-semibold">Datos de la empresa</h2>
+
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <!-- Razón social -->
+      <div>
+        <label class="form-label">Razón social</label>
+        <input type="text" formControlName="businessName" class="form-input" />
+        @if (f.businessName.touched && f.businessName.invalid) {
+        <p class="form-error">Ingrese una razón social válida</p>
+        }
+      </div>
+
+      <!-- RUC / DNI -->
+      <div>
+        <label class="form-label">RUC / DNI</label>
+        <input
+          type="text"
+          formControlName="taxId"
+          class="form-input"
+          maxlength="11"
+          inputmode="numeric"
+        />
+        @if (f.taxId.touched && f.taxId.invalid) {
+        <p class="form-error">Ingrese un RUC o DNI válido</p>
+        }
+      </div>
+
+      <div>
+        <label class="form-label">Teléfono</label>
+        <input
+          type="tel"
+          formControlName="businessPhone"
+          class="form-input"
+          maxlength="9"
+          pattern="[0-9]*"
+        />
+        @if (f.businessPhone.touched && f.businessPhone.invalid) {
+        <p class="form-error">Ingrese un teléfono válido</p>
+        }
+      </div>
+      <div>
+        <label class="form-label">Correo</label>
+        <input type="text" formControlName="email" class="form-input" />
+        @if (f.email.touched && f.email.invalid) {
+        <p class="form-error">Ingrese un email válido</p>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= RECEPTOR ================= -->
+  <section class="rounded-2xl border border-gray-100 bg-gray-50 p-6">
+    <h2 class="mb-4 text-lg font-semibold">Datos del receptor</h2>
+
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div>
+        <label class="form-label">Nombre del encargado</label>
+        <input type="text" formControlName="receiverName" class="form-input" />
+        @if (f.receiverName.touched && f.receiverName.invalid) {
+        <p class="form-error">Nombre requerido</p>
+        }
+      </div>
+
+      <div>
+        <label class="form-label">Teléfono</label>
+        <input type="tel" formControlName="receiverPhone" class="form-input" maxlength="9" />
+        @if (f.receiverPhone.touched && f.receiverPhone.invalid) {
+        <p class="form-error">Teléfono inválido</p>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= DIRECCIÓN ================= -->
+  <section class="rounded-2xl border border-gray-100 bg-gray-50 p-6 space-y-4">
+    <h2 class="text-lg font-semibold">Dirección de entrega</h2>
+
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div>
+        <label class="form-label">Ciudad</label>
+        <input type="text" formControlName="city" class="form-input" />
+        @if (f.city.touched && f.city.invalid) {
+        <p class="form-error">Ciudad requerida</p>
+        }
+      </div>
+
+      <div>
+        <label class="form-label">Distrito</label>
+        <input type="text" formControlName="district" class="form-input" />
+        @if (f.district.touched && f.district.invalid) {
+        <p class="form-error">Distrito requerido</p>
+        }
+      </div>
+
+      <div>
+        <label class="form-label">Calle</label>
+        <input type="text" formControlName="street" class="form-input" />
+        @if (f.street.touched && f.street.invalid) {
+        <p class="form-error">Calle requerida</p>
+        }
+      </div>
+
+      <div>
+        <label class="form-label">Número</label>
+        <input type="text" formControlName="number" class="form-input" />
+        @if (f.number.touched && f.number.invalid) {
+        <p class="form-error">Número requerido</p>
+        }
+      </div>
+
+      <div>
+        <label class="form-label">Referencia</label>
+        <input type="text" formControlName="reference" class="form-input" />
+      </div>
+    </div>
+
+    <!-- Mapa -->
+    <h3 class="font-semibold">Seleccionar ubicación</h3>
+    <div class="h-72 rounded-xl border border-dashed text-sm text-gray-500">
+      <app-map (selectedLocationChange)="updateLocation($event)"></app-map>
+    </div>
+
+    @if (f.latitude.touched && f.latitude.invalid) {
+    <p class="form-error">Debe seleccionar una ubicación</p>
+    }
+  </section>
+
+  <!-- ================= SUBMIT ================= -->
+  <div class="flex justify-center">
+    <button
+      type="submit"
+      [disabled]="orderForm.invalid"
+      class="rounded-xl bg-blue-600 px-8 py-3 mb-6 font-semibold text-white transition hover:bg-blue-700 disabled:opacity-50"
+    >
+      Confirmar pedido
+    </button>
+  </div>
+</form>
