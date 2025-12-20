@@ -1,15 +1,10 @@
 import { Filter } from "firebase-admin/firestore";
 import { db } from "../config/firebase";
-import type {
-  Product,
-  Subcategory,
-  Category,
-  ProductDoc,
-} from "../models/product.model";
-import { QuerySnapshot, QueryDocumentSnapshot } from "@google-cloud/firestore";
+import type { Product } from "../models/product.model";
 
 export class ProductService {
   constructor() {}
+  
   /**
    * Servicio para buscar productos
    */
@@ -31,7 +26,11 @@ export class ProductService {
         const totalProducts = snapshotTotal.data().count;
         const snapshot = await query.offset(offset).limit(limit).get();
 
-        const products = await this.mapProducts(snapshot);
+        const products = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as Product[];
+
         return {
           products,
           metadata: {
@@ -67,7 +66,7 @@ export class ProductService {
       const products = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-      }));
+      })) as Product[];
 
       return {
         products,
@@ -80,53 +79,5 @@ export class ProductService {
       console.error("Search error", error);
       return { products: [], metadata: { count: 0, pages: 0 } };
     }
-  }
-
-  private async buildProduct(doc: QueryDocumentSnapshot): Promise<Product> {
-    const data = doc.data() as ProductDoc;
-
-    let category: Category | undefined;
-    if (data.categoryId) {
-      const categorySnap = await db
-        .collection("categories")
-        .doc(data.categoryId)
-        .get();
-      if (categorySnap.exists) {
-        const catData = categorySnap.data();
-        if (catData) {
-          category = { id: categorySnap.id, name: catData.name as string };
-        }
-      }
-    }
-
-    let subCategory: Subcategory | undefined;
-    if (data.categoryId && data.subcategoryId) {
-      const subSnap = await db
-        .collection("categories")
-        .doc(data.categoryId)
-        .collection("subcategories")
-        .doc(data.subcategoryId)
-        .get();
-
-      if (subSnap.exists) {
-        const subData = subSnap.data();
-        if (subData) {
-          subCategory = { id: subSnap.id, name: subData.name as string };
-        }
-      }
-    }
-
-    const { categoryId, subcategoryId, ...rest } = data;
-
-    return {
-      ...rest,
-      id: doc.id,
-      category,
-      subCategory,
-    };
-  }
-
-  private async mapProducts(snapshot: QuerySnapshot): Promise<Product[]> {
-    return Promise.all(snapshot.docs.map((doc) => this.buildProduct(doc)));
   }
 }

@@ -1,5 +1,6 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "stock-master-b2b",
@@ -38,11 +39,8 @@
         "@angular/forms": "^21.0.0",
         "@angular/platform-browser": "^21.0.0",
         "@angular/router": "^21.0.0",
-
-        "leaflet": "^1.9.4",
-
         "firebase": "^12.6.0",
-
+        "leaflet": "^1.9.4",
         "lucide-angular": "^0.560.0",
         "rxjs": "~7.8.0",
         "tslib": "^2.3.0",
