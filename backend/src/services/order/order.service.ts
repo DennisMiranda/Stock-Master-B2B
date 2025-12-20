@@ -1,0 +1,138 @@
+import { db } from "../../config/firebase";
+import type {
+  CustomResponse as CustomResponseModel,
+  ResponseError,
+} from "../../models/custom-response.model";
+import {
+  Order,
+  ORDER_STATUS,
+  ORDER_VARIANT,
+  OrderDetailItem,
+} from "../../models/order.model";
+import { CustomResponse } from "../../utils/custom-response";
+import { ProductService } from "../product.service";
+
+export class OrderService {
+  private ordersCollection = db.collection("orders");
+  private productsCollection = db.collection("products");
+  private productService: ProductService;
+
+  constructor(productService: ProductService) {
+    this.productService = productService;
+  }
+
+  async createOrder(
+    order: Order
+  ): Promise<
+    CustomResponseModel<
+      Order | null,
+      ResponseError<Partial<OrderDetailItem>>[] | null
+    >
+  > {
+    const errors: ResponseError<Partial<OrderDetailItem>>[] = [];
+    try {
+      return await db.runTransaction(async (tx) => {
+        const orderItems: OrderDetailItem[] = [];
+
+        const productsMap = await this.productService.getProductsMapById(
+          order.items.map((item) => item.id),
+          tx
+        );
+
+        // 1️. VALIDAR Y DESCONTAR STOCK
+        for (const item of order.items) {
+          const product = productsMap[item.id];
+          const productRef = this.productsCollection.doc(item.id);
+
+          if (!product) {
+            errors.push({
+              code: "PRODUCT_NOT_FOUND",
+              message: "Producto no encontrado",
+              details: item,
+            });
+            continue;
+          }
+
+          let availableStock = 0;
+
+          //Validar stock
+          if (item.variant === ORDER_VARIANT.unit) {
+            availableStock = product.stockUnits;
+          } else if (item.variant === ORDER_VARIANT.box) {
+            availableStock = product.stockBoxes;
+          }
+
+          if (availableStock < item.quantity) {
+            errors.push({
+              code: "INSUFFICIENT_STOCK",
+              message: "Stock insuficiente",
+              details: {
+                ...item,
+                stockUnits: product.stockUnits,
+                stockBoxes: product.stockBoxes,
+              },
+            });
+            continue;
+          }
+
+          // 2️. DESCONTAR
+          if (item.variant === ORDER_VARIANT.unit) {
+            tx.update(productRef, {
+              stockUnits: availableStock - item.quantity,
+              updatedAt: Date.now(),
+            });
+          } else if (item.variant === ORDER_VARIANT.box) {
+            tx.update(productRef, {
+              stockBoxes: availableStock - item.quantity,
+              updatedAt: Date.now(),
+            });
+          }
+
+          const unitPrice =
+            product.prices.find((price) => price.label === item.variant)
+              ?.price || 0;
+
+          // 3️. SNAPSHOT DEL ITEM
+          orderItems.push({
+            id: product.id,
+            sku: product.sku,
+            name: product.name,
+            brand: product.brand,
+            variant: item.variant,
+            quantity: item.quantity,
+            unitPrice: unitPrice,
+            subTotal: unitPrice * item.quantity,
+            unitPerBox: product.unitPerBox,
+            imageUrl: product.images?.[0],
+          });
+        }
+
+        if (errors.length > 0) {
+          // Fail the transaction
+          throw new Error("ORDER_VALIDATION_ERROR");
+        }
+
+        // 4️. CREAR ORDEN
+        const orderRef = this.ordersCollection.doc();
+
+        const finalOrder: Order = {
+          ...order,
+          id: orderRef.id,
+          items: orderItems,
+          status: ORDER_STATUS.created,
+          createdAt: Date.now(),
+        };
+
+        tx.set(orderRef, finalOrder);
+
+        return CustomResponse.success(finalOrder, "Orden creada exitosamente");
+      });
+    } catch (error) {
+      return CustomResponse.error(
+        "ORDER_ERROR",
+        "Error al crear la orden",
+        errors
+      );
+    }
+  }
+}
