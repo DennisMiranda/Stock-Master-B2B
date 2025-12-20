@@ -23,7 +23,12 @@ export class OrderService {
 
   async createOrder(
     order: Order
-  ): Promise<CustomResponseModel<Order | null, any>> {
+  ): Promise<
+    CustomResponseModel<
+      Order | null,
+      ResponseError<Partial<OrderDetailItem>>[] | null
+    >
+  > {
     const errors: ResponseError<Partial<OrderDetailItem>>[] = [];
     try {
       return await db.runTransaction(async (tx) => {
