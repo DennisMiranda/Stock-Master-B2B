@@ -17,5 +17,20 @@ export const syncSchema = z.object({
     displayName: z.string().optional(),
     photoURL: z.string().optional(),
 });
+
+// [NUEVO] Schemas para Gestión de Usuarios
+export const createUserSchema = z.object({
+    email: z.string().email("Email inválido"),
+    password: z.string().min(6, "Mínimo 6 caracteres"),
+    displayName: z.string().min(3, "Nombre requerido"),
+    role: z.enum(['admin', 'warehouse', 'driver', 'client'])
+});
+
+export const updateUserSchema = z.object({
+    role: z.enum(['admin', 'warehouse', 'driver', 'client']).optional(),
+    isActive: z.boolean().optional()
+});
+
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type SyncInput = z.infer<typeof syncSchema>;
+export type CreateUserInput = z.infer<typeof createUserSchema>;

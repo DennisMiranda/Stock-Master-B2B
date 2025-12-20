@@ -2,6 +2,7 @@ import cors from "cors";
 import express from "express";
 import productRoutes from "./routes/product.routes";
 import authRoutes from "./routes/auth.routes";
+import { userRoutes } from "./routes/user.routes";
 import { errorMiddleware } from "./middlewares/error.middleware";
 
 const app = express();
@@ -16,6 +17,7 @@ app.get("/", (req, res) => {
 
 app.use("/v1/api/products", productRoutes);
 app.use("/v1/api/auth", authRoutes);
+app.use("/v1/api/users", userRoutes);
 
 app.use(errorMiddleware);
 
