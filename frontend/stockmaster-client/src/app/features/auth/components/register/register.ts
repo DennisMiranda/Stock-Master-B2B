@@ -46,7 +46,6 @@ export class Register {
       next: () => {
         if (this.isModal) {
           this.layoutService.closeAuth();
-          this.router.navigate(['/shop/home']);
         }
       }
     });

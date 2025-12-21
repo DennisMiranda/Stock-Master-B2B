@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { initializeApp } from 'firebase/app';
 import {
@@ -8,6 +8,7 @@ import {
     signInWithPopup,
     signOut,
     onAuthStateChanged,
+    sendPasswordResetEmail,
     User as FirebaseUser
 } from 'firebase/auth';
 import { from, Observable } from 'rxjs';
@@ -29,25 +30,79 @@ export class AuthService {
 
     // State (Signals)
     currentUser = signal<FirebaseUser | null>(null);
+    currentToken = signal<string | null>(null); // Added for Interceptor
+    userRole = signal<string | null>(null);
+    authInitialized = signal<boolean>(false);
     isLoading = signal<boolean>(false);
     error = signal<string | null>(null);
 
+    // Computed
+    isAdmin = computed(() => this.userRole() === 'admin');
+    isWarehouse = computed(() => this.userRole() === 'warehouse');
+    isDriver = computed(() => this.userRole() === 'driver');
+
     constructor() {
         // Escuchar cambios de sesión
-        onAuthStateChanged(this.auth, (user) => {
+        onAuthStateChanged(this.auth, async (user) => {
             this.currentUser.set(user);
+            if (user) {
+                try {
+                    // Forzar refresh del token (true) para asegurar que tenemos los últimos claims
+                    const tokenResult = await user.getIdTokenResult(true);
+
+                    console.log('🔑 TU TOKEN DE ACCESO (Copia esto en Postman):', tokenResult.token);
+                    this.currentToken.set(tokenResult.token); // Store token
+                    this.userRole.set((tokenResult.claims['role'] as string) || 'client');
+                } catch (e) {
+                    console.error('Error fetching token claims', e);
+                    this.userRole.set(null);
+                    this.currentToken.set(null);
+                }
+            } else {
+                this.userRole.set(null);
+                this.currentToken.set(null);
+            }
+            // Marcamos como inicializado
+            this.authInitialized.set(true);
         });
+    }
+
+    // --- Helper Redirección ---
+    private async redirectUser(user: FirebaseUser) {
+        try {
+            // Forzamos refresh (true) para garantizar que 'claims' estén actualizados al 100%
+            const tokenResult = await user.getIdTokenResult(true);
+            const role = tokenResult.claims['role'];
+
+            console.log('[AuthService] Redireccionando... Rol detectado:', role);
+
+            // Cast role to string explicitly for TS check
+            const userRole = role as string;
+
+            // CRITICAL FIX: Update signal explicitly BEFORE navigation so Guards see it immediately
+            this.userRole.set(userRole);
+
+            if (['admin', 'warehouse', 'driver'].includes(userRole)) {
+                console.log('[AuthService] Usuario STAFF -> /admin');
+                await this.router.navigate(['/admin']);
+            } else {
+                console.log('[AuthService] Usuario CLIENT/OTRO -> /shop/home');
+                await this.router.navigate(['/shop/home']);
+            }
+        } catch (e) {
+            console.error('[AuthService] Redirection Error:', e);
+            await this.router.navigate(['/shop/home']);
+        }
     }
 
     // --- Login con Email ---
     loginWithEmail(email: string, password: string): Observable<void> {
         this.isLoading.set(true);
         return from(signInWithEmailAndPassword(this.auth, email, password)).pipe(
-            tap(() => {
+            switchMap(async (credential) => {
+                await this.redirectUser(credential.user);
                 this.isLoading.set(false);
-                this.router.navigate(['/shop/home']);
             }),
-            map(() => void 0), // Explicitly return void
             catchError((err) => {
                 this.isLoading.set(false);
                 this.error.set(err.message);
@@ -65,16 +120,23 @@ export class AuthService {
             switchMap((userCredential) => {
                 // Notificar al backend para sincronizar
                 const { uid, email, displayName, photoURL } = userCredential.user;
-                // Usamos ApiService para sincronizar
-                return this.apiService.post<{ success: boolean }>('/auth/sync', { uid, email, displayName, photoURL });
+                // Usamos ApiService para sincronizar y luego redireccionar
+                return this.apiService.post<{ success: boolean }>('/auth/sync', { uid, email, displayName, photoURL })
+                    .pipe(
+                        map(() => userCredential.user) // Pasamos el usuario al siguiente paso
+                    );
             }),
-            tap(() => {
+            switchMap(async (user) => {
+                await this.redirectUser(user);
                 this.isLoading.set(false);
-                this.router.navigate(['/shop/home']);
             }),
-            map(() => void 0), // Normalize return to void
-            catchError((err) => {
+            catchError((err: any) => {
                 this.isLoading.set(false);
+                // Si el usuario cerró el popup, no lo mostramos como error en la UI
+                if (err.code === 'auth/popup-closed-by-user') {
+                    console.log('Login cancelado por el usuario (Popup cerrado)');
+                    return []; // Retornamos observable vacío para completar el flujo sin error
+                }
                 this.error.set(err.message);
                 throw err;
             })
@@ -90,11 +152,10 @@ export class AuthService {
                 // Login automático tras registro exitoso
                 return from(signInWithEmailAndPassword(this.auth, data.email, data.password!));
             }),
-            tap(() => {
+            switchMap(async (credential) => {
+                await this.redirectUser(credential.user);
                 this.isLoading.set(false);
-                this.router.navigate(['/shop/home']);
             }),
-            map(() => void 0), // Normalize return to void
             catchError((err) => {
                 this.isLoading.set(false);
                 // Extraer mensaje de error personalizado del Backend si existe
@@ -105,13 +166,44 @@ export class AuthService {
         );
     }
 
+    // --- Recuperación de Contraseña ---
+    sendPasswordResetEmail(email: string): Observable<void> {
+        return from(sendPasswordResetEmail(this.auth, email));
+    }
+
     // --- Logout ---
     logout() {
         return from(signOut(this.auth)).pipe(
             tap(() => {
                 this.currentUser.set(null);
+                this.userRole.set(null);
                 this.router.navigate(['/auth/login']);
             })
+        );
+    }
+
+    // --- Gestión de Perfil (Update Password) ---
+    updateUserPassword(currentPassword: string, newPassword: string): Observable<void> {
+        const user = this.auth.currentUser;
+        if (!user || !user.email) {
+            return new Observable(observer => {
+                observer.error(new Error('No hay usuario autenticado'));
+                observer.complete();
+            });
+        }
+
+        // 1. Crear credencial con la contraseña actual
+        // Necesitamos importar EmailAuthProvider dynamica o estaticamente.
+        // Usaremos import dinamico para evitar conflictos si no esta importado arriba
+        const credential = import('firebase/auth').then(m =>
+            m.EmailAuthProvider.credential(user.email!, currentPassword)
+        );
+
+        return from(credential).pipe(
+            // 2. Re-autenticar (Obligatorio por seguridad)
+            switchMap(cred => from(import('firebase/auth').then(m => m.reauthenticateWithCredential(user, cred)))),
+            // 3. Actualizar contraseña
+            switchMap(() => from(import('firebase/auth').then(m => m.updatePassword(user, newPassword))))
         );
     }
 }

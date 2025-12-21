@@ -1,0 +1,35 @@
+import { Routes } from '@angular/router';
+import { roleGuard } from '../../core/guards/role.guard';
+
+export const adminRoutes: Routes = [
+    {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+    },
+    {
+        path: 'dashboard',
+        loadComponent: () => import('./dashboard/dashboard').then(m => m.DashboardPage),
+        canActivate: [roleGuard(['admin', 'warehouse', 'driver'])]
+    },
+    {
+        path: 'users',
+        loadComponent: () => import('./users/pages/users-page/users-page').then(m => m.UsersPage),
+        canActivate: [roleGuard(['admin'])]
+    },
+    {
+        path: 'routes',
+        loadComponent: () => import('./routes/pages/routes-page/routes-page').then(m => m.RoutesPage),
+        canActivate: [roleGuard(['admin', 'driver'])]
+    },
+    {
+        path: 'profile',
+        loadComponent: () => import('./profile/profile-page').then(m => m.ProfilePage),
+        canActivate: [roleGuard(['admin', 'warehouse', 'driver'])] // Acceso para todos los roles staff
+    },
+    {
+        path: 'settings',
+        loadComponent: () => import('./settings/settings-page').then(m => m.SettingsPage),
+        canActivate: [roleGuard(['admin', 'warehouse', 'driver'])] // Acceso para todos los roles staff
+    }
+];

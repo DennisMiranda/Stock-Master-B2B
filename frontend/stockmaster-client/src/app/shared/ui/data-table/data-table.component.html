@@ -1,0 +1,40 @@
+<div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left">
+            <thead class="bg-gray-50 border-b border-gray-200 text-xs text-gray-500 uppercase font-semibold">
+                <tr>
+                    @for (col of columns; track col.key) {
+                    <th scope="col" class="px-6 py-4" [class]="col.class || ''"
+                        [sortable]="col.sortable ? (col.key | keyToString) : ''" (sort)="onSort($event)">
+                        {{ col.label }}
+                        <!-- Sort Indicator could go here if not handled by directive CSS -->
+                    </th>
+                    }
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                @for (item of data; track item) {
+                <tr class="hover:bg-gray-50/50 transition-colors group">
+                    @for (col of columns; track col.key) {
+                    <td class="px-6 py-4" [class]="col.class || ''">
+                        <!-- Si existe un template personalizado, usarlo -->
+                        @if (col.template) {
+                        <ng-container *ngTemplateOutlet="col.template; context: { $implicit: item }"></ng-container>
+                        } @else {
+                        <!-- Renderizado por defecto -->
+                        <span class="text-gray-900">{{ item | getProperty:col.key }}</span>
+                        }
+                    </td>
+                    }
+                </tr>
+                } @empty {
+                <tr>
+                    <td [attr.colspan]="columns.length" class="px-6 py-12 text-center text-gray-500">
+                        No se encontraron registros
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
