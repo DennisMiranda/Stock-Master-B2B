@@ -1,6 +1,8 @@
 import cors from "cors";
 import express from "express";
 import productRoutes from "./routes/product.routes";
+import cartRouters from "./routes/cart.routes";
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -13,6 +15,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/v1/api/products", productRoutes);
+app.use("/v1/api/cart", cartRouters);
 
 app.listen(PORT, () => {
   console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
