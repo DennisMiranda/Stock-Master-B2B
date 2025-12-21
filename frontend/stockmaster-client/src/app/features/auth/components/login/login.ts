@@ -34,7 +34,6 @@ export class Login {
       next: () => {
         if (this.isModal) {
           this.layoutService.closeAuth();
-          this.router.navigate(['/shop/home']);
         }
       }
     });
@@ -45,8 +44,36 @@ export class Login {
       next: () => {
         if (this.isModal) {
           this.layoutService.closeAuth();
-          this.router.navigate(['/shop/home']);
         }
+      },
+      error: (e: any) => {
+        if (e.code === 'auth/popup-closed-by-user') {
+          console.log('[Login] Usuario cerró la ventana de Google');
+        } else {
+          console.error('Error Google Login', e);
+        }
+      }
+    });
+  }
+
+  onForgotPassword() {
+    if (!this.email()) {
+      this.errorMessage.set('Por favor, ingresa tu correo electrónico primero.');
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.authService.sendPasswordResetEmail(this.email()).subscribe({
+      next: () => {
+        console.log('[Login] Solicitud de restablecimiento enviada exitosamente a:', this.email());
+        this.isLoading.set(false);
+        alert('¡Correo enviado! Revisa tu bandeja de entrada para restablecer tu contraseña. (Revisa Spam)');
+        this.errorMessage.set(null);
+      },
+      error: (err) => {
+        console.error('[Login] Error enviando correo:', err);
+        this.isLoading.set(false);
+        this.errorMessage.set('Error: ' + err.message);
       }
     });
   }

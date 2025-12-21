@@ -27,6 +27,7 @@ export class AuthService {
             role: "client",
             createdAt: new Date().toISOString(),
             provider: "password",
+            isActive: true, // Por defecto activo
         };
 
         // 3. Guardar en Firestore (Usuario B2B)
@@ -55,6 +56,7 @@ export class AuthService {
                 role: "client",
                 createdAt: new Date().toISOString(),
                 provider: "google",
+                isActive: true, // Por defecto activo
                 // No pedimos RUC aqui todavia (Estrategia Progressive Onboarding)
             };
 
@@ -65,5 +67,20 @@ export class AuthService {
         }
 
         return { success: true };
+    }
+
+    // Ascender a Admin (Requiere Token válido)
+    static async grantAdminRole(token: string): Promise<void> {
+        // 1. Verificar token
+        const decodedToken = await admin.auth().verifyIdToken(token);
+        const uid = decodedToken.uid;
+
+        // 2. Set Custom Claim
+        await admin.auth().setCustomUserClaims(uid, { role: "admin" });
+
+        // 3. Actualizar Firestore para consistencia visual
+        await db.collection("users").doc(uid).update({ role: "admin" });
+
+        console.log(`[AuthService] Usuario ascendido a ADMIN: ${decodedToken.email} (${uid})`);
     }
 }

@@ -1,1 +1,18 @@
-<p>admin-layout works!</p>
+<div class="flex h-screen bg-gray-50 overflow-hidden">
+
+    <!-- Sidebar (Fixed Left) -->
+    <app-admin-sidebar class="hidden md:flex flex-col w-64 fixed inset-y-0 z-30" />
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col md:pl-64 h-full w-full transition-all duration-300">
+
+        <!-- Top Header (Sticky) -->
+        <app-admin-header />
+
+        <!-- Page Content (Scrollable) -->
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6 md:p-8">
+            <router-outlet />
+        </main>
+
+    </div>
+</div>

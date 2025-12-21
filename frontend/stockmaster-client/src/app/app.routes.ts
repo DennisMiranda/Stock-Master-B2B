@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: '/shop/home',
-    pathMatch: 'full',
+    loadComponent: () => import('./shared/ui/startup/startup.component').then(m => m.StartupComponent)
   },
   {
     path: 'auth',
@@ -26,17 +26,24 @@ export const routes: Routes = [
       path: 'catalog',
       loadComponent: () => import('./features/user/catalog/pages/catalog-page/catalog-page').then(c => c.CatalogPage)
     },
-      /* {
-        path:'cart',
-        loadComponent: () => import('./features/user/home/p').then(c => c.Home)
-      },
-      
-  */
-                     {
-        path: 'checkout',
-        loadComponent: () =>
-          import('./features/user/checkout/pages/checkout-page/checkout').then((c) => c.Checkout),
-      }
+    /* {
+      path:'cart',
+      loadComponent: () => import('./features/user/home/p').then(c => c.Home)
+    },
+    
+*/
+    {
+      path: 'checkout',
+      loadComponent: () =>
+        import('./features/user/checkout/pages/checkout-page/checkout').then((c) => c.Checkout),
+    }
     ]
   },
+
+  {
+    path: 'admin',
+    canActivate: [roleGuard(['admin', 'warehouse', 'driver'])],
+    loadComponent: () => import('./layouts/admin-layout/admin-layout').then(m => m.AdminLayout),
+    loadChildren: () => import('./features/admin/admin.routes').then(m => m.adminRoutes)
+  }
 ];

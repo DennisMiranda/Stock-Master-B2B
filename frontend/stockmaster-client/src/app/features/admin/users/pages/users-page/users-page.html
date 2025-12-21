@@ -1,0 +1,84 @@
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Gestión de Usuarios</h1>
+            <p class="text-sm text-gray-500 mt-1">Administra usuarios, permisos y estados del sistema</p>
+        </div>
+
+        <button (click)="openCreateModal()"
+            class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg shadow-sm transition-all text-sm font-medium">
+            <lucide-icon [img]="PlusIcon" class="w-4 h-4"></lucide-icon>
+            Nuevo Usuario
+        </button>
+    </div>
+
+    <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col sm:flex-row gap-4">
+        <app-search-input [control]="searchControl" placeholder="Buscar por nombre, email o rol..."
+            class="w-full sm:w-96" />
+        <div class="hidden sm:flex items-center gap-3 ml-auto text-sm text-gray-500">
+            <div class="px-3 py-1 bg-gray-50 rounded-lg border border-gray-200">
+                Total: <span class="font-bold text-gray-900">{{ totalUsers() }}</span>
+            </div>
+            <div class="px-3 py-1 bg-green-50 rounded-lg border border-green-200 text-green-700">
+                Activos: <span class="font-bold">{{ activeUsersCount() }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reusable Data Table -->
+    <app-data-table [data]="filteredUsers()" [columns]="columns" (sort)="onSort($event)">
+    </app-data-table>
+
+    <!-- Templates for Custom Columns -->
+
+    <!-- 1. User Info Template -->
+    <ng-template #userTemplate let-user>
+        <div class="flex flex-col">
+            <span class="font-medium text-gray-900">{{ user.displayName || 'Sin Nombre' }}</span>
+            <span class="text-xs text-gray-500">{{ user.email }}</span>
+        </div>
+    </ng-template>
+
+    <!-- 2. Role Template -->
+    <ng-template #roleTemplate let-user>
+        <span [class]="'px-2.5 py-1 rounded-full text-xs font-medium border ' + getRoleBadgeColor(user.role)">
+            {{ getRoleLabel(user.role) }}
+        </span>
+    </ng-template>
+
+    <!-- 3. Status Template -->
+    <ng-template #statusTemplate let-user>
+        @if (user.isActive) {
+        <span
+            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 border border-green-200">
+            <lucide-icon [img]="CheckIcon" class="w-3 h-3"></lucide-icon>
+            Activo
+        </span>
+        } @else {
+        <span
+            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
+            <lucide-icon [img]="XIcon" class="w-3 h-3"></lucide-icon>
+            Inactivo
+        </span>
+        }
+    </ng-template>
+
+    <!-- 4. Actions Template -->
+    <ng-template #actionsTemplate let-user>
+        <div class="flex justify-end">
+            <app-user-actions-menu (edit)="onEdit(user)" (resetPassword)="onResetPassword(user)">
+            </app-user-actions-menu>
+        </div>
+    </ng-template>
+
+    @if (selectedUser()) {
+    <app-user-edit-modal [user]="selectedUser()" [isSaving]="isSaving" (save)="onSave($event)"
+        (close)="closeEditModal()">
+    </app-user-edit-modal>
+    }
+
+    @if (isCreating()) {
+    <app-user-create-modal [isSaving]="isSaving" (save)="onCreate($event)" (close)="closeCreateModal()">
+    </app-user-create-modal>
+    }
+</div>

@@ -12,15 +12,11 @@ import type {
 export class ProductService {
   private productsCollection = db.collection("products");
 
-  constructor() {}
+  constructor() { }
 
   /**
-<<<<<<< HEAD
    * Servicio para buscar productos con filtros opcionales (listado + paginación)
    * Los filtros se aplican en Firestore antes de la paginación para mantener consistencia
-=======
-   * Servicio para buscar productos con filtros opcionales
->>>>>>> origin/filtros
    */
   async searchProducts(params: {
     search?: string;
@@ -37,16 +33,11 @@ export class ProductService {
       const limit = params.limit || 10;
       const offset = (page - 1) * limit;
 
-<<<<<<< HEAD
       let query: any = this.productsCollection;
-=======
-      let query = db.collection("products") as any;
->>>>>>> origin/filtros
 
       // Aplicar filtros de igualdad primero (Firestore requiere que estos se apliquen antes de OR)
       if (params.categoryId) {
         query = query.where("categoryId", "==", params.categoryId);
-<<<<<<< HEAD
       }
 
       if (params.subcategoryId) {
@@ -68,7 +59,7 @@ export class ProductService {
 
         const snapshot = await query.offset(offset).limit(limit).get();
 
-        const products = snapshot.docs.map((doc) => ({
+        const products = snapshot.docs.map((doc: any) => ({
           id: doc.id,
           ...doc.data(),
         })) as Product[];
@@ -84,35 +75,7 @@ export class ProductService {
 
       // Con término de búsqueda: usar solo el primer término para evitar problemas con Firestore
       // Nota: Firestore tiene limitaciones con múltiples términos, por lo que se usa solo el primero
-      const firstTerm = searchTerm.split(" ")[0];
-      const baseQuery = query.where(
-        Filter.or(
-          Filter.and(
-            Filter.where("searchName", ">=", firstTerm),
-            Filter.where("searchName", "<=", firstTerm + "\uf8ff")
-          ),
-          Filter.and(
-            Filter.where("sku", ">=", searchTerm),
-            Filter.where("sku", "<=", searchTerm + "\uf8ff")
-          ),
-          Filter.where("searchArray", "array-contains", searchTerm)
-        )
-      );
-=======
-      }
 
-      if (params.subcategoryId) {
-        query = query.where("subcategoryId", "==", params.subcategoryId);
-      }
->>>>>>> origin/filtros
-
-      if (params.brand) {
-        query = query.where("brand", "==", params.brand);
-      }
-
-      if (params.inStockOnly) {
-        query = query.where("stockUnits", ">", 0);
-      }
 
       // Aplicar búsqueda de texto si existe
       if (searchTerm) {
@@ -139,7 +102,7 @@ export class ProductService {
       // Obtener productos paginados
       const snapshot = await query.offset(offset).limit(limit).get();
 
-      let products = snapshot.docs.map((doc) => ({
+      let products = snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
       })) as Product[];
