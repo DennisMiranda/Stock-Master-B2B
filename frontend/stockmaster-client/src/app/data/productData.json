@@ -1,15 +1,366 @@
 [
   {
+    "id": "223l7JSzOsydHFAXWPwC",
+    "sku": "TEC-MEC-2024-004",
+    "name": "Teclado Mecánico RGB",
+    "searchName": "TECLADO MECÁNICO RGB",
+    "brand": "KeyMaster",
+    "prices": [
+      {
+        "label": "unit",
+        "price": 129.99,
+        "discounts": [
+          {
+            "minQuantity": 10,
+            "price": 110
+          }
+        ]
+      },
+      {
+        "label": "box",
+        "price": 1200
+      }
+    ],
+    "unitPerBox": 10,
+    "images": [
+      "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&fit=crop"
+    ],
+    "isActive": true,
+    "createdAt": 1704326400000,
+    "subcategoryId": "xejd6nDHyHvPCut0Ckqm",
+    "categoryId": "mMtEzbW48WqnJR8sjT5F",
+    "stockUnits": 99,
+    "stockBoxes": 9,
+    "updatedAt": 1766211678001
+  },
+  {
+    "id": "6Vn3nQCAFrPfALz7kZ63",
+    "sku": "CAR-WL-2024-009",
+    "name": "Cargador Inalámbrico Rápido",
+    "searchName": "CARGADOR INALÁMBRICO RÁPIDO",
+    "brand": "PowerFast",
+    "prices": [
+      {
+        "label": "unit",
+        "price": 34.99,
+        "discounts": [
+          {
+            "minQuantity": 25,
+            "price": 28
+          }
+        ]
+      },
+      {
+        "label": "box",
+        "price": 300
+      }
+    ],
+    "unitPerBox": 12,
+    "images": [
+      "https://images.pexels.com/photos/4790269/pexels-photo-4790269.jpeg?auto=compress&cs=tinysrgb&w=400"
+    ],
+    "isActive": true,
+    "createdAt": 1704758400000,
+    "updatedAt": 1733875200000,
+    "stockUnits": 300,
+    "stockBoxes": 25,
+    "subcategoryId": "81ii2HWvTSs3vDR6yYU2",
+    "categoryId": "gvd7z0e9Jmy3stMt3o4i"
+  },
+  {
+    "id": "94VO79h8vkTCIq2ktx3P",
+    "sku": "SPK-BT-2024-012",
+    "name": "Altavoz Bluetooth Portátil",
+    "searchName": "ALTAVOZ BLUETOOTH PORTÁTIL",
+    "brand": "BoomSound",
+    "prices": [
+      {
+        "label": "unit",
+        "price": 69.99,
+        "discounts": [
+          {
+            "minQuantity": 12,
+            "price": 58
+          }
+        ]
+      },
+      {
+        "label": "box",
+        "price": 630
+      }
+    ],
+    "unitPerBox": 12,
+    "images": [
+      "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=400&fit=crop"
+    ],
+    "isActive": true,
+    "createdAt": 1705017600000,
+    "updatedAt": 1733875200000,
+    "stockUnits": 168,
+    "stockBoxes": 14,
+    "subcategoryId": "TRoaELedA41MSImKc4MD",
+    "categoryId": "ulvqKOWumki1UWku1aFB"
+  },
+  {
+    "id": "DFeDfvV9ADw5yesYMgmI",
+    "sku": "SSD-1TB-2024-011",
+    "name": "SSD NVMe 1TB Alta Velocidad",
+    "searchName": "SSD NVME 1TB ALTA VELOCIDAD",
+    "brand": "SpeedDrive",
+    "prices": [
+      {
+        "label": "unit",
+        "price": 119.99,
+        "discounts": [
+          {
+            "minQuantity": 15,
+            "price": 100
+          }
+        ]
+      },
+      {
+        "label": "box",
+        "price": 1080
+      }
+    ],
+    "unitPerBox": 10,
+    "images": [
+      "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=400&h=400&fit=crop"
+    ],
+    "isActive": true,
+    "createdAt": 1704931200000,
+    "updatedAt": 1733875200000,
+    "stockUnits": 150,
+    "stockBoxes": 15,
+    "subcategoryId": "81ii2HWvTSs3vDR6yYU2",
+    "categoryId": "gvd7z0e9Jmy3stMt3o4i"
+  },
+  {
+    "id": "JDpZuvGtqeQn3wdVjM3i",
+    "sku": "TAB-10-2024-010",
+    "name": "Tablet Android 10.1 pulgadas",
+    "searchName": "TABLET ANDROID 10.1 PULGADAS",
+    "brand": "SmartTab",
+    "prices": [
+      {
+        "label": "unit",
+        "price": 249.99,
+        "discounts": [
+          {
+            "minQuantity": 10,
+            "price": 220
+          }
+        ]
+      },
+      {
+        "label": "box",
+        "price": 2400
+      }
+    ],
+    "unitPerBox": 12,
+    "images": [
+      "https://images.unsplash.com/photo-1561154464-82e9adf32764?w=400&h=400&fit=crop"
+    ],
+    "isActive": true,
+    "createdAt": 1704844800000,
+    "updatedAt": 1733875200000,
+    "stockUnits": 96,
+    "stockBoxes": 8,
+    "subcategoryId": "2zbNYSdvbfmtOl3J3MGI",
+    "categoryId": "mMtEzbW48WqnJR8sjT5F"
+  },
+  {
+    "id": "NHBXU04VTG4EiWq7lTZc",
+    "sku": "MOU-WL-2024-003",
+    "name": "Mouse Inalámbrico Ergonómico",
+    "searchName": "MOUSE INALÁMBRICO ERGONÓMICO",
+    "brand": "ErgoTech",
+    "prices": [
+      {
+        "label": "unit",
+        "price": 45.99,
+        "discounts": [
+          {
+            "minQuantity": 20,
+            "price": 39.99
+          }
+        ]
+      },
+      {
+        "label": "box",
+        "price": 420
+      }
+    ],
+    "unitPerBox": 12,
+    "images": [
+      "https://images.unsplash.com/photo-1527814050087-3793815479db?w=400&h=400&fit=crop"
+    ],
+    "isActive": true,
+    "createdAt": 1704240000000,
+    "updatedAt": 1733875200000,
+    "stockUnits": 240,
+    "stockBoxes": 20,
+    "subcategoryId": "DhE2JoMdlSj5ayctOmwI",
+    "categoryId": "gvd7z0e9Jmy3stMt3o4i"
+  },
+  {
+    "id": "ORRFm537IniDcNyudId4",
+    "sku": "WEB-HD-2024-006",
+    "name": "Cámara Web Full HD 1080p",
+    "searchName": "CAMARA WEB FULL HD 1080P",
+    "brand": "ClearView",
+    "prices": [
+      {
+        "label": "unit",
+        "price": 79.99,
+        "discounts": [
+          {
+            "minQuantity": 15,
+            "price": 65
+          }
+        ]
+      },
+      {
+        "label": "box",
+        "price": 720
+      }
+    ],
+    "unitPerBox": 12,
+    "images": [
+      "https://m.media-amazon.com/images/I/71iNwni9TsL._AC_SL1500_.jpg"
+    ],
+    "isActive": true,
+    "createdAt": 1704499200000,
+    "updatedAt": 1733875200000,
+    "stockUnits": 144,
+    "stockBoxes": 12,
+    "subcategoryId": "QxEJZPGNB0Jo2Es4Iqe1",
+    "categoryId": "XvY7QvOIPw3JpzUO6jsl"
+  },
+  {
+    "id": "ScLOTyvVYzuoDWDdXe6Y",
+    "sku": "MON-4K-2024-005",
+    "name": "Monitor 4K UHD 27 pulgadas",
+    "searchName": "MONITOR 4K UHD 27 PULGADAS",
+    "brand": "ViewMax",
+    "prices": [
+      {
+        "label": "unit",
+        "price": 399.99,
+        "discounts": [
+          {
+            "minQuantity": 5,
+            "price": 350
+          }
+        ]
+      }
+    ],
+    "unitPerBox": 1,
+    "images": [
+      "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=400&fit=crop"
+    ],
+    "isActive": true,
+    "createdAt": 1704412800000,
+    "updatedAt": 1733875200000,
+    "stockUnits": 32,
+    "stockBoxes": 0,
+    "subcategoryId": "h11R0InvxbSO6UGmXBZU",
+    "categoryId": "mMtEzbW48WqnJR8sjT5F"
+  },
+  {
+    "id": "Wcxwti7h4v872ViwqkMl",
+    "sku": "MIC-USB-2024-007",
+    "name": "Micrófono USB Profesional",
+    "searchName": "MICROFONO USB PROFESIONAL",
+    "brand": "AudioPro",
+    "prices": [
+      {
+        "label": "unit",
+        "price": 149.99,
+        "discounts": [
+          {
+            "minQuantity": 8,
+            "price": 130
+          }
+        ]
+      },
+      {
+        "label": "box",
+        "price": 1400
+      }
+    ],
+    "unitPerBox": 10,
+    "images": [
+      "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=400&h=400&fit=crop"
+    ],
+    "isActive": true,
+    "createdAt": 1704585600000,
+    "updatedAt": 1733875200000,
+    "stockUnits": 60,
+    "stockBoxes": 6,
+    "searchArray": [
+      "MICROFONO",
+      "USB",
+      "PRO",
+      "PROF",
+      "PROFE"
+    ],
+    "subcategoryId": "8XZT3rjf8wg0lb8kESdc",
+    "categoryId": "ulvqKOWumki1UWku1aFB"
+  },
+  {
+    "id": "oZKQoLL091c53LpelDUx",
+    "sku": "LAP-PRO-2024-002",
+    "name": "Laptop Gaming Elite X15",
+    "searchName": "LAPTOP GAMING ELITE X15",
+    "brand": "TechPro",
+    "prices": [
+      {
+        "label": "unit",
+        "price": 1299.99,
+        "discounts": [
+          {
+            "minQuantity": 5,
+            "price": 1150
+          }
+        ]
+      }
+    ],
+    "unitPerBox": 1,
+    "images": [
+      "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=400&fit=crop"
+    ],
+    "isActive": true,
+    "createdAt": 1704153600000,
+    "updatedAt": 1733875200000,
+    "stockUnits": 15,
+    "stockBoxes": 0,
+    "subcategoryId": "2zbNYSdvbfmtOl3J3MGI",
+    "categoryId": "mMtEzbW48WqnJR8sjT5F"
+  },
+  {
     "id": "prod-001",
     "sku": "AUD-BT-2024-001",
     "name": "Auriculares Bluetooth Pro",
     "searchName": "AURICULARES BLUETOOTH PRO",
+    "description": "Auriculares Bluetooth con cancelación de ruido activa, sonido envolvente 360° y batería de 30 horas de duración. Incluyen estuche de carga inalámbrica y micrófono integrado para llamadas claras.",
     "categoryId": "cat-electronics-001",
     "brand": "SoundTech",
     "prices": [
-      { "label": "unit", "price": 89.99 },
-      { "label": "wholesale", "price": 75.99, "minQuantity": 10 },
-      { "label": "box", "price": 850.00 }
+      {
+        "label": "unit",
+        "price": 89.99,
+        "discounts": [
+          {
+            "minQuantity": 10,
+            "price": 75.99
+          }
+        ]
+      },
+      {
+        "label": "box",
+        "price": 850.00
+      }
     ],
     "unitPerBox": 12,
     "images": [
@@ -22,146 +373,28 @@
     "stockBoxes": 10
   },
   {
-    "id": "prod-002",
-    "sku": "LAP-PRO-2024-002",
-    "name": "Laptop Gaming Elite X15",
-    "searchName": "LAPTOP GAMING ELITE X15",
-    "categoryId": "cat-electronics-001",
-    "brand": "TechPro",
-    "prices": [
-      { "label": "unit", "price": 1299.99 },
-      { "label": "wholesale", "price": 1150.00, "minQuantity": 5 }
-    ],
-    "unitPerBox": 1,
-    "images": [
-      "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=400&fit=crop"
-    ],
-    "isActive": true,
-    "createdAt": 1704153600000,
-    "updatedAt": 1733875200000,
-    "stockUnits": 15,
-    "stockBoxes": 0
-  },
-  {
-    "id": "prod-003",
-    "sku": "MOU-WL-2024-003",
-    "name": "Mouse Inalámbrico Ergonómico",
-    "searchName": "MOUSE INALÁMBRICO ERGONÓMICO",
-    "categoryId": "cat-accessories-002",
-    "brand": "ErgoTech",
-    "prices": [
-      { "label": "unit", "price": 45.99 },
-      { "label": "wholesale", "price": 39.99, "minQuantity": 20 },
-      { "label": "box", "price": 420.00 }
-    ],
-    "unitPerBox": 12,
-    "images": [
-      "https://images.unsplash.com/photo-1527814050087-3793815479db?w=400&h=400&fit=crop"
-    ],
-    "isActive": true,
-    "createdAt": 1704240000000,
-    "updatedAt": 1733875200000,
-    "stockUnits": 240,
-    "stockBoxes": 20
-  },
-  {
-    "id": "prod-004",
-    "sku": "TEC-MEC-2024-004",
-    "name": "Teclado Mecánico RGB",
-    "searchName": "TECLADO MECÁNICO RGB",
-    "categoryId": "cat-accessories-002",
-    "brand": "KeyMaster",
-    "prices": [
-      { "label": "unit", "price": 129.99 },
-      { "label": "wholesale", "price": 110.00, "minQuantity": 10 },
-      { "label": "box", "price": 1200.00 }
-    ],
-    "unitPerBox": 10,
-    "images": [
-      "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&fit=crop"
-    ],
-    "isActive": true,
-    "createdAt": 1704326400000,
-    "updatedAt": 1733875200000,
-    "stockUnits": 85,
-    "stockBoxes": 8
-  },
-  {
-    "id": "prod-005",
-    "sku": "MON-4K-2024-005",
-    "name": "Monitor 4K UHD 27 pulgadas",
-    "searchName": "MONITOR 4K UHD 27 PULGADAS",
-    "categoryId": "cat-electronics-001",
-    "brand": "ViewMax",
-    "prices": [
-      { "label": "unit", "price": 399.99 },
-      { "label": "wholesale", "price": 350.00, "minQuantity": 5 }
-    ],
-    "unitPerBox": 1,
-    "images": [
-      "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=400&fit=crop"
-    ],
-    "isActive": true,
-    "createdAt": 1704412800000,
-    "updatedAt": 1733875200000,
-    "stockUnits": 32,
-    "stockBoxes": 0
-  },
-  {
-    "id": "prod-006",
-    "sku": "WEB-HD-2024-006",
-    "name": "Cámara Web Full HD 1080p",
-    "searchName": "CÁMARA WEB FULL HD 1080P",
-    "categoryId": "cat-accessories-002",
-    "brand": "ClearView",
-    "prices": [
-      { "label": "unit", "price": 79.99 },
-      { "label": "wholesale", "price": 65.00, "minQuantity": 15 },
-      { "label": "box", "price": 720.00 }
-    ],
-    "unitPerBox": 12,
-    "images": [
-      "https://m.media-amazon.com/images/I/71iNwni9TsL._AC_SL1500_.jpg"
-    ],
-    "isActive": true,
-    "createdAt": 1704499200000,
-    "updatedAt": 1733875200000,
-    "stockUnits": 144,
-    "stockBoxes": 12
-  },
-  {
-    "id": "prod-007",
-    "sku": "MIC-USB-2024-007",
-    "name": "Micrófono USB Profesional",
-    "searchName": "MICRÓFONO USB PROFESIONAL",
-    "categoryId": "cat-audio-003",
-    "brand": "AudioPro",
-    "prices": [
-      { "label": "unit", "price": 149.99 },
-      { "label": "wholesale", "price": 130.00, "minQuantity": 8 },
-      { "label": "box", "price": 1400.00 }
-    ],
-    "unitPerBox": 10,
-    "images": [
-      "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=400&h=400&fit=crop"
-    ],
-    "isActive": true,
-    "createdAt": 1704585600000,
-    "updatedAt": 1733875200000,
-    "stockUnits": 60,
-    "stockBoxes": 6
-  },
-  {
     "id": "prod-008",
     "sku": "HUB-USB-2024-008",
     "name": "Hub USB-C 7 en 1",
     "searchName": "HUB USB-C 7 EN 1",
+    "description": "Hub USB-C con 7 puertos: 3x USB 3.0, HDMI 4K, Ethernet Gigabit, SD/TF card reader y puerto PD de 100W. Compatible con laptops, tablets y smartphones con USB-C.",
     "categoryId": "cat-accessories-002",
     "brand": "ConnectHub",
     "prices": [
-      { "label": "unit", "price": 54.99 },
-      { "label": "wholesale", "price": 45.00, "minQuantity": 20 },
-      { "label": "box", "price": 480.00 }
+      {
+        "label": "unit",
+        "price": 54.99,
+        "discounts": [
+          {
+            "minQuantity": 20,
+            "price": 45.00
+          }
+        ]
+      },
+      {
+        "label": "box",
+        "price": 480.00
+      }
     ],
     "unitPerBox": 12,
     "images": [
@@ -172,93 +405,5 @@
     "updatedAt": 1733875200000,
     "stockUnits": 180,
     "stockBoxes": 15
-  },
-  {
-    "id": "prod-009",
-    "sku": "CAR-WL-2024-009",
-    "name": "Cargador Inalámbrico Rápido",
-    "searchName": "CARGADOR INALÁMBRICO RÁPIDO",
-    "categoryId": "cat-accessories-002",
-    "brand": "PowerFast",
-    "prices": [
-      { "label": "unit", "price": 34.99 },
-      { "label": "wholesale", "price": 28.00, "minQuantity": 25 },
-      { "label": "box", "price": 300.00 }
-    ],
-    "unitPerBox": 12,
-    "images": [
-      "https://images.pexels.com/photos/4790269/pexels-photo-4790269.jpeg?auto=compress&cs=tinysrgb&w=400"
-    ],
-    "isActive": true,
-    "createdAt": 1704758400000,
-    "updatedAt": 1733875200000,
-    "stockUnits": 300,
-    "stockBoxes": 25
-  },
-  {
-    "id": "prod-010",
-    "sku": "TAB-10-2024-010",
-    "name": "Tablet Android 10.1 pulgadas",
-    "searchName": "TABLET ANDROID 10.1 PULGADAS",
-    "categoryId": "cat-electronics-001",
-    "brand": "SmartTab",
-    "prices": [
-      { "label": "unit", "price": 249.99 },
-      { "label": "wholesale", "price": 220.00, "minQuantity": 10 },
-      { "label": "box", "price": 2400.00 }
-    ],
-    "unitPerBox": 12,
-    "images": [
-      "https://images.unsplash.com/photo-1561154464-82e9adf32764?w=400&h=400&fit=crop"
-    ],
-    "isActive": true,
-    "createdAt": 1704844800000,
-    "updatedAt": 1733875200000,
-    "stockUnits": 96,
-    "stockBoxes": 8
-  },
-  {
-    "id": "prod-011",
-    "sku": "SSD-1TB-2024-011",
-    "name": "SSD NVMe 1TB Alta Velocidad",
-    "searchName": "SSD NVME 1TB ALTA VELOCIDAD",
-    "categoryId": "cat-storage-004",
-    "brand": "SpeedDrive",
-    "prices": [
-      { "label": "unit", "price": 119.99 },
-      { "label": "wholesale", "price": 100.00, "minQuantity": 15 },
-      { "label": "box", "price": 1080.00 }
-    ],
-    "unitPerBox": 10,
-    "images": [
-      "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=400&h=400&fit=crop"
-    ],
-    "isActive": true,
-    "createdAt": 1704931200000,
-    "updatedAt": 1733875200000,
-    "stockUnits": 150,
-    "stockBoxes": 15
-  },
-  {
-    "id": "prod-012",
-    "sku": "SPK-BT-2024-012",
-    "name": "Altavoz Bluetooth Portátil",
-    "searchName": "ALTAVOZ BLUETOOTH PORTÁTIL",
-    "categoryId": "cat-audio-003",
-    "brand": "BoomSound",
-    "prices": [
-      { "label": "unit", "price": 69.99 },
-      { "label": "wholesale", "price": 58.00, "minQuantity": 12 },
-      { "label": "box", "price": 630.00 }
-    ],
-    "unitPerBox": 12,
-    "images": [
-      "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=400&fit=crop"
-    ],
-    "isActive": true,
-    "createdAt": 1705017600000,
-    "updatedAt": 1733875200000,
-    "stockUnits": 168,
-    "stockBoxes": 14
   }
 ]

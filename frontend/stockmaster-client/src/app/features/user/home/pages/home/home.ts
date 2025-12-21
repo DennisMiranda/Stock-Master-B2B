@@ -1,7 +1,5 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { LucideAngularModule, LucideIconNode, Package, Shield, Truck } from 'lucide-angular';
-import type { Product } from '../../../../../core/models/product.model';
-import productsData from '../../../../../data/productData.json';
 import { CardProduct } from '../../../../../shared/ui/cards/card-product/card-product';
 import { RouterLink } from '@angular/router';
 import { HomeService } from '../../services/home-service';
@@ -23,7 +21,7 @@ export class Home implements OnInit {
   readonly TruckIcon = Truck;
   readonly ShieldIcon = Shield;
   home = inject(HomeService);
-  
+
   ngOnInit(): void {
     this.home.getProducts(1, 12);
   }

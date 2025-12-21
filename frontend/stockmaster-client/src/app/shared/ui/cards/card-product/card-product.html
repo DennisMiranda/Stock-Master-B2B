@@ -20,7 +20,9 @@
 
   <section class="p-2 md:p-4 space-y-4">
     <a [routerLink]="['']" [queryParams]="{ id: product()!.id }" class="space-y-2">
-      <h3 class="text-sm line-clamp-2 max-h-15 h-12 font-semibold text-gray-900 tracking-tight">
+      <h3
+        class="text-sm line-clamp-2 max-h-15 h-12 md:h-10 font-semibold text-gray-900 tracking-tight"
+      >
         {{ product()!.name }}
       </h3>
     </a>
@@ -29,7 +31,7 @@
         {{ product()!.sku }}
       </span>
     </div>
-    <div class="min-h-24 flex flex-col space-y-1">
+    <div class="min-h-20 flex flex-col space-y-1">
       @for (price of product()?.prices; track price.label; let i = $index) {
       <div class="flex items-start justify-between bg-white rounded-lg">
         <div class="flex items-center gap-2">
@@ -39,24 +41,32 @@
             <p class="text-xs font-semibold text-gray-900 capitalize">
               {{ getPriceLabel(price.label) }}
             </p>
-            @if (price.minQuantity) {
-            <p class="text-xs text-gray-500">Mín. {{ price.minQuantity }} unidades</p>
-            }
           </div>
         </div>
 
-        <div class="text-right">
-          <p class="text-xs md:text-sm font-bold text-gray-900">
+        <div class="">
+          <p class="text-xs text-right md:text-sm font-bold text-gray-900">
             {{ price.price | currency : 'PEN' : 'symbol' : '1.2-2' }}
           </p>
+
           @if (price.label === 'box' && product()?.unitPerBox) {
           <p class="text-xs text-gray-500">
-            {{
-              price.price / (product()?.unitPerBox ?? 1) | currency : 'PEN' : 'symbol' : '1.2-2'
-            }}
+            {{ price.price / (product()?.unitPerBox ?? 1) | currency : 'PEN' : 'symbol' : '1.2-2' }}
             c/u
           </p>
           }
+
+          <!-- Mostrar descuentos como condición, no como precio aparte -->
+          @if (price.discounts?.length) { @for (discount of price.discounts; track
+          discount.minQuantity) {
+          <p class="flex text-xs gap-2 text-gray-500">
+            +{{ discount.minQuantity }} uds:
+            <span>
+              {{ discount.price | currency : 'PEN' : 'symbol' : '1.2-2' }}
+            </span>
+          </p>
+
+          } }
         </div>
       </div>
       }
@@ -64,10 +74,17 @@
 
     <button
       (click)="openModal()"
-      class="flex px-2 gap-2 cursor-pointer hover:bg-azul text-xs md:text-sm md:gap-4 justify-center text-center w-full bg-gray-600 text-white py-3.5 rounded-sm font-medium  active:bg-azul active:scale-95 transition-all duration-200"
+      class="flex px-2 gap-2 cursor-pointer hover:bg-azul text-xs md:text-sm md:gap-4 justify-center text-center w-full bg-gray-600 text-white py-3.5 rounded-sm font-medium active:bg-azul active:scale-95 transition-all duration-200"
     >
       <lucide-icon [img]="ShoppingCart" class="h-4" />
       Agregar
     </button>
   </section>
 </article>
+@if (showModal()) {
+<app-modal-cart
+  [product]="product()!"
+  (closeModal)="showModal.set(false)"
+  (addProducts)="onAddProducts($event)"
+/>
+}

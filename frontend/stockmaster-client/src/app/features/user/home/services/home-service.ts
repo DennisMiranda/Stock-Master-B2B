@@ -1,7 +1,8 @@
-import { inject, Injectable,signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { catchError, map, of } from 'rxjs';
 import { ApiService } from '../../../../core/http/api.service';
-import { Product } from '../../../../core/models/product.model';
+import type { Product } from '../../../../core/models/product.model';
+import productsData from '../../../../data/productData.json';
 interface ProductsResponse {
   products: Product[];
   metadata: { count: number; pages: number };
@@ -15,9 +16,9 @@ const defaultResponse: ProductsResponse = {
   providedIn: 'root',
 })
 export class HomeService {
-private api = inject(ApiService);
+  private api = inject(ApiService);
 
-  products = signal<Product[]>([]);
+  products = signal<Product[]>(productsData as Product[]);
   loading = signal(false);
   error = signal<string | null>(null);
 
@@ -38,7 +39,7 @@ private api = inject(ApiService);
         })
       )
       .subscribe((data) => {
-        this.products.set(data.products);
+        // this.products.set(data.products);
         this.loading.set(false);
       });
   }
