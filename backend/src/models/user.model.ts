@@ -3,10 +3,12 @@ export interface User {
     email: string;
     displayName?: string;
     photoURL?: string;
-    role: 'admin' | 'client';
+    role: 'admin' | 'client' | 'warehouse' | 'driver';
     companyName?: string;
     contactName?: string;
     ruc?: string;
     provider: 'password' | 'google';
     createdAt: string;
+    isActive: boolean;
+    lastLogin?: string;
 }

@@ -28,4 +28,30 @@ export class AuthController {
 
         res.status(200).json({ success: true, message: "Usuario sincronizado" });
     }
+
+    // [POST] /v1/api/auth/claim-admin
+    static async claimAdmin(req: Request, res: Response): Promise<void> {
+        const { secret } = req.body;
+        const authHeader = req.headers.authorization;
+
+        if (!secret || secret !== process.env.ADMIN_SECRET) {
+            res.status(403).json({ success: false, message: "Invalid Admin Secret" });
+            return;
+        }
+
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            res.status(401).json({ success: false, message: "No token provided" });
+            return;
+        }
+
+        const token = authHeader.split(' ')[1];
+
+        try {
+            await AuthService.grantAdminRole(token as string);
+            res.status(200).json({ success: true, message: "Admin role granted successfully" });
+        } catch (error) {
+            console.error("Error granting admin role:", error);
+            res.status(500).json({ success: false, message: "Failed to grant role" });
+        }
+    }
 }
