@@ -43,7 +43,9 @@ export class AuthService {
 
     constructor() {
         // Escuchar cambios de sesión
+
         onAuthStateChanged(this.auth, async (user) => {
+
             this.currentUser.set(user);
             if (user) {
                 try {

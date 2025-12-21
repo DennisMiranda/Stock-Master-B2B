@@ -24,10 +24,11 @@
           }}
         </ul>
       </div>
+
       <app-basic-pagination
         [page]="currentPage()"
         [totalPages]="metadata().pages"
-        (pageChange)="currentPage.set($event)"
+        (pageChange)="onPageChange($event)"
       ></app-basic-pagination>
     </div>
   </div>

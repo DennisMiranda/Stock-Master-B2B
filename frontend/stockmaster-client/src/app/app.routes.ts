@@ -7,7 +7,6 @@ export const routes: Routes = [
     loadComponent: () => import('./shared/ui/startup/startup.component').then(m => m.StartupComponent)
   },
   {
-
     path: 'auth',
     loadChildren: () => import('./features/auth/auth.routes').then(m => m.authRoutes)
   },

@@ -15,7 +15,7 @@ export class Map implements OnInit {
 
   ngOnInit(): void {
     this.map = L.map('map').setView([51.505, -0.09], 13);
-    this.map.on('click', (e) => this.onMapClick(e));
+    this.map.on('click', (e: L.LeafletMouseEvent) => this.onMapClick(e));
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.map);
     this.getLocation();

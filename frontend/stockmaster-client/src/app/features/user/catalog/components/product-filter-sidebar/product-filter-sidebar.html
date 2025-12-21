@@ -5,15 +5,33 @@
   <div class="mb-8">
     <h3 class="text-lg font-semibold mb-4">Categorías</h3>
     <div class="space-y-3">
-      @for (category of filterOptions().categories; track category) {
+      @for (category of filterOptions().categories; track category.id) {
         <label class="flex items-center space-x-3 cursor-pointer hover:text-blue-300 transition-colors">
           <input
             type="checkbox"
-            [checked]="isCategorySelected(category)"
-            (change)="onCategoryChange(category, $event)"
+            [checked]="isCategorySelected(category.id)"
+            (change)="onCategoryChange(category.id, $event)"
             class="w-5 h-5 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
           />
-          <span class="text-sm">{{ category }}</span>
+          <span class="text-sm">{{ category.name }}</span>
+        </label>
+      }
+    </div>
+  </div>
+
+  <!-- Subcategorías (dependen de la categoría seleccionada) -->
+  <div class="mb-8" *ngIf="subcategoriesForSelectedCategory().length > 0">
+    <h3 class="text-lg font-semibold mb-4">Subcategorías</h3>
+    <div class="space-y-3">
+      @for (sub of subcategoriesForSelectedCategory(); track sub.id) {
+        <label class="flex items-center space-x-3 cursor-pointer hover:text-blue-300 transition-colors">
+          <input
+            type="checkbox"
+            [checked]="isSubcategorySelected(sub.id)"
+            (change)="onSubcategoryChange(sub.id, $event)"
+            class="w-5 h-5 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+          />
+          <span class="text-sm">{{ sub.name }}</span>
         </label>
       }
     </div>
@@ -57,20 +75,7 @@
       (click)="clearFilters()"
       class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-5 w-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-        />
-      </svg>
+      <lucide-icon [img]="TrashIcon" class="h-5 w-5"></lucide-icon>
       <span>Limpiar Filtros</span>
     </button>
   }

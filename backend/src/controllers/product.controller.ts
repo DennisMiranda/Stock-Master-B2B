@@ -10,11 +10,24 @@ class ProductController {
 
   async getProducts(req: Request, res: Response) {
     try {
-      const { search, limit, page } = req.query;
+      const {
+        search,
+        limit,
+        page,
+        categoryId,
+        subcategoryId,
+        brand,
+        inStockOnly,
+      } = req.query;
+
       const params = {
         search: search as string,
-        limit: Number(limit),
-        page: Number(page),
+        limit: Number(limit) || undefined,
+        page: Number(page) || undefined,
+        categoryId: categoryId as string,
+        subcategoryId: subcategoryId as string,
+        brand: brand as string,
+        inStockOnly: inStockOnly === "true" || inStockOnly === true,
       };
 
       const { products, metadata } = await this.productService.searchProducts(
@@ -23,6 +36,7 @@ class ProductController {
 
       res.status(200).json({ success: true, data: { products, metadata } });
     } catch (error) {
+      console.error("Error in getProducts:", error);
       res.status(500).json({
         success: false,
         error: {

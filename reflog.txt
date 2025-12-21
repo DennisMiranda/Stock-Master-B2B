@@ -1,0 +1,50 @@
+﻿9af67ce4 HEAD@{0}: rebase (continue): prototipo de footer
+e0eb980d HEAD@{1}: rebase (pick): Fix create order return error type
+a004fdc9 HEAD@{2}: rebase (continue): Add order routes and controller
+851ca1b6 HEAD@{3}: rebase (pick): Add order service - create order
+133b0295 HEAD@{4}: rebase (pick): Add order model
+e846db77 HEAD@{5}: rebase (pick): Add custom response
+43cb8650 HEAD@{6}: rebase (pick): add get products map by id
+6d7d8b8d HEAD@{7}: rebase (continue): feat(auth): Refactorizaci├│n V2 completa de Autenticaci├│n (Frontend/Backend)
+d605693a HEAD@{8}: rebase (continue): feat: a├▒adiendo metodo que a├▒ade atributos de category y subCategory
+ba7cc408 HEAD@{9}: rebase (continue): Add checkout page
+a4b44f59 HEAD@{10}: rebase (pick): Add checkout form
+b3a4d073 HEAD@{11}: rebase (continue): Add leaflet and map select ui
+b2b49a74 HEAD@{12}: pull --rebase origin filtros (start): checkout b2b49a74cf7a7f6553762e4cc82b4db6ab2e2a27
+ac38d8ad HEAD@{13}: commit: - Integraci├│n completa de filtros en frontend con query params .
+c1898409 HEAD@{14}: rebase (finish): returning to refs/heads/filtros
+c1898409 HEAD@{15}: rebase (continue): feat(backend): agregar endpoints y filtros para categor├â┬¡as y subcategor├â┬¡as
+8cbc9416 HEAD@{16}: rebase (continue): feat(filters): implementar sistema de filtros para cat├â┬ílogo de productos
+c1c91ef9 HEAD@{17}: rebase (pick): feat(filters): aplicar filtros a productos en tiempo real
+310a7063 HEAD@{18}: rebase (pick): feat(filters): filtros din├ímicos para productos electr├│nicos
+1c016f41 HEAD@{19}: rebase (continue): fix(catalog): eliminar ├¡conos de Lucide que causaban fallo silencioso
+cecb83b6 HEAD@{20}: rebase (pick): fix: align apiUrl with environment configuration
+4c7ce091 HEAD@{21}: rebase (start): checkout origin/main
+b2b49a74 HEAD@{22}: checkout: moving from main to filtros
+4c7ce091 HEAD@{23}: pull origin main: Fast-forward
+2517a2e9 HEAD@{24}: checkout: moving from filtros to main
+b2b49a74 HEAD@{25}: commit (merge): fix: resolver conflicto de merge con main - eliminar environment.ts
+7955130d HEAD@{26}: checkout: moving from filtros to filtros
+7955130d HEAD@{27}: commit: feat(backend): agregar endpoints y filtros para categor├â┬¡as y subcategor├â┬¡as
+402df5ca HEAD@{28}: commit: feat(filters): implementar sistema de filtros para cat├â┬ílogo de productos
+4867c3ad HEAD@{29}: checkout: moving from main to filtros
+2517a2e9 HEAD@{30}: checkout: moving from filtros to main
+4867c3ad HEAD@{31}: reset: moving to HEAD
+4867c3ad HEAD@{32}: checkout: moving from main to filtros
+2517a2e9 HEAD@{33}: pull origin main: Fast-forward
+8730cd3d HEAD@{34}: checkout: moving from filtros to main
+4867c3ad HEAD@{35}: commit: feat(filters): aplicar filtros a productos en tiempo real
+4360d63b HEAD@{36}: commit: feat(filters): filtros din├ímicos para productos electr├│nicos
+7f779d69 HEAD@{37}: commit: fix(catalog): eliminar ├¡conos de Lucide que causaban fallo silencioso
+90eb3b11 HEAD@{38}: checkout: moving from main to filtros
+8730cd3d HEAD@{39}: checkout: moving from filtros to main
+90eb3b11 HEAD@{40}: checkout: moving from main to filtros
+8730cd3d HEAD@{41}: checkout: moving from filtros to main
+90eb3b11 HEAD@{42}: commit: fix: align apiUrl with environment configuration
+8730cd3d HEAD@{43}: merge main: Fast-forward
+10231bda HEAD@{44}: checkout: moving from main to filtros
+8730cd3d HEAD@{45}: pull origin main: Fast-forward
+a629c87a HEAD@{46}: pull origin main: Fast-forward
+d4768d92 HEAD@{47}: pull origin main: Fast-forward
+10231bda HEAD@{48}: merge filtros: Fast-forward
+c0f51d25 HEAD@{49}: pull origin main: Fast-forward
