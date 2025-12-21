@@ -1,10 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-<<<<<<< HEAD
 import { CatalogFilters, FilterOptions, CategoryOption } from '../../../../core/models/catalog-filter.model';
-=======
-import { CatalogFilters, FilterOptions } from '../../../../core/models/catalog-filter.model';
->>>>>>> origin/filtros
 import { Product } from '../../../../core/models/product.model';
 
 /**
@@ -102,26 +98,16 @@ export class CatalogFilterService {
    * Actualiza las opciones de filtros dinámicamente basado en los productos actuales
    * Extrae categorías únicas y marcas de los productos de búsqueda
    */
-<<<<<<< HEAD
   updateFilterOptionsFromProducts(products: Product[]): void {
     const brands = this.extractUniqueBrandsFromProducts(products);
 
     this.filterOptionsSubject.next({
       categories: this.filterOptionsSubject.value.categories,
-=======
-  updateFilterOptions(products: Product[]): void {
-    const categories = this.extractUniqueCategoriesFromProducts(products);
-    const brands = this.extractUniqueBrandsFromProducts(products);
-
-    this.filterOptionsSubject.next({
-      categories,
->>>>>>> origin/filtros
       brands,
     });
   }
 
   /**
-<<<<<<< HEAD
    * Establece las categorías (con nombres y subcategorías) desde backend
    */
   setFilterOptionsCategories(categories: CategoryOption[]): void {
@@ -133,8 +119,6 @@ export class CatalogFilterService {
   }
 
   /**
-=======
->>>>>>> origin/filtros
    * Obtiene las opciones actuales de filtros de forma síncrona
    */
   getFilterOptions(): FilterOptions {
@@ -144,30 +128,7 @@ export class CatalogFilterService {
   /**
    * Extrae categorías únicas de los productos
    */
-<<<<<<< HEAD
   // Eliminado: las categorías provienen del backend ahora
-=======
-  private extractUniqueCategoriesFromProducts(
-    products: Product[]
-  ): { id: string; name: string }[] {
-    const categoriesMap = new Map<string, string>();
-
-    products.forEach((product) => {
-      if (product.categoryId && product.categoryId !== '') {
-        // Usar categoryId como id, y el mismo para el nombre
-        // El backend debería proporcionar el nombre en futuro
-        if (!categoriesMap.has(product.categoryId)) {
-          categoriesMap.set(product.categoryId, product.categoryId);
-        }
-      }
-    });
-
-    return Array.from(categoriesMap.entries()).map(([id, name]) => ({
-      id,
-      name,
-    }));
-  }
->>>>>>> origin/filtros
 
   /**
    * Extrae marcas únicas de los productos
