@@ -1,4 +1,4 @@
-<form [formGroup]="orderForm" (ngSubmit)="submit()" class="space-y-8">
+<form [formGroup]="form" (ngSubmit)="submit()" class="space-y-8">
   <!-- ================= EMPRESA ================= -->
   <section class="rounded-2xl border border-gray-100 bg-gray-50 p-6">
     <h2 class="mb-4 text-lg font-semibold">Datos de la empresa</h2>
@@ -127,15 +127,4 @@
     <p class="form-error">Debe seleccionar una ubicación</p>
     }
   </section>
-
-  <!-- ================= SUBMIT ================= -->
-  <div class="flex justify-center">
-    <button
-      type="submit"
-      [disabled]="orderForm.invalid"
-      class="rounded-xl bg-blue-600 px-8 py-3 mb-6 font-semibold text-white transition hover:bg-blue-700 disabled:opacity-50"
-    >
-      Confirmar pedido
-    </button>
-  </div>
 </form>
