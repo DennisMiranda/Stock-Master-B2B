@@ -86,7 +86,7 @@ export const orderSchema = z.object({
   id: z.string().optional(),
   uid: z.string(), // Firebase Auth UID del cliente
 
-  status: z.enum(ORDER_STATUS), // CREATED al inicio
+  status: z.enum(ORDER_STATUS).default(ORDER_STATUS.created), // CREATED al inicio
 
   // --- Cliente (para guía / factura)
   customer: orderCustomerInfoSchema,

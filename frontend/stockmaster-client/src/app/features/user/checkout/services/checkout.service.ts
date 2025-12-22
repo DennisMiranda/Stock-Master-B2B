@@ -9,6 +9,6 @@ export class CheckoutService {
   apiService = inject(ApiService);
 
   createOrder(order: Order) {
-    return this.apiService.post('/checkout', order);
+    return this.apiService.post('/orders', order);
   }
 }
