@@ -32,7 +32,6 @@
 -->
         <!-- Cart Button -->
         <button
-          routerLink="/cart"
           (click)="openCart()"
           class="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
           aria-label="Carrito"
@@ -69,7 +68,7 @@
         </button>
         } @if (currentUser()) {
         <a
-          routerLink="/profile"
+          routerLink="/user/profile"
           class="hidden sm:flex p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer"
           aria-label="Perfil"
         >
@@ -133,7 +132,7 @@
       </button>
       } @if (currentUser()) {
       <a
-        routerLink="/profile"
+        routerLink="/user/profile"
         routerLinkActive="text-gray-900 bg-gray-50"
         (click)="closeMenu()"
         class="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors sm:hidden"

@@ -1,4 +1,14 @@
 <div [class]="!isModal ? 'min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8' : ''">
+   <!-- <button
+      (click)="goBack()"
+      class="flex items-center w-full gap-2 max-w-4xl mx-auto px-4 py-2 group rounded-md font-extralight  transition-colors"
+    >
+    
+      <lucide-icon [img]="ArrowLeft" class="w-5 h-5 group-hover:-translate-x-1 duration-300"></lucide-icon>
+
+ 
+      <span class="text-gray-700">Atrás</span>
+    </button> -->
   <div [class]="!isModal ? 'sm:mx-auto sm:w-full sm:max-w-md' : 'text-center mb-6'">
     <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
       @if (isModal) {
