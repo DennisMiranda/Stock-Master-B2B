@@ -95,6 +95,7 @@ export class CartService {
   }
 
   private updateCart(items: CartItem[]): void {
+
     this.cartItems.set(items);
     const count = items.reduce((sum, item) => sum + item.quantity, 0);
     this.cartCount.set(count);

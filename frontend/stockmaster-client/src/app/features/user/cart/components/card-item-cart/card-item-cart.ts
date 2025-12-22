@@ -14,12 +14,11 @@ export class CardItemCart {
   readonly PackageIcon = Package;
   readonly PlusIcon = Plus;
   readonly MinusIcon = Minus;
-item = input<CartItem>();
+  item = input<CartItem>();
   increase = output<CartItem>();
   decrease = output<CartItem>();
   update = output<CartItem>(); // nuevo output para cambios directos
   remove = output<{ productId: string; variant: string }>();
-
   decreaseQuantity() {
     if (this.item()!.quantity > 1) {
       this.decrease.emit(this.item()!);
@@ -27,31 +26,32 @@ item = input<CartItem>();
   }
 
   increaseQuantity() {
+
     if (this.item()!.quantity < this.item()!.maxQuantity) {
-      this.increase.emit(this.item()!);
+     
     }
+     this.increase.emit(this.item()!);
   }
 
- onQuantityInput(event: Event) {
-  const input = event.target as HTMLInputElement;
-  let value = parseInt(input.value, 10);
+  onQuantityInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    let value = parseInt(input.value, 10);
 
-  if (isNaN(value) || value < 1) {
-    value = 1;
+    if (isNaN(value) || value < 1) {
+      value = 1;
+    }
+    if (value > this.item()!.maxQuantity) {
+      value = this.item()!.maxQuantity;
+    }
+
+    input.value = value.toString();
+
+    const updatedItem: CartItem = {
+      ...this.item()!,
+      quantity: value,
+    };
+    this.update.emit(updatedItem);
   }
-  if (value > this.item()!.maxQuantity) {
-    value = this.item()!.maxQuantity;
-  }
-
-input.value = value.toString();
-
-  const updatedItem: CartItem = {
-    ...this.item()!,
-    quantity: value,
-  };
-  this.update.emit(updatedItem);
-}
-
 
   onRemoveClick() {
     this.remove.emit({

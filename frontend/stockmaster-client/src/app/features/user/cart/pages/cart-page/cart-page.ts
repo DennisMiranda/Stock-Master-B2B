@@ -13,7 +13,9 @@ import type { CartItem } from '../../../../../core/models/cart.model';
 import { LucideAngularModule, ShoppingCart, X, ArrowRight } from 'lucide-angular';
 import { CurrencyPipe, JsonPipe, NgClass, Location } from '@angular/common';
 import { CardItemCart } from '../../components/card-item-cart/card-item-cart';
-import { RouterLink } from "@angular/router";
+import { RouterLink } from '@angular/router';
+import { AuthService } from '../../../../../core/auth/auth.service';
+import { onAuthStateChanged } from 'firebase/auth';
 
 @Component({
   selector: 'app-cart-page',
@@ -28,6 +30,7 @@ export class CartPage implements OnInit {
   private cartService = inject(CartService);
   private host = inject(ElementRef<HTMLElement>);
   private location = inject(Location);
+  private authService = inject(AuthService);
   total = computed(() =>
     this.cartItems().reduce((sum, item) => sum + (item.product.price ?? 0) * item.quantity, 0)
   );
@@ -39,8 +42,12 @@ export class CartPage implements OnInit {
   cartItems = this.cartService.cartItems;
 
   ngOnInit(): void {
-    this.cartService.setAuthState(false);
-    this.loadCart();
+    onAuthStateChanged(this.authService['auth'], (user) => {
+      // Aquí no usamos isLoading, solo si hay usuario
+      this.cartService.setAuthState(!!user, user?.uid);
+      console.log('Auth state:', !!user, user?.uid);
+      this.loadCart();
+    });
   }
 
   loadCart(): void {
@@ -57,7 +64,9 @@ export class CartPage implements OnInit {
   }
 
   increaseQuantity(item: CartItem): void {
+
     const updatedItem = { ...item, quantity: item.quantity + 1 };
+
     this.updateItem(updatedItem);
   }
 
@@ -88,6 +97,7 @@ export class CartPage implements OnInit {
     if (this.isModal() && event.target === event.currentTarget) {
       this.closeModalEvent.emit();
     }
+    event.stopPropagation();
   }
   goBack(): void {
     this.location.back();
