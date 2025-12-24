@@ -10,6 +10,7 @@ import {
   OrderDetailItem,
 } from "../../models/order.model";
 import { CustomResponse } from "../../utils/custom-response";
+import { paginateQuery } from "../../utils/pagination";
 import { ProductService } from "../product.service";
 
 export class OrderService {
@@ -19,6 +20,36 @@ export class OrderService {
 
   constructor(productService: ProductService) {
     this.productService = productService;
+  }
+
+  async getOrdersPaginated(params: { page?: number; limit?: number }) {
+    let query = this.ordersCollection.orderBy("createdAt", "desc");
+
+    const { data, metadata } = await paginateQuery<Order>(query, params);
+
+    return {
+      orders: data,
+      metadata,
+    };
+  }
+
+  async getOrderById(id: string) {
+    return this.ordersCollection.doc(id).get();
+  }
+
+  async getOrdersByUserId(
+    userId: string,
+    params: { page?: number; limit?: number }
+  ) {
+    let query = this.ordersCollection
+      .where("uid", "==", userId)
+      .orderBy("createdAt", "desc");
+    const { data, metadata } = await paginateQuery<Order>(query, params);
+
+    return {
+      orders: data,
+      metadata,
+    };
   }
 
   async createOrder(
