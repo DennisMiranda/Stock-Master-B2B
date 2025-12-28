@@ -1,20 +1,29 @@
 import PDFDocument from "pdfkit";
 import "pdfkit-table";
 
+export class PDFGeneratorService {
 
-export const generatePDF = async (): Promise<Buffer> => {
-  return new Promise<Buffer>((resolve, reject) => {
-    // Crear documento PDF
-    const doc = new PDFDocument({ size: "A4", margin: 50 });
-    // usamos buffers para almacenar los datos del PDF en memoria antes de enviarlo a drive
-    const buffers: Buffer[] = [];
+  createFacturaPDF(datos: { name: string }) {
+    const { name } = datos;
 
-    doc.on("data", buffers.push.bind(buffers));
-    doc.on("end", () => resolve(Buffer.concat(buffers)));
-    doc.on("error", reject);
+    // 1. Crea el documento
+    const doc = new PDFDocument({
+      size: "A4",
+      margin: 50
+    });
 
-    // Título
-    doc.fontSize(20).text(`Factura`, { align: "center" });
+    // 2. Escribir el contenido
+    doc.fontSize(20).text(`Factura de ${name}`, {
+      align: "center"
+    });
+
+    doc.moveDown();
+    doc.fontSize(12).text("Gracias por su compra.");
+
+    // 3. Cerrar documento
     doc.end();
-  });
-};
+
+    // 4. Devolver el PDF como flujo
+    return doc;
+  }
+}
