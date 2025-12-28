@@ -5,44 +5,46 @@
       <p class="footer-description">
         Solución integral para la gestión de inventario y operaciones B2B. 
         Optimiza tu negocio con nuestras herramientas avanzadas.
-      </p>
-      <nav class="social-links" aria-label="Redes sociales">
-        @for (social of socialLinks; track social.label) {
-          <a 
-            [href]="social.url" 
-            [attr.aria-label]="social.label"
-            class="social-link"
-            target="_blank"
-            rel="noopener noreferrer">
-            <lucide-icon [img]="social.icon" [size]="20"></lucide-icon>
-          </a>
-        }
-      </nav>
+      </p>      
     </article>
 
     <article class="footer-section">
-      <h3 class="footer-heading">Enlaces Rápidos</h3>
-      <nav aria-label="Navegación rápida">
-        <ul class="footer-list">
-          @for (link of quickLinks; track link.route) {
-            <li>
-              <a [routerLink]="link.route" class="footer-link">
-                <lucide-icon [img]="ChevronRight" [size]="16"></lucide-icon>
-                <span>{{ link.label }}</span>
-              </a>
-            </li>
+  <h3 class="footer-heading">Enlaces Rápidos</h3>
+  <nav aria-label="Navegación rápida">
+    <ul class="footer-list">
+      @for (link of quickLinks; track link.label) {
+        <li>
+          @if (link.route) {
+            <!-- Enlace normal de navegación -->
+            <a [routerLink]="link.route" class="footer-link">
+              <lucide-icon [img]="ChevronRight" [size]="16"></lucide-icon>
+              <span>{{ link.label }}</span>
+            </a>
+          } @else if (link.action) {
+            <!-- Enlace que abre modal -->
+            <a 
+              (click)="openModal(link.action)" 
+              class="footer-link"
+              role="button"
+              aria-haspopup="dialog">
+              <lucide-icon [img]="ChevronRight" [size]="16"></lucide-icon>
+              <span>{{ link.label }}</span>
+            </a>
           }
-        </ul>
-      </nav>
-    </article>
+        </li>
+      }
+    </ul>
+  </nav>
+</article>
+
 
     <article class="footer-section">
       <h3 class="footer-heading">Legal</h3>
       <nav aria-label="Información legal">
         <ul class="footer-list">
-          @for (link of legalLinks; track link.route) {
+          @for (link of legalLinks; track link.action) {
             <li>
-              <a [routerLink]="link.route" class="footer-link">
+              <a (click)="openModal(link.action)" class="footer-link" role="button">
                 <lucide-icon [img]="ChevronRight" [size]="16"></lucide-icon>
                 <span>{{ link.label }}</span>
               </a>
@@ -51,6 +53,7 @@
         </ul>
       </nav>
     </article>
+
 
     <article class="footer-section">
       <h3 class="footer-heading">Contacto</h3>

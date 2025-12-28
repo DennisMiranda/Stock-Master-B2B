@@ -1,0 +1,216 @@
+<!-- Modal Backdrop -->
+@if (modalService.currentModal()) {
+  <dialog
+    open
+    class="modal-backdrop" 
+    (click)="onBackdropClick($event)"
+    (keydown)="onKeyDown($event)"
+    tabindex="-1">
+    
+    <!-- Modal Container -->
+    <article class="modal-container" role="dialog" aria-modal="true">
+      
+      <!-- Modal Header -->
+      <header class="modal-header">
+        @if (modalService.currentModal() === 'terms') {
+          <h2>📄 Términos y Condiciones</h2>
+        } @else if (modalService.currentModal() === 'faq') {
+          <h2>❓ Preguntas Frecuentes</h2>
+        } @else if (modalService.currentModal() === 'about') {
+          🏢 Sobre Nosotros
+        }
+        
+        <button 
+          type="button"
+          class="close-button" 
+          (click)="closeModal()"
+          aria-label="Cerrar modal">
+          <lucide-icon [img]="X" [size]="24"></lucide-icon>
+        </button>
+      </header>
+
+      <!-- Modal Content -->
+      <section class="modal-content">
+        
+        <!-- ========================= -->
+        <!-- 🏢 SOBRE NOSOTROS         -->
+        <!-- ========================= -->
+        @if (modalService.currentModal() === 'about') {
+          <article class="about-content">
+            <figure class="about-figure">
+                <picture>
+                <source srcset="assets/images/team.webp" type="image/webp">
+                <img 
+                    src="assets/images/team.jpg" 
+                    alt="Equipo de Stock Master B2B" 
+                    class="about-image">
+                </picture>
+                <figcaption>Nuestro equipo en acción</figcaption>
+            </figure>
+
+            <section class="about-section">
+                <header>
+                <h3>Nuestra Historia</h3>
+                </header>
+                <p>
+                En <strong>Stock Master B2B</strong> creemos que la gestión eficiente del inventario 
+                es el corazón de todo negocio exitoso. Desde 2020, ayudamos a empresas a digitalizar 
+                sus operaciones y potenciar su productividad.
+                </p>
+            </section>
+
+            <section class="about-section">
+              <header>
+                <h3>Nuestro Compromiso</h3>
+              </header>
+              <ul class="about-list">
+                <li>✔️ Digitalizar los procesos empresariales</li>
+                <li>✔️ Aumentar la eficiencia operativa</li>
+                <li>✔️ Reducir errores y costos</li>
+                <li>✔️ Mejorar la toma de decisiones con analítica inteligente</li>
+              </ul>
+            </section>
+
+            <section class="about-section">
+              <header>
+                <h3>Visión</h3>
+              </header>
+              <p>
+                Convertirnos en la plataforma líder de gestión empresarial B2B en América Latina, 
+                reconocida por su innovación, seguridad y soporte humano excepcional.
+              </p>
+            </section>
+
+            <section class="about-section">
+              <header>
+                <h3>Valores</h3>
+              </header>
+              <section class="values-grid">
+                <article class="value-item">
+                    <header><h4>🤝 Confianza</h4></header>
+                    <p>Construimos relaciones sólidas y transparentes con nuestros clientes.</p>
+                </article>
+
+                <article class="value-item">
+                    <header><h4>🚀 Innovación</h4></header>
+                    <p>Buscamos nuevas formas de optimizar procesos mediante tecnología.</p>
+                </article>
+
+                <article class="value-item">
+                    <header><h4>🌎 Responsabilidad</h4></header>
+                    <p>Nos comprometemos con un crecimiento sostenible y ético.</p>
+                </article>
+              </section>
+            </section>
+          </article>
+        }
+
+        <!-- Terms Content -->
+        @if (modalService.currentModal() === 'terms') {
+          <article class="terms-content">
+            <p class="update-date">Última actualización: Enero 2025</p>
+
+            <section class="terms-section">
+              <h3>1. Aceptación de los Términos</h3>
+              <p>Al acceder y utilizar Stock Master B2B (en adelante, "la Plataforma"), usted acepta estar legalmente vinculado por estos Términos y Condiciones.</p>
+              <p>Si no está de acuerdo con alguna parte de estos términos, no debe utilizar nuestros servicios.</p>
+            </section>
+
+            <section class="terms-section">
+              <h3>2. Descripción de los Servicios</h3>
+              <p>Stock Master B2B proporciona una plataforma de gestión de inventario y operaciones B2B que incluye:</p>
+              <ul>
+                <li>Gestión de productos y stock en tiempo real</li>
+                <li>Sistema de pedidos y facturación</li>
+                <li>Análisis y reportes de ventas</li>
+                <li>Integración con sistemas de terceros</li>
+              </ul>
+            </section>
+
+            <section class="terms-section">
+              <h3>3. Registro y Cuenta de Usuario</h3>
+              <p>Para utilizar ciertos servicios, debe crear una cuenta proporcionando información precisa y completa.</p>
+              <p>Usted es responsable de mantener la confidencialidad de sus credenciales de acceso.</p>
+              <p>Debe notificarnos inmediatamente cualquier uso no autorizado de su cuenta.</p>
+            </section>
+
+            <section class="terms-section">
+              <h3>4. Uso Permitido</h3>
+              <p>Usted se compromete a utilizar la Plataforma únicamente para fines legítimos y comerciales.</p>
+              <p><strong>Está prohibido:</strong></p>
+              <ul>
+                <li>Utilizar la Plataforma para actividades ilegales o fraudulentas</li>
+                <li>Intentar acceder a áreas restringidas o datos de otros usuarios</li>
+                <li>Introducir virus, malware o código malicioso</li>
+                <li>Realizar ingeniería inversa o descompilar el software</li>
+                <li>Sobrecargar o interferir con la infraestructura</li>
+              </ul>
+            </section>
+
+            <section class="terms-section">
+              <h3>5. Propiedad Intelectual</h3>
+              <p>Todos los derechos de propiedad intelectual sobre la Plataforma pertenecen a Stock Master B2B o sus licenciantes.</p>
+              <p>Se le otorga una licencia limitada, no exclusiva e intransferible para utilizar la Plataforma.</p>
+            </section>
+
+            <section class="terms-section">
+              <h3>6. Precios y Pagos</h3>
+              <p>Los precios de nuestros servicios están sujetos a cambios con previo aviso.</p>
+              <p>Los pagos deben realizarse por adelantado según el plan seleccionado.</p>
+              <p>En caso de impago, nos reservamos el derecho de suspender o terminar el servicio.</p>
+            </section>
+
+            <section class="terms-section">
+              <h3>7. Limitación de Responsabilidad</h3>
+              <p>La Plataforma se proporciona "tal cual" sin garantías de ningún tipo.</p>
+              <p>No garantizamos que el servicio sea ininterrumpido, seguro o libre de errores.</p>
+              <p>Nuestra responsabilidad total no excederá el monto pagado por usted en los últimos 12 meses.</p>
+            </section>
+
+            <section class="terms-section">
+              <h3>8. Contacto</h3>
+              <p>Para cualquier pregunta sobre estos Términos y Condiciones:</p>
+              <ul>
+                <li><strong>Email:</strong> legal@stockmaster.com</li>
+                <li><strong>Teléfono:</strong> +51 924932128</li>
+                <li><strong>Dirección:</strong> 123 Calle Principal, Lima, Perú</li>
+              </ul>
+            </section>
+          </article>
+        }
+
+        <!-- FAQ Content -->
+        @if (modalService.currentModal() === 'faq') {
+          <article class="faq-content">
+            <p class="faq-intro">Encuentra respuestas rápidas a las preguntas más comunes sobre Stock Master B2B</p>
+
+            <section class="faq-list">
+              @for (faq of faqs; track faq.question) {
+                <article class="faq-item" [class.open]="faq.isOpen">
+                  <button 
+                    type="button"
+                    class="faq-question" 
+                    (click)="toggleFaq(faq)">
+                    <span>{{ faq.question }}</span>
+                    <span class="icon">{{ faq.isOpen ? '−' : '+' }}</span>
+                  </button>
+                  @if (faq.isOpen) {
+                    <section class="faq-answer">
+                      <p>{{ faq.answer }}</p>
+                    </section>
+                  }
+                </article>
+              }
+            </section>
+
+            <aside class="contact-box">
+              <h4>¿No encuentras lo que buscas?</h4>
+              <p>Contáctanos en: <strong>support@stockmaster.com</strong></p>
+            </aside>
+          </article>
+        }
+
+      </section>
+    </article>
+  </dialog>
+}

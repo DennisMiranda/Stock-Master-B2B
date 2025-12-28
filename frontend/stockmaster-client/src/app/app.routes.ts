@@ -53,6 +53,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/user/checkout/pages/checkout-page/checkout').then((c) => c.Checkout),
       },
+      // 404
+      {
+        path: '**',
+        redirectTo: ''
+      }
     ],
   },
   {
