@@ -1,3 +1,4 @@
+import { Timestamp } from "firebase-admin/firestore";
 import { db } from "../../config/firebase";
 import type {
   CustomResponse as CustomResponseModel,
@@ -34,7 +35,9 @@ export class OrderService {
   }
 
   async getOrderById(id: string) {
-    return this.ordersCollection.doc(id).get();
+    const snapshot = await this.ordersCollection.doc(id).get();
+
+    return snapshot.data();
   }
 
   async getOrdersByUserId(
@@ -173,5 +176,15 @@ export class OrderService {
         errors
       );
     }
+  }
+
+  async updateOrder(orderId: string, order: Order) {
+    const orderRef = this.ordersCollection.doc(orderId);
+    orderRef.update({
+      ...order,
+      updatedAt: Timestamp.now(),
+    });
+
+    return await this.getOrderById(orderId);
   }
 }

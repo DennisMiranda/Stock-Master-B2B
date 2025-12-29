@@ -37,6 +37,16 @@ export const ORDER_STATUS = {
 
 export type OrderStatus = (typeof ORDER_STATUS)[keyof typeof ORDER_STATUS];
 
+export const ORDER_STATUS_LABELS = {
+  [ORDER_STATUS.created]: 'Creado',
+  [ORDER_STATUS.inPacking]: 'En preparación',
+  [ORDER_STATUS.ready]: 'Listo para despacho',
+  [ORDER_STATUS.assigned]: 'Conductor asignado',
+  [ORDER_STATUS.inTransit]: 'En ruta',
+  [ORDER_STATUS.delivered]: 'Entregado',
+  [ORDER_STATUS.cancelled]: 'Cancelado',
+};
+
 export const orderCustomerInfoSchema = z.object({
   companyName: z.string(), // Razón social
   taxId: z.string(), // DNI o RUC

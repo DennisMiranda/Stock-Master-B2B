@@ -1,0 +1,30 @@
+<div class="flex flex-col gap-4 p-4">
+  @if (isLoading()) {
+  <div class="flex items-center justify-center h-full">Cargando...</div>
+
+  } @else {
+  <app-order-header-detail
+    [orderId]="order().id!"
+    [orderDate]="order().createdAt!"
+    [totalAmount]="order().payment.total"
+    [companytName]="order().customer!.companyName"
+    [address]="order().deliveryAddress"
+  >
+  </app-order-header-detail>
+
+  <h3 class="text-lg font-semibold mt-4">Items</h3>
+
+  <div class="flex flex-col gap-3">
+    @for (item of order().items; track item.id+item.variant) {
+    <app-order-items-detail
+      [name]="item.name!"
+      [quantity]="item.quantity"
+      [variant]="item.variant"
+      [price]="item.unitPrice!"
+      [imageUrl]="item.imageUrl"
+    >
+    </app-order-items-detail>
+    }
+  </div>
+  }
+</div>

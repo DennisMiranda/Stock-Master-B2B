@@ -107,6 +107,30 @@ class OrderController {
         );
     }
   }
+
+  async updateOrder(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      if (!id) {
+        return res
+          .status(400)
+          .json(CustomResponse.error("ORDER_ERROR", "Order id is required"));
+      }
+
+      const order = await this.orderService.updateOrder(id, req.body);
+      return res.json(
+        CustomResponse.success(order, "Order updated successfully")
+      );
+    } catch (error) {
+      console.error("Error updating order", error);
+      return res
+        .status(500)
+        .json(
+          CustomResponse.error("ORDER_ERROR", "Error updating order by id")
+        );
+    }
+  }
 }
 
 const productService = new ProductService();
