@@ -1,50 +1,103 @@
-<footer class="bg-gray-900 text-gray-300 px-6 md:px-12 lg:px-24 py-12 border-t border-gray-800">
+<footer class="footer">
+  <section class="footer-main">
+    <article class="footer-section footer-about">
+      <h2 class="footer-heading">Stock Master B2B</h2>
+      <p class="footer-description">
+        Solución integral para la gestión de inventario y operaciones B2B. 
+        Optimiza tu negocio con nuestras herramientas avanzadas.
+      </p>      
+    </article>
 
-  <!-- Información principal -->
-  <section class="grid gap-8 md:grid-cols-3 text-center md:text-left">
+    <article class="footer-section">
+  <h3 class="footer-heading">Enlaces Rápidos</h3>
+  <nav aria-label="Navegación rápida">
+    <ul class="footer-list">
+      @for (link of quickLinks; track link.label) {
+        <li>
+          @if (link.route) {
+            <!-- Enlace normal de navegación -->
+            <a [routerLink]="link.route" class="footer-link">
+              <lucide-icon [img]="ChevronRight" [size]="16"></lucide-icon>
+              <span>{{ link.label }}</span>
+            </a>
+          } @else if (link.action) {
+            <!-- Enlace que abre modal -->
+            <a 
+              (click)="openModal(link.action)" 
+              class="footer-link"
+              role="button"
+              aria-haspopup="dialog">
+              <lucide-icon [img]="ChevronRight" [size]="16"></lucide-icon>
+              <span>{{ link.label }}</span>
+            </a>
+          }
+        </li>
+      }
+    </ul>
+  </nav>
+</article>
 
-    <!-- Identidad de marca -->
-    <section aria-label="Identidad de marca">
-      <h2 class="text-2xl font-bold text-white mb-3">StockMaster B2B</h2>
-      <p class="text-gray-400 text-sm leading-relaxed">
-        Plataforma moderna de gestión empresarial que optimiza procesos, mejora la productividad
-        y conecta a las empresas en una red inteligente de colaboración digital.
+
+    <article class="footer-section">
+      <h3 class="footer-heading">Legal</h3>
+      <nav aria-label="Información legal">
+        <ul class="footer-list">
+          @for (link of legalLinks; track link.action) {
+            <li>
+              <a (click)="openModal(link.action)" class="footer-link" role="button">
+                <lucide-icon [img]="ChevronRight" [size]="16"></lucide-icon>
+                <span>{{ link.label }}</span>
+              </a>
+            </li>
+          }
+        </ul>
+      </nav>
+    </article>
+
+
+    <article class="footer-section">
+      <h3 class="footer-heading">Contacto</h3>
+      <address class="footer-contact">
+        @for (contact of contactInfo; track contact.text) {
+          <a 
+            [href]="contact.type === 'email' ? 'mailto:' + contact.text : 
+                    contact.type === 'phone' ? 'tel:' + contact.text : '#'"
+            class="contact-item">
+            <lucide-icon [img]="contact.icon" [size]="18"></lucide-icon>
+            <span>{{ contact.text }}</span>
+          </a>
+        }
+      </address>
+    </article>
+
+    <article class="footer-section footer-newsletter">
+      <h3 class="footer-heading">Newsletter</h3>
+      <p class="newsletter-text">
+        Suscríbete para recibir las últimas actualizaciones y ofertas.
       </p>
-    </section>
-
-    <!-- Navegación -->
-    <nav aria-label="Enlaces principales">
-      <h3 class="text-lg font-semibold text-white mb-3">Navegación</h3>
-      <ul class="space-y-2 text-sm">
-        <li><a href="#" class="hover:text-blue-400 transition-colors duration-200">Inicio</a></li>
-        <li><a href="#" class="hover:text-blue-400 transition-colors duration-200">Productos</a></li>
-        <li><a href="#" class="hover:text-blue-400 transition-colors duration-200">Servicios</a></li>
-        <li><a href="#" class="hover:text-blue-400 transition-colors duration-200">Contacto</a></li>
-      </ul>
-    </nav>
-
-    <!-- Redes sociales -->
-    <section aria-label="Redes sociales">
-      <h3 class="text-lg font-semibold text-white mb-3">Síguenos</h3>
-      <ul class="flex justify-center md:justify-start gap-6">
-        <li>
-          <a href="#" aria-label="Facebook" [innerHTML]="icons.facebook"
-             class="w-5 h-5 fill-gray-400 hover:fill-blue-500 transition-colors duration-200"></a>
-        </li>
-        <li>
-          <a href="#" aria-label="Instagram" [innerHTML]="icons.instagram"
-             class="w-5 h-5 fill-gray-400 hover:fill-pink-500 transition-colors duration-200"></a>
-        </li>        
-        <li>
-          <a href="#" aria-label="X (Twitter)" [innerHTML]="icons.x"
-             class="w-5 h-5 fill-gray-400 hover:fill-gray-200 transition-colors duration-200"></a>
-        </li>
-      </ul>
-    </section>
+      <form class="newsletter-form" (submit)="onSubmitNewsletter($event)">
+        <label for="newsletter-email" class="visually-hidden">Correo electrónico</label>
+        <input 
+          id="newsletter-email"
+          type="email" 
+          [(ngModel)]="newsletterEmail"
+          placeholder="tu@email.com" 
+          class="newsletter-input"
+          required
+          aria-label="Correo electrónico para newsletter">
+        <button type="submit" class="newsletter-button" aria-label="Suscribirse">
+          <lucide-icon [img]="Send" [size]="18"></lucide-icon>
+        </button>
+      </form>
+    </article>
   </section>
 
-  <!-- Línea inferior -->
-  <section class="mt-10 border-t border-gray-800 pt-5 text-sm text-gray-500 text-center">
-    © {{ currentYear }} StockMaster B2B · Todos los derechos reservados
+  <section class="footer-bottom">
+    <p class="copyright">
+      &copy; {{ currentYear }} Stock Master B2B. Todos los derechos reservados.
+    </p>
+    <p class="credits">
+      Desarrollado con <span class="heart">♥</span> por tu equipo
+    </p>
   </section>
 </footer>
