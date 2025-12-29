@@ -81,4 +81,9 @@
     <app-user-create-modal [isSaving]="isSaving" (save)="onCreate($event)" (close)="closeCreateModal()">
     </app-user-create-modal>
     }
+    <!-- Confirmation Modal -->
+    <app-confirmation-modal #confirmModal title="Restablecer Contraseña"
+        message="¿Estás seguro de enviar un correo de restablecimiento de contraseña a este usuario?"
+        confirmText="Sí, enviar correo" cancelText="Cancelar" type="warning" (confirm)="onConfirmResetPassword()">
+    </app-confirmation-modal>
 </div>

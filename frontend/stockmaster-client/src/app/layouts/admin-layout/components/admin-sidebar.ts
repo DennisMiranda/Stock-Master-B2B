@@ -1,6 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { LucideAngularModule, LayoutDashboard, ShoppingCart, Users, Package, LogOut, Settings, FileText, Truck } from 'lucide-angular';
+import { LucideAngularModule, LayoutDashboard, ShoppingCart, Users, Package, LogOut, Settings, FileText, Truck, Tags } from 'lucide-angular';
 import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
@@ -38,6 +38,11 @@ import { AuthService } from '../../../core/auth/auth.service';
             <a routerLink="/admin/products" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-colors">
               <lucide-icon [img]="PackageIcon" class="w-5 h-5" />
               Productos
+            </a>
+
+            <a routerLink="/admin/categories" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-colors">
+              <lucide-icon [img]="TagsIcon" class="w-5 h-5" />
+              Categorías
             </a>
           }
 
@@ -107,6 +112,7 @@ export class AdminSidebar {
   readonly SettingsIcon = Settings;
   readonly FileTextIcon = FileText;
   readonly TruckIcon = Truck;
+  readonly TagsIcon = Tags;
 
   logout() {
     this.authService.logout().subscribe();

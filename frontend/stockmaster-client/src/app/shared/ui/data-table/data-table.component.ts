@@ -26,6 +26,7 @@ export class DataTableComponent<T> {
     @Input() data: T[] = [];
     @Input() columns: TableColumn<T>[] = [];
     @Output() sort = new EventEmitter<SortEvent>();
+    @Output() rowClick = new EventEmitter<T>();
 
     onSort({ column, direction }: SortEvent) {
         // Reset other headers logic could be added here if we had access to ViewChildren

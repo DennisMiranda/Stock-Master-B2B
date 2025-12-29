@@ -14,7 +14,8 @@
             </thead>
             <tbody class="divide-y divide-gray-100">
                 @for (item of data; track item) {
-                <tr class="hover:bg-gray-50/50 transition-colors group">
+                <tr class="hover:bg-gray-50/50 transition-colors group" [class.cursor-pointer]="rowClick.observed"
+                    (click)="rowClick.emit(item)">
                     @for (col of columns; track col.key) {
                     <td class="px-6 py-4" [class]="col.class || ''">
                         <!-- Si existe un template personalizado, usarlo -->

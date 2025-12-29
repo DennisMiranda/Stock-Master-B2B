@@ -119,9 +119,17 @@ export class OrderService {
             });
           }
 
-          const unitPrice =
-            product.prices.find((price) => price.label === item.variant)
-              ?.price || 0;
+          const priceVariant = product.prices.find((price) => price.label === item.variant);
+          let unitPrice = priceVariant?.price || 0;
+
+          // Calcular precio con descuento (B2B Logic)
+          if (priceVariant?.discounts?.length) {
+            const sortedDiscounts = [...priceVariant.discounts].sort((a, b) => b.minQuantity - a.minQuantity);
+            const applicableDiscount = sortedDiscounts.find(d => item.quantity >= d.minQuantity);
+            if (applicableDiscount) {
+              unitPrice = applicableDiscount.price;
+            }
+          }
 
           // 3️. SNAPSHOT DEL ITEM
           orderItems.push({

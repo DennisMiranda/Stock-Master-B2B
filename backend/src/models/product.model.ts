@@ -1,7 +1,14 @@
-export interface Price {
-  label: string;
+export type Variant = 'unit' | 'box';
+
+export interface Discount {
+  minQuantity: number;
   price: number;
-  minQuantity?: number;
+}
+
+export interface Price {
+  label: Variant;
+  price: number;
+  discounts?: Discount[];
 }
 
 export interface Category {
@@ -24,12 +31,14 @@ export interface ProductDoc {
   brand: string;
   prices: Price[];
   unitPerBox: number;
+  description?: string;
   images: string[];
   isActive: boolean;
   createdAt: number;
   updatedAt: number;
   stockUnits: number;
   stockBoxes: number;
+  searchArray?: string[];
 }
 
 export type Product = Omit<ProductDoc, "categoryId" | "subcategoryId"> & {

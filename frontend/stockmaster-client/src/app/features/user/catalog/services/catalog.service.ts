@@ -43,7 +43,7 @@ export class CatalogService implements OnDestroy {
   private destroy$ = new Subject<void>();
 
   // Eliminado: ya no se usa filtrado cliente-side
-  
+
   products = signal<Product[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
@@ -181,6 +181,8 @@ export class CatalogService implements OnDestroy {
           if (current.subcategories[0]) params['subcategoryId'] = current.subcategories[0];
           if (current.brands[0]) params['brand'] = current.brands[0];
           if (current.inStockOnly) params['inStockOnly'] = true;
+          // Security: Client Catalog always requests active products
+          params['isActive'] = true;
 
           return this.api.get<SearchProductsResponse>('/products', { params })
             .pipe(

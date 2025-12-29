@@ -12,6 +12,8 @@ import { UserCreateModal } from '../../components/user-create-modal/user-create-
 import { UserActionsMenu } from '../../components/user-actions-menu/user-actions-menu';
 import { DataTableComponent } from '../../../../../shared/ui/data-table/data-table.component';
 import { TableColumn, SortEvent } from '../../../../../shared/ui/data-table/models/table.model';
+import { ToastService } from '../../../../../core/services/toast.service';
+import { ConfirmationModalComponent } from '../../../../../shared/ui/confirmation-modal/confirmation-modal.component';
 
 @Component({
     selector: 'app-users-page',
@@ -23,13 +25,16 @@ import { TableColumn, SortEvent } from '../../../../../shared/ui/data-table/mode
         UserEditModal,
         UserCreateModal,
         UserActionsMenu,
-        DataTableComponent
+        DataTableComponent,
+        ConfirmationModalComponent
     ],
     templateUrl: './users-page.html',
     styleUrl: './users-page.css'
 })
 export class UsersPage implements OnInit, AfterViewInit {
     private userService = inject(UserService);
+    private authService = inject(AuthService);
+    private toast = inject(ToastService);
 
     users = this.userService.users;
     isLoading = this.userService.isLoading;
@@ -74,8 +79,9 @@ export class UsersPage implements OnInit, AfterViewInit {
     // Create Logic
     isCreating = signal(false);
 
-    // Auth Service for Reset Password
-    private authService = inject(AuthService);
+    // Reset Password Logic
+    @ViewChild('confirmModal') confirmModal!: ConfirmationModalComponent;
+    userToReset: User | null = null;
 
     // Table Columns Configuration
     columns: TableColumn<User>[] = [];
@@ -122,11 +128,11 @@ export class UsersPage implements OnInit, AfterViewInit {
             next: () => {
                 this.isSaving.set(false);
                 this.closeCreateModal();
-                alert('Usuario creado exitosamente');
+                this.toast.success('Usuario creado exitosamente');
             },
             error: (err) => {
                 this.isSaving.set(false);
-                alert('Error al crear usuario: ' + (err.error?.message || err.message));
+                this.toast.error('Error al crear usuario: ' + (err.error?.message || err.message));
             }
         });
     }
@@ -148,17 +154,29 @@ export class UsersPage implements OnInit, AfterViewInit {
         }).add(() => {
             this.isSaving.set(false);
             this.closeEditModal();
+            this.toast.success('Usuario actualizado correctamente');
         });
     }
 
     // --- Reset Password ---
     onResetPassword(user: User) {
-        if (confirm(`¿Enviar correo de restablecimiento a ${user.email}?`)) {
-            this.authService.sendPasswordResetEmail(user.email).subscribe({
-                next: () => alert('Correo enviado correctamente'),
-                error: (err) => alert('Error al enviar correo: ' + err.message)
-            });
-        }
+        this.userToReset = user;
+        this.confirmModal.open();
+    }
+
+    onConfirmResetPassword() {
+        if (!this.userToReset) return;
+
+        this.authService.sendPasswordResetEmail(this.userToReset.email).subscribe({
+            next: () => {
+                this.toast.success(`Correo enviado a ${this.userToReset?.email}`);
+                this.userToReset = null;
+            },
+            error: (err) => {
+                this.toast.error('Error al enviar correo: ' + err.message);
+                this.userToReset = null;
+            }
+        });
     }
 
     getRoleBadgeColor(role: string): string {

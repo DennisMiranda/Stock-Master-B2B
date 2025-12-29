@@ -1,0 +1,84 @@
+<div
+    class="border-2 grid grid-cols-2 justify-between border-gray-200 rounded-sm px-4 py-3 hover:border-gray-300 transition-colors bg-white">
+
+    <!-- Left Column: Info & Price -->
+    <div class="flex flex-col justify-between space-y-2">
+        <div class="flex gap-4 items-center">
+            <lucide-icon [img]="label() === 'unit' ? PackageIcon : TagIcon" class="w-4 h-4 text-gray-600" />
+            <div>
+                <p class="text-sm font-semibold text-gray-900">
+                    {{ displayLabel() }}
+                </p>
+            </div>
+        </div>
+
+        <div>
+            <p class="text-sm font-bold text-gray-900">
+                {{ effectivePrice() | currency : 'PEN' : 'symbol' : '1.2-2' }}
+            </p>
+
+            @if (appliedDiscount()) {
+            <p class="text-xs text-gray-400 line-through">
+                {{ priceInfo().price | currency : 'PEN' : 'symbol' : '1.2-2' }}
+            </p>
+            }
+
+            @if (label() === 'box' && unitPerBox()) {
+            <p class="text-xs text-gray-500">{{ unitPerBox() }} unidades</p>
+            }
+        </div>
+
+        <div class="text-xs">
+            <span class="text-gray-600 font-medium">Subtotal:</span>
+            <span class="font-bold text-gray-900 ml-1">
+                {{ totalPrice() | currency : 'PEN' : 'symbol' : '1.2-2' }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Right Column: Quantity Controls -->
+    <div class="flex flex-col items-end space-y-2">
+        <div class="flex items-center gap-2">
+            <button (click)="decrease()" [disabled]="quantity() <= 0"
+                class="w-8 h-8 rounded-sm border border-gray-300 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all">
+                <lucide-icon [img]="MinusIcon" class="w-4 h-4 text-gray-600" />
+            </button>
+
+            <input type="number" [value]="quantity()" (input)="onInput($event)" min="0" [max]="stock()"
+                class="w-12 text-center text-sm font-semibold text-gray-900 border border-gray-300 rounded-sm py-1 px-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="0" />
+
+            <button (click)="increase()" [disabled]="quantity() >= stock()"
+                class="w-8 h-8 rounded-sm border border-gray-300 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all">
+                <lucide-icon [img]="PlusIcon" class="w-4 h-4 text-gray-600" />
+            </button>
+        </div>
+
+        <div class="flex flex-col items-end text-xs space-y-1">
+            <span class="text-gray-500">
+                Stock: <span class="font-semibold">{{ stock() }}</span>
+            </span>
+
+            @if (savingsPercentage() > 0) {
+            <span class="text-green-700 bg-green-50 px-2 py-0.5 rounded text-[10px] font-bold border border-green-100">
+                -{{ savingsPercentage() }}%
+            </span>
+            }
+
+            @if (currentTotalSavings() > 0) {
+            <span class="text-green-600 font-semibold text-right">
+                Ahorras {{ currentTotalSavings() | currency : 'PEN' : 'symbol' : '1.2-2' }}
+            </span>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Discount Info (Optional visual helper inside the card or just below) -->
+@if (priceInfo().discounts && priceInfo().discounts!.length > 0) {
+<div class="mt-2 text-xs text-amber-700 bg-amber-50 rounded px-2 py-1 border border-amber-100 w-full col-span-2">
+    @for (discount of priceInfo().discounts; track discount.minQuantity) {
+    <div>+{{ discount.minQuantity }} uds: {{ discount.price | currency:'PEN':'symbol':'1.2-2' }}</div>
+    }
+</div>
+}

@@ -1,16 +1,9 @@
 <article
-  class="bg-white rounded-sm group overflow-hidden shadow-sm hover:shadow-xl transition-all min-h-110 duration-300 w-full max-w-sm"
->
-  <a
-    [routerLink]="['']"
-    [queryParams]="{ id: product()!.id }"
-    class="relative flex aspect-square overflow-hidden bg-gray-100"
-  >
-    <img
-      [src]="product()!.images?.[0]"
-      [alt]="product()!.name"
-      class="w-full h-full group-hover:scale-105 duration-300 object-cover"
-    />
+  class="bg-white rounded-sm group overflow-hidden shadow-sm hover:shadow-xl transition-all min-h-110 duration-300 w-full max-w-sm">
+  <a [routerLink]="['/shop/catalog/product', product()!.id]"
+    class="relative flex aspect-square overflow-hidden bg-gray-100">
+    <img [src]="product()!.images?.[0]" [alt]="product()!.name"
+      class="w-full h-full group-hover:scale-105 duration-300 object-cover" />
     @if (product()!.brand) {
     <figcaption class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-sm">
       <span class="text-xs font-medium text-gray-700">{{ product()!.brand }}</span>
@@ -19,10 +12,8 @@
   </a>
 
   <section class="p-2 md:p-4 space-y-4">
-    <a [routerLink]="['']" [queryParams]="{ id: product()!.id }" class="space-y-2">
-      <h3
-        class="text-sm line-clamp-2 max-h-15 h-12 md:h-10 font-semibold text-gray-900 tracking-tight"
-      >
+    <a [routerLink]="['/shop/catalog/product', product()!.id]" class="space-y-2">
+      <h3 class="text-sm line-clamp-2 max-h-15 h-12 md:h-10 font-semibold text-gray-900 tracking-tight">
         {{ product()!.name }}
       </h3>
     </a>
@@ -35,7 +26,7 @@
       @for (price of product()?.prices; track price.label; let i = $index) {
       <div class="flex items-start justify-between bg-white rounded-lg">
         <div class="flex items-center gap-2">
-         <lucide-icon [img]="Package" class="h-4 w-4 hidden md:flex" />
+          <lucide-icon [img]="Package" class="h-4 w-4 hidden md:flex" />
 
 
           <div>
@@ -73,19 +64,13 @@
       }
     </div>
 
-    <button
-      (click)="openModal()"
-      class="flex px-2 gap-2 cursor-pointer hover:bg-azul text-xs md:text-sm md:gap-4 justify-center text-center w-full bg-gray-600 text-white py-3.5 rounded-sm font-medium active:bg-azul active:scale-95 transition-all duration-200"
-    >
-   <lucide-icon [img]="ShoppingCart" class="h-4" />
+    <button (click)="openModal()"
+      class="flex px-2 gap-2 cursor-pointer hover:bg-azul text-xs md:text-sm md:gap-4 justify-center text-center w-full bg-gray-600 text-white py-3.5 rounded-sm font-medium active:bg-azul active:scale-95 transition-all duration-200">
+      <lucide-icon [img]="ShoppingCart" class="h-4" />
       Agregar
     </button>
   </section>
 </article>
 @if (showModal()) {
-<app-modal-cart
-  [product]="product()!"
-  (closeModal)="showModal.set(false)"
-  (addProducts)="onAddProducts($event)"
-/>
+<app-modal-cart [product]="product()!" (closeModal)="showModal.set(false)" (addProducts)="onAddProducts($event)" />
 }

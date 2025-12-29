@@ -14,7 +14,7 @@ export interface Subcategory {
 }
 
 export class CategoryService {
-  constructor() {}
+  constructor() { }
 
   /**
    * Obtiene todas las categorías con sus subcategorías
@@ -22,7 +22,7 @@ export class CategoryService {
   async getAllCategories(): Promise<Category[]> {
     try {
       const categoriesSnapshot = await db.collection("categories").get();
-      
+
       const categories: Category[] = categoriesSnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -41,7 +41,7 @@ export class CategoryService {
   async getCategoryById(categoryId: string): Promise<Category | null> {
     try {
       const categoryDoc = await db.collection("categories").doc(categoryId).get();
-      
+
       if (!categoryDoc.exists) {
         return null;
       }
@@ -110,5 +110,55 @@ export class CategoryService {
       console.error("Error getting categories with subcategories:", error);
       return [];
     }
+  }
+
+  // --- CRUD Operations ---
+
+  async createCategory(data: { name: string; slug: string; subcategories?: { name: string; slug: string }[] }): Promise<Category> {
+    const { subcategories, ...categoryData } = data;
+    const docRef = await db.collection("categories").add(categoryData);
+
+    // Si hay subcategorías, las creamos en batch o iterativamente
+    if (subcategories && subcategories.length > 0) {
+      const batch = db.batch();
+      subcategories.forEach(sub => {
+        const subRef = db.collection("categories").doc(docRef.id).collection("subcategories").doc();
+        batch.set(subRef, sub);
+      });
+      await batch.commit();
+    }
+
+    return { id: docRef.id, ...categoryData };
+  }
+
+  async updateCategory(id: string, data: Partial<Category>): Promise<void> {
+    await db.collection("categories").doc(id).update(data);
+  }
+
+  async deleteCategory(id: string): Promise<void> {
+    // 1. Integrity Check: Ensure no products use this category
+    const productsSnapshot = await db.collection("products")
+      .where("categoryId", "==", id)
+      .limit(1)
+      .get();
+
+    if (!productsSnapshot.empty) {
+      throw new Error("CATEGORY_HAS_PRODUCTS");
+    }
+
+    // 2. Safe to delete
+    const docRef = db.collection("categories").doc(id);
+    await db.recursiveDelete(docRef);
+  }
+
+  // --- Subcategory Operations ---
+
+  async addSubcategory(categoryId: string, data: { name: string; slug: string }): Promise<Subcategory> {
+    const docRef = await db.collection("categories").doc(categoryId).collection("subcategories").add(data);
+    return { id: docRef.id, categoryId, ...data };
+  }
+
+  async removeSubcategory(categoryId: string, subcategoryId: string): Promise<void> {
+    await db.collection("categories").doc(categoryId).collection("subcategories").doc(subcategoryId).delete();
   }
 }

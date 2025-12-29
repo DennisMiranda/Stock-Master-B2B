@@ -113,6 +113,64 @@ class CategoryController {
       });
     }
   }
+
+  // --- CRUD Endpoints ---
+
+  async createCategory(req: Request, res: Response) {
+    try {
+      const { name, slug, subcategories } = req.body;
+      const newCategory = await this.categoryService.createCategory({ name, slug, subcategories });
+      res.status(201).json({ success: true, data: newCategory });
+    } catch (error) {
+      console.error("Error creating category:", error);
+      res.status(500).json({ success: false, error: { code: 'CREATE_ERROR', message: 'Error creating category' } });
+    }
+  }
+
+  async updateCategory(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      await this.categoryService.updateCategory(id as string, req.body);
+      res.status(200).json({ success: true, message: 'Updated' });
+    } catch (error) {
+      console.error("Error updating category:", error);
+      res.status(500).json({ success: false, error: { code: 'UPDATE_ERROR', message: 'Error updating category' } });
+    }
+  }
+
+  async deleteCategory(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      await this.categoryService.deleteCategory(id as string);
+      res.status(200).json({ success: true, message: 'Deleted' });
+    } catch (error) {
+      console.error("Error deleting category:", error);
+      res.status(500).json({ success: false, error: { code: 'DELETE_ERROR', message: 'Error deleting category' } });
+    }
+  }
+
+  async addSubcategory(req: Request, res: Response) {
+    try {
+      const { id } = req.params; // categoryId
+      const { name, slug } = req.body;
+      const newSub = await this.categoryService.addSubcategory(id as string, { name, slug });
+      res.status(201).json({ success: true, data: newSub });
+    } catch (error) {
+      console.error("Error adding subcategory:", error);
+      res.status(500).json({ success: false, error: { code: 'CREATE_SUB_ERROR', message: 'Error adding subcategory' } });
+    }
+  }
+
+  async deleteSubcategory(req: Request, res: Response) {
+    try {
+      const { id, subId } = req.params;
+      await this.categoryService.removeSubcategory(id as string, subId as string);
+      res.status(200).json({ success: true, message: 'Subcategory deleted' });
+    } catch (error) {
+      console.error("Error deleting subcategory:", error);
+      res.status(500).json({ success: false, error: { code: 'DELETE_SUB_ERROR', message: 'Error deleting subcategory' } });
+    }
+  }
 }
 
 const categoryService = new CategoryService();

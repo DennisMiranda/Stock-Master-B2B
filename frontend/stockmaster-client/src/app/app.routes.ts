@@ -14,16 +14,16 @@ export const routes: Routes = [
   },
   {
     path: 'user',
-    canActivate:[clientGuard],
+    canActivate: [clientGuard],
     loadComponent: () => import('./layouts/user-layout/user-layout').then((m) => m.UserLayout),
-    children:[
+    children: [
       {
-         path: 'profile',
-    loadComponent: () => import('./features/admin/profile/profile-page').then((m) => m.ProfilePage),
+        path: 'profile',
+        loadComponent: () => import('./features/admin/profile/profile-page').then((m) => m.ProfilePage),
       },
-            {
-         path: 'settings',
-    loadComponent: () => import('./features/admin/settings/settings-page').then((m) => m.SettingsPage),
+      {
+        path: 'settings',
+        loadComponent: () => import('./features/admin/settings/settings-page').then((m) => m.SettingsPage),
       }
     ]
   },
@@ -41,6 +41,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/user/catalog/pages/catalog-page/catalog-page').then(
             (c) => c.CatalogPage
+          ),
+      },
+      {
+        path: 'catalog/product/:id',
+        loadComponent: () =>
+          import('./features/user/catalog/pages/product-detail-page/product-detail-page').then(
+            (c) => c.ProductDetailPage
           ),
       },
       {

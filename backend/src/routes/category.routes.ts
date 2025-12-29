@@ -16,9 +16,27 @@ router.get(
 router.get("/:id", (req, res) => categoryController.getCategoryById(req, res));
 
 // Obtener subcategorías de una categoría específica
+// Obtener subcategorías de una categoría específica
 router.get(
   "/:categoryId/subcategories",
   (req, res) => categoryController.getSubcategoriesByCategory(req, res)
 );
+
+// --- CRUD Routes ---
+
+// Crear categoría
+router.post("/", (req, res) => categoryController.createCategory(req, res));
+
+// Actualizar categoría
+router.put("/:id", (req, res) => categoryController.updateCategory(req, res));
+
+// Eliminar categoría
+router.delete("/:id", (req, res) => categoryController.deleteCategory(req, res));
+
+// Agregar subcategoría
+router.post("/:id/subcategories", (req, res) => categoryController.addSubcategory(req, res));
+
+// Eliminar subcategoría
+router.delete("/:id/subcategories/:subId", (req, res) => categoryController.deleteSubcategory(req, res));
 
 export default router;

@@ -1,0 +1,160 @@
+<app-modal (close)="close.emit()">
+    <div class="p-6 max-w-4xl w-full mx-auto">
+        <h2 class="text-xl font-bold mb-6 text-gray-900 border-b pb-2">
+            {{ _product ? 'Editar Producto' : 'Nuevo Producto' }}
+        </h2>
+
+        <form [formGroup]="editForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Info Básica -->
+                <div class="space-y-4">
+                    <h3 class="font-medium text-gray-700">Información Básica</h3>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del Producto</label>
+                        <input formControlName="name" type="text"
+                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">SKU</label>
+                            <input formControlName="sku" type="text"
+                                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Marca</label>
+                            <input formControlName="brand" type="text"
+                                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                        <textarea formControlName="description" rows="3"
+                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+                    </div>
+                </div>
+
+                <!-- Precios y Stock -->
+                <div class="space-y-4">
+                    <h3 class="font-medium text-gray-700">Precios y Stock (B2B)</h3>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Precio Unitario (S/)</label>
+                            <input formControlName="priceUnit" type="number"
+                                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Stock (Unidades)</label>
+                            <input formControlName="stockUnits" type="number"
+                                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 rounded-lg border border-gray-200 space-y-4">
+                        <div class="flex items-center gap-2">
+                            <div
+                                class="h-5 w-5 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs">
+                                B</div>
+                            <span class="text-sm font-medium text-gray-900">Configuración de Caja/Mayorista</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">Unidades por Caja</label>
+                                <input formControlName="unitPerBox" type="number"
+                                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">Precio por Caja (S/)</label>
+                                <input formControlName="priceBox" type="number"
+                                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+                            </div>
+                            <div class="col-span-2">
+                                <label class="block text-xs font-medium text-gray-500 mb-1">Stock (Cajas
+                                    Completas)</label>
+                                <input formControlName="stockBoxes" type="number"
+                                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Imágenes -->
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-medium text-gray-700">Imágenes del Producto</h3>
+                    <label
+                        class="cursor-pointer bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm transition-all">
+                        <lucide-icon [img]="UploadIcon" class="w-4 h-4"></lucide-icon>
+                        Subir Imágenes
+                        <input type="file" multiple accept="image/*" class="hidden" (change)="onFileSelected($event)">
+                    </label>
+                </div>
+
+                <div
+                    class="flex gap-3 overflow-x-auto pb-2 min-h-[100px] border-2 border-dashed border-gray-200 rounded-xl p-4 items-center">
+
+                    @for (img of existingImages(); track $index) {
+                    <div
+                        class="relative group flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden border border-gray-200">
+                        <img [src]="img" class="w-full h-full object-cover">
+                        <button type="button" (click)="removeExistingImage($index)"
+                            class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <lucide-icon [img]="XIcon" class="w-3 h-3"></lucide-icon>
+                        </button>
+                    </div>
+                    }
+
+                    @for (img of newImages(); track $index) {
+                    <div
+                        class="relative group flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden border border-green-200 ring-2 ring-green-100">
+                        <img [src]="img" class="w-full h-full object-cover">
+                        <button type="button" (click)="removeNewImage($index)"
+                            class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <lucide-icon [img]="XIcon" class="w-3 h-3"></lucide-icon>
+                        </button>
+                        <div
+                            class="absolute bottom-0 inset-x-0 bg-green-500/80 text-white text-[10px] text-center font-bold py-0.5">
+                            NUEVA</div>
+                    </div>
+                    }
+
+                    @if (existingImages().length === 0 && newImages().length === 0) {
+                    <div class="w-full text-center text-gray-400 text-sm">
+                        No hay imágenes seleccionadas
+                    </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="flex justify-between items-center pt-4 border-t border-gray-100">
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" formControlName="isActive" id="activeToggle"
+                        class="rounded text-blue-600 focus:ring-blue-500 w-4 h-4">
+                    <label for="activeToggle" class="text-sm text-gray-700">Producto Activo en Catálogo</label>
+                </div>
+
+                <div class="flex gap-3">
+                    <button type="button" (click)="close.emit()"
+                        class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                        Cancelar
+                    </button>
+                    <button type="submit" [disabled]="editForm.invalid || isSaving"
+                        class="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-sm">
+                        @if (isSaving) {
+                        <lucide-icon [img]="LoaderIcon" class="w-4 h-4 animate-spin"></lucide-icon>
+                        Guardando...
+                        } @else {
+                        Guardar Producto
+                        }
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</app-modal>
