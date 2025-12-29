@@ -1,0 +1,29 @@
+<app-data-table [data]="data()" [columns]="columns()" [isLoading]="isLoading()"> </app-data-table>
+
+<ng-template #nameTemplate let-row>
+  {{ row.name }}
+  <br />
+  <span class="text-xs text-gray-500">Ruc: {{ row.taxId }}</span>
+</ng-template>
+
+<ng-template #statusTemplate let-row>
+  <div
+    [class]="
+      'px-2.5 py-1 rounded-full text-center text-xs font-medium border ' +
+      getStatusBadgeColor(row.status)
+    "
+  >
+    {{ row.status | orderStatus }}
+  </div>
+</ng-template>
+<ng-template #actionTemplate let-row>
+  <app-order-actions (actionChange)="onAction($event, row)"></app-order-actions>
+</ng-template>
+
+@if(isEditModalOpen()) {
+<app-order-edit-modal
+  [order]="selectedOrder()!"
+  (close)="closeEditModal()"
+  (save)="onUpdateStatus($event)"
+></app-order-edit-modal>
+}
