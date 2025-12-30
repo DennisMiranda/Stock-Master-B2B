@@ -1,6 +1,7 @@
-import { Component, inject, output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { CartItem } from '../../../../../core/models/cart.model';
 import { OrderPaymentInfo } from '../../../../../core/models/order.model';
 import { PaymentMethod } from '../../../../../core/models/payment.model';
 
@@ -19,6 +20,8 @@ interface CheckoutPayFormValues {
   styleUrl: './checkout-pay-form.css',
 })
 export class CheckoutPayForm {
+  items = input.required<CartItem[]>();
+
   valueChanges = output<OrderPaymentInfo>();
   isValidChange = output<boolean>();
 
@@ -96,12 +99,14 @@ export class CheckoutPayForm {
     // Format: MM/YY to YYYY-MM-DD (using current century)
     const [month, year] = values.cardExpiration.split('/');
     const expiryDate = new Date(2000 + parseInt(year), parseInt(month), 0); // Last day of the month
+    const total = this.items().reduce((acc, item) => acc + item.product.price! * item.quantity, 0);
+    const subtotal = total - total * 0.18;
 
     return {
       method: values.paymentMethod as PaymentMethod,
-      currency: 'PEN', // Assuming Peruvian Soles as default
-      subtotal: 0, // These values should come from the cart/order service
-      total: 0, // These values should come from the cart/order service
+      currency: 'PEN',
+      subtotal,
+      total,
       paymentReference: `CARD-${cardNumber.slice(-4)}-${Date.now()}`,
     };
   }

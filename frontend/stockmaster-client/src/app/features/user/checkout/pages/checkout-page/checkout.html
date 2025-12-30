@@ -1,12 +1,13 @@
 <section class="h-full max-w-5xl lg:mx-auto md:mx-8 mx-4 space-y-8">
   <h2 class="my-6 text-2xl font-semibold">Checkout</h2>
-  <div class="flex flex-col md:flex-row">
+  <div class="flex flex-col md:flex-row gap-4">
     <div class="grid grid-cols-1 gap-4 md:w-3/4 w-full">
       <app-checkout-customer-form
         (valueChanges)="customerForm.set($event)"
         (isValidChange)="isCustomerFormValid.set($event)"
       ></app-checkout-customer-form>
       <app-checkout-pay-form
+        [items]="cartItems()"
         (valueChanges)="payForm.set($event)"
         (isValidChange)="isPayFormValid.set($event)"
       ></app-checkout-pay-form>
@@ -26,4 +27,11 @@
       Confirmar pedido
     </button>
   </div>
+
+  <button
+    class="rounded-xl bg-gray-600 px-8 py-3 mb-6 font-semibold text-white transition hover:bg-gray-700 disabled:opacity-50"
+    (click)="test()"
+  >
+    Cancelar
+  </button>
 </section>

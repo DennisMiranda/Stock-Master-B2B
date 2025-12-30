@@ -9,8 +9,13 @@ import { CartItem } from '../../../../../core/models/cart.model';
   styleUrl: './checkout-total.css',
 })
 export class CheckoutTotal {
-  items = input<CartItem[]>([]);
+  items = input.required<CartItem[]>();
+
   total = computed<number>(() =>
     this.items().reduce((sum, item) => sum + (item.product.price ?? 0) * item.quantity, 0)
   );
+
+  taxes = computed<number>(() => this.total() * 0.18);
+
+  subTotal = computed<number>(() => this.total() - this.taxes());
 }

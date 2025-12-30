@@ -1,10 +1,13 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { take } from 'rxjs';
 import { AuthService } from '../../../../../core/auth/auth.service';
 import {
   OrderCustomerInfo,
   OrderDeliveryAddress,
   OrderPaymentInfo,
 } from '../../../../../core/models/order.model';
+import { ToastService } from '../../../../../core/services/toast.service';
 import { CartService } from '../../../cart/services/cart.service';
 import { CheckoutCustomerForm } from '../../components/checkout-customer-form/checkout-customer-form';
 import { CheckoutPayForm } from '../../components/checkout-pay-form/checkout-pay-form';
@@ -21,6 +24,8 @@ export class Checkout implements OnInit {
   private checkoutService = inject(CheckoutService);
   private cartService = inject(CartService);
   private authService = inject(AuthService);
+  private toastService = inject(ToastService);
+  private router = inject(Router);
 
   customerForm = signal<{
     customer: OrderCustomerInfo;
@@ -57,11 +62,23 @@ export class Checkout implements OnInit {
       })
       .subscribe({
         next: (response) => {
-          console.log(response);
+          this.toastService.success('Orden creada exitosamente');
+          this.cartService.clearCart();
+          this.router.navigate(['/']);
         },
         error: (error) => {
-          console.log(error);
+          this.toastService.error('Error al crear la orden');
         },
+      });
+  }
+
+  test() {
+    this.toastService.success('Orden creada exitosamente');
+    this.cartService
+      .clearCart()
+      .pipe(take(1))
+      .subscribe(() => {
+        this.router.navigate(['/']);
       });
   }
 }
