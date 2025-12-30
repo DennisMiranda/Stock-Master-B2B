@@ -1,6 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { take } from 'rxjs';
 import { AuthService } from '../../../../../core/auth/auth.service';
 import {
   OrderCustomerInfo,
@@ -69,16 +68,6 @@ export class Checkout implements OnInit {
         error: (error) => {
           this.toastService.error('Error al crear la orden');
         },
-      });
-  }
-
-  test() {
-    this.toastService.success('Orden creada exitosamente');
-    this.cartService
-      .clearCart()
-      .pipe(take(1))
-      .subscribe(() => {
-        this.router.navigate(['/']);
       });
   }
 }
