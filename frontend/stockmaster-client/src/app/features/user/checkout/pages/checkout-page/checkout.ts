@@ -62,7 +62,11 @@ export class Checkout implements OnInit {
       .subscribe({
         next: (response) => {
           this.toastService.success('Orden creada exitosamente');
-          this.cartService.clearCart();
+          this.cartService.clearCart().subscribe({
+            next: () => console.log('Carrito vaciado en frontend'),
+            error: (err) => console.error('Error:', err),
+          });
+
           this.router.navigate(['/']);
         },
         error: (error) => {

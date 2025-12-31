@@ -145,4 +145,22 @@ async getCart(userId: string): Promise<(CartItem & { product: any })[]> {
     await batch.commit();
     return this.getCart(userId);
   }
+async deleteCartCollection(userId: string): Promise<void> {
+  const snap = await this.cartRef(userId).get();
+
+  if (snap.empty) {
+    console.log(`No hay items en el carrito de ${userId}`);
+    return;
+  }
+  const batch = db.batch();
+  snap.docs.forEach((doc) => {
+    batch.delete(doc.ref);
+  });
+
+  await batch.commit();
+
+  console.log(`Carrito de ${userId} eliminado correctamente`);
+}
+
+
 }

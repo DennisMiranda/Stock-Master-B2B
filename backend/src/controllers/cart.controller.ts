@@ -127,4 +127,24 @@ export class CartController {
         .json({ success: false, message: (error as Error).message });
     }
   };
+clearCart = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    if (!userId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User ID required" });
+    }
+
+    await this.service.clearCart(userId); 
+
+    return res.json({ success: true, message: "Cart cleared successfully" });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, message: (error as Error).message });
+  }
+};
+
+
 }

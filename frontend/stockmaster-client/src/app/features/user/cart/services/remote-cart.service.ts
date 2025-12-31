@@ -1,15 +1,17 @@
 import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../../../../core/http/api.service';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import type { CartItem } from '../../../../core/models/cart.model';
 import type { ApiResponse } from '../../../../core/models/api-response.model';
+import { environment } from '../../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RemoteCartService {
   private api = inject(ApiService);
+  apiURL = environment.apiURL;
   private readonly BASE_PATH = '/cart';
 
   getCart(userId: string): Observable<CartItem[]> {
@@ -42,7 +44,17 @@ export class RemoteCartService {
       .pipe(map((res: ApiResponse<CartItem[]>) => res.data ?? []));
   }
 
-  clearCart(): Observable<void> {
-    return this.api.delete<void>(this.BASE_PATH).pipe(map(() => void 0));
-  }
+ clearCart(userId: string): Observable<ApiResponse<void>> {
+  console.log('limpiando carrito remoto:', userId, `${this.BASE_PATH}/clear/${userId}`);
+  return this.api.delete<void>(`${this.BASE_PATH}/clear/${userId}`).pipe(
+    tap((res) => {
+      if (res.success) {
+        console.log('Carrito eliminado correctamente');
+      } else {
+        console.warn('No se pudo eliminar el carrito:', res.message);
+      }
+    })
+  );
+}
+
 }

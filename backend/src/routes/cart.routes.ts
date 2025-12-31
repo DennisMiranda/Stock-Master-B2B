@@ -10,4 +10,6 @@ cartRouter.post("/", controller.addItem);
 cartRouter.delete("/:productId", controller.removeItem);
 cartRouter.post("/merge", controller.mergeCart);
 cartRouter.put("/quantity", controller.updateQuantity);
+cartRouter.delete("/clear/:userId", controller.clearCart);
+
 export default cartRouter;

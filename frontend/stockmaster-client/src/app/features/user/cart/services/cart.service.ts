@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { LocalCartService } from './local-cart.service';
 import { RemoteCartService } from './remote-cart.service';
-import { Observable, of, switchMap, tap } from 'rxjs';
+import { Observable, of, switchMap, map, tap } from 'rxjs';
 import type { CartItem } from '../../../../core/models/cart.model';
 
 @Injectable({
@@ -71,15 +71,22 @@ export class CartService {
     }
   }
 
-  clearCart(): Observable<void> {
-    if (this.isLoggedIn() && this.userId()) {
-      return this.remote.clearCart().pipe(tap(() => this.updateCart([])));
-    } else {
-      this.local.clearCart();
-      this.updateCart([]);
-      return of(void 0);
-    }
+clearCart(): Observable<void> {
+  if (this.isLoggedIn() && this.userId()) {
+    console.log('Limpiando carrito remoto:', this.userId()!);
+    return this.remote.clearCart(this.userId()!).pipe(
+      map(() => void 0), 
+      tap(() => {
+        this.local.clearCart();
+        this.updateCart([]);
+      })
+    );
+  } else {
+    this.local.clearCart();
+    this.updateCart([]);
+    return of(void 0);
   }
+}
 
   private syncOnLogin(): void {
     const localItems = this.local.getCart();
@@ -95,7 +102,6 @@ export class CartService {
   }
 
   private updateCart(items: CartItem[]): void {
-
     this.cartItems.set(items);
     const count = items.reduce((sum, item) => sum + item.quantity, 0);
     this.cartCount.set(count);

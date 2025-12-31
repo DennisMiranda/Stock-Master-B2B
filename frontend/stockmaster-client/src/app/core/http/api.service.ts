@@ -32,6 +32,7 @@ export class ApiService {
   }
 
   delete<T>(path: string, options?: HttpOptions): Observable<ApiResponse<T>> {
+    console.log('mostrnado url', this.apiUrl + path);
     return this.http.delete<ApiResponse<T>>(this.apiUrl + path, options);
   }
 }
