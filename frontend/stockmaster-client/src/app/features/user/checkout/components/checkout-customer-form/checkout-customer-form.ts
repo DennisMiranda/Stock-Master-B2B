@@ -63,7 +63,6 @@ export class CheckoutCustomerForm implements OnInit, OnDestroy {
   constructor() {
     this.form.valueChanges.subscribe((value) => {
       this.valueChanges.emit(this.mapFormValues(value as CheckoutFormValues));
-      console.log('CUSTOMER FORM VALUES:', value, this.form.valid);
       this.isValidChange.emit(this.form.valid);
     });
   }
@@ -85,10 +84,6 @@ export class CheckoutCustomerForm implements OnInit, OnDestroy {
     }
 
     const payload = this.form.getRawValue();
-    console.log('ORDER DATA:', payload);
-
-    // aquí luego:
-    // this.checkoutService.createOrder(payload)
   }
 
   get f() {
