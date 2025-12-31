@@ -1,9 +1,16 @@
 import { google } from "googleapis";
 import { env } from "./env";
 
-const auth = new google.auth.GoogleAuth({
-  keyFile: env.googleDrive.keyfile,
-  scopes: ["https://www.googleapis.com/auth/drive"],
-});
+const OAuth2 = google.auth.OAuth2;
+const auth = new OAuth2(
+    env.googleDrive.clientId,
+    env.googleDrive.clientSecret,
+    "https://developers.google.com/oauthplayground"
+);
+
+auth.setCredentials({
+    refresh_token: env.googleDrive.refreshToken
+
+})
 
 export const drive = google.drive({ version: "v3", auth });
