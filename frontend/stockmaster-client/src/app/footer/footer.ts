@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import emailjs from '@emailjs/browser';
 import { ModalService } from '../modal/modal.service';
 import { LucideAngularModule, Mail, Phone, MapPin, Send, ChevronRight } from 'lucide-angular';
 @Component({
@@ -23,6 +25,11 @@ export class Footer {
   modalService = inject(ModalService);
   currentYear = new Date().getFullYear();
 
+  newsletterEmail = '';
+  newsletterMessage = ''; // mensaje visual para el usuario
+
+  constructor(private http: HttpClient) {}
+
   // Enlaces de navegación
   quickLinks = [
     { label: 'Inicio', route: '/' },
@@ -41,16 +48,50 @@ export class Footer {
     { icon: this.MapPin, text: '123 Calle Principal, Lima, Perú', type: 'address' }
   ];
 
-  newsletterEmail = '';
+  /**
+   * Envía el correo al servicio EmailJS y al endpoint del backend
+   */
+  async onSubmitNewsletter(event: Event) {
+    event.preventDefault();
 
-  onSubmitNewsletter(event: Event) {
+    const email = this.newsletterEmail.trim();
+    if (!email || !this.validateEmail(email)) {
+      this.newsletterMessage = '❌ Por favor, ingresa un correo válido.';
+      return;
+    }
+
+    try {
+      // 1️⃣ Envía un correo de notificación con EmailJS (opcional)
+      await emailjs.send(
+        'service_stockmaster',      // ID del servicio en EmailJS
+        'template_newsletter',      // ID de la plantilla
+        { email: this.newsletterEmail }, // parámetros de la plantilla
+        'PUBLIC_KEY_EMAILJS'        // tu clave pública
+      );
+
+      // 2️⃣ Envía al backend (para guardar en Firestore)
+      await this.http.post('https://tu-servidor.com/api/newsletter', { email }).toPromise();
+
+      this.newsletterMessage = '🎉 ¡Gracias por suscribirte al newsletter!';
+      this.newsletterEmail = '';
+    } catch (error) {
+      console.error('Error en la suscripción:', error);
+      this.newsletterMessage = '⚠️ Error al procesar la suscripción.';
+    }
+  }
+
+  validateEmail(email: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  /*onSubmitNewsletter(event: Event) {
     event.preventDefault();
     if (this.newsletterEmail) {
       console.log('Suscripción:', this.newsletterEmail);
       // Aquí iría la lógica de suscripción
       this.newsletterEmail = '';
     }
-  }
+  }*/
 
   openModal(action: string): void {
     if (action === 'terms') this.modalService.openTerms();
