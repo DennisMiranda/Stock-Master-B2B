@@ -1,11 +1,12 @@
 import { Component, input, output } from '@angular/core';
 import { LucideAngularModule, Package, Trash2, Plus, Minus } from 'lucide-angular';
 import type { CartItem } from '../../../../../core/models/cart.model';
-import { CurrencyPipe } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-card-item-cart',
-  imports: [LucideAngularModule, CurrencyPipe],
+  standalone: true,
+  imports: [CommonModule, LucideAngularModule, CurrencyPipe],
   templateUrl: './card-item-cart.html',
   styleUrl: './card-item-cart.css',
 })
@@ -28,9 +29,9 @@ export class CardItemCart {
   increaseQuantity() {
 
     if (this.item()!.quantity < this.item()!.maxQuantity) {
-     
+
     }
-     this.increase.emit(this.item()!);
+    this.increase.emit(this.item()!);
   }
 
   onQuantityInput(event: Event) {
