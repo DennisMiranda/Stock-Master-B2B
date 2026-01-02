@@ -6,6 +6,7 @@ import { inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import emailjs from '@emailjs/browser';
 import { ModalService } from '../modal/modal.service';
+import { environment } from '../../environments/environment';
 import { LucideAngularModule, Mail, Phone, MapPin, Send, ChevronRight } from 'lucide-angular';
 @Component({
   selector: 'app-footer',
@@ -27,6 +28,7 @@ export class Footer {
 
   newsletterEmail = '';
   newsletterMessage = ''; // mensaje visual para el usuario
+  isLoading = false;
 
   constructor(private http: HttpClient) {}
 
@@ -53,45 +55,52 @@ export class Footer {
    */
   async onSubmitNewsletter(event: Event) {
     event.preventDefault();
-
     const email = this.newsletterEmail.trim();
+
+    // Validar correo
     if (!email || !this.validateEmail(email)) {
       this.newsletterMessage = '❌ Por favor, ingresa un correo válido.';
       return;
     }
 
+    this.isLoading = true;
+    this.newsletterMessage = '';
+
     try {
-      // 1️⃣ Envía un correo de notificación con EmailJS (opcional)
-      await emailjs.send(
-        'service_stockmaster',      // ID del servicio en EmailJS
-        'template_newsletter',      // ID de la plantilla
-        { email: this.newsletterEmail }, // parámetros de la plantilla
-        'PUBLIC_KEY_EMAILJS'        // tu clave pública
-      );
+      // 1️⃣ Enviar correo con EmailJS (solo si no es duplicado)
+      const response: any = await this.http.post(`${environment.apiURL}/newsletter`, { email }).toPromise();
 
-      // 2️⃣ Envía al backend (para guardar en Firestore)
-      await this.http.post('https://tu-servidor.com/api/newsletter', { email }).toPromise();
+      if (response.duplicate) {
+        // ⚠️ Correo ya suscrito
+       this.modalService.openNewsletterDuplicate();
+      } else {
+        // ✅ Correo nuevo — enviar notificación y mostrar éxito
+        await emailjs.send(
+          environment.emailjs.serviceId,
+          environment.emailjs.templateId,
+          { email },
+          environment.emailjs.publicKey
+        );
 
-      this.newsletterMessage = '🎉 ¡Gracias por suscribirte al newsletter!';
-      this.newsletterEmail = '';
+        this.modalService.openNewsletterSuccess();
+      }
+
+      // Limpieza controlada
+      setTimeout(() => {
+        this.newsletterEmail = '';
+      }, 0);
+
     } catch (error) {
       console.error('Error en la suscripción:', error);
       this.newsletterMessage = '⚠️ Error al procesar la suscripción.';
+    } finally {
+      setTimeout(() => { this.isLoading = false; }, 0);
     }
   }
 
   validateEmail(email: string): boolean {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
-
-  /*onSubmitNewsletter(event: Event) {
-    event.preventDefault();
-    if (this.newsletterEmail) {
-      console.log('Suscripción:', this.newsletterEmail);
-      // Aquí iría la lógica de suscripción
-      this.newsletterEmail = '';
-    }
-  }*/
 
   openModal(action: string): void {
     if (action === 'terms') this.modalService.openTerms();
