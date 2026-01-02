@@ -1,0 +1,92 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      '@emailjs/browser':
+        specifier: ^4.4.1
+        version: 4.4.1
+      lucide-angular:
+        specifier: ^0.562.0
+        version: 0.562.0(@angular/common@21.0.6(@angular/core@21.0.6(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.6(rxjs@7.8.2))
+    devDependencies:
+      typescript:
+        specifier: ~5.9.2
+        version: 5.9.3
+
+packages:
+
+  '@angular/common@21.0.6':
+    resolution: {integrity: sha512-Yd8PF0dR37FAzqEcBHAyVCiSGMJOezSJe6rV/4BC6AVLfaZ7oZLl8CNVxKsod2UHd6rKxt1hzx05QdVcVvYNeA==}
+    engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
+    peerDependencies:
+      '@angular/core': 21.0.6
+      rxjs: ^6.5.3 || ^7.4.0
+
+  '@angular/core@21.0.6':
+    resolution: {integrity: sha512-SvWbOkkrsqprYJSBmzQEWkWjfZB/jkRYyFp2ClMJBPqOLxP1a+i3Om2rolcNQjZPz87bs9FszwgRlXUy7sw5cQ==}
+    engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
+    peerDependencies:
+      '@angular/compiler': 21.0.6
+      rxjs: ^6.5.3 || ^7.4.0
+      zone.js: ~0.15.0 || ~0.16.0
+    peerDependenciesMeta:
+      '@angular/compiler':
+        optional: true
+      zone.js:
+        optional: true
+
+  '@emailjs/browser@4.4.1':
+    resolution: {integrity: sha512-DGSlP9sPvyFba3to2A50kDtZ+pXVp/0rhmqs2LmbMS3I5J8FSOgLwzY2Xb4qfKlOVHh29EAutLYwe5yuEZmEFg==}
+    engines: {node: '>=14.0.0'}
+
+  lucide-angular@0.562.0:
+    resolution: {integrity: sha512-nMt4Mq7lkB6ZF5+C3EszsaYZeB6jkxiIlzo0xnS4t6dnxa3cFumcJNYE/Vx950o7owxBhg/LybdfRxGHDsMA3w==}
+    peerDependencies:
+      '@angular/common': 13.x - 21.x
+      '@angular/core': 13.x - 21.x
+
+  rxjs@7.8.2:
+    resolution: {integrity: sha512-dhKf903U/PQZY6boNNtAGdWbG85WAbjT/1xYoZIC7FAY0yWapOBQVsVrDl58W86//e1VpMNBtRV4MaXfdMySFA==}
+
+  tslib@2.8.1:
+    resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
+
+  typescript@5.9.3:
+    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
+snapshots:
+
+  '@angular/common@21.0.6(@angular/core@21.0.6(rxjs@7.8.2))(rxjs@7.8.2)':
+    dependencies:
+      '@angular/core': 21.0.6(rxjs@7.8.2)
+      rxjs: 7.8.2
+      tslib: 2.8.1
+
+  '@angular/core@21.0.6(rxjs@7.8.2)':
+    dependencies:
+      rxjs: 7.8.2
+      tslib: 2.8.1
+
+  '@emailjs/browser@4.4.1': {}
+
+  lucide-angular@0.562.0(@angular/common@21.0.6(@angular/core@21.0.6(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.6(rxjs@7.8.2)):
+    dependencies:
+      '@angular/common': 21.0.6(@angular/core@21.0.6(rxjs@7.8.2))(rxjs@7.8.2)
+      '@angular/core': 21.0.6(rxjs@7.8.2)
+      tslib: 2.8.1
+
+  rxjs@7.8.2:
+    dependencies:
+      tslib: 2.8.1
+
+  tslib@2.8.1: {}
+
+  typescript@5.9.3: {}

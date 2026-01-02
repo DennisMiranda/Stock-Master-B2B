@@ -23,10 +23,12 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@angular/fire": "^20.0.1",
     "cloudinary": "^2.8.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "firebase": "^12.7.0",
     "firebase-admin": "^13.6.0",
     "zod": "^4.1.12"
   }

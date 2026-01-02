@@ -5,7 +5,7 @@ admin.initializeApp({
   credential: admin.credential.cert({
     projectId: env.firebase.projectId,
     clientEmail: env.firebase.clientEmail,
-    privateKey: env.firebase.privateKey,
+    privateKey: env.firebase.privateKey?.replace(/\\n/g, "\n"),
   }),
 });
 

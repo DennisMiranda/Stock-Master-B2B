@@ -17,5 +17,9 @@
   },
   "devDependencies": {
     "typescript": "~5.9.2"
+  },
+  "dependencies": {
+    "@emailjs/browser": "^4.4.1",
+    "lucide-angular": "^0.562.0"
   }
 }
