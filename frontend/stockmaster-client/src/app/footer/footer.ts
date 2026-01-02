@@ -8,6 +8,8 @@ import emailjs from '@emailjs/browser';
 import { ModalService } from '../modal/modal.service';
 import { environment } from '../../environments/environment';
 import { LucideAngularModule, Mail, Phone, MapPin, Send, ChevronRight } from 'lucide-angular';
+import { firstValueFrom } from 'rxjs';
+
 @Component({
   selector: 'app-footer',
   standalone: true,
@@ -68,7 +70,8 @@ export class Footer {
 
     try {
       // 1️⃣ Enviar correo con EmailJS (solo si no es duplicado)
-      const response: any = await this.http.post(`${environment.apiURL}/newsletter`, { email }).toPromise();
+      const response: any = await firstValueFrom(this.http.post(`${environment.apiURL}/newsletter`, { email }));
+
 
       if (response.duplicate) {
         // ⚠️ Correo ya suscrito
