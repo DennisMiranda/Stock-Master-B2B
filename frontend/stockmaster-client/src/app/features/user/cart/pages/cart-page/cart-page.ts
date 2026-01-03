@@ -11,7 +11,7 @@ import {
 import { CartService } from '../../services/cart.service';
 import type { CartItem } from '../../../../../core/models/cart.model';
 import { LucideAngularModule, ShoppingCart, X, ArrowRight } from 'lucide-angular';
-import { CurrencyPipe, JsonPipe, NgClass, Location } from '@angular/common';
+import { CommonModule, CurrencyPipe, JsonPipe, NgClass, Location } from '@angular/common';
 import { CardItemCart } from '../../components/card-item-cart/card-item-cart';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../../../core/auth/auth.service';
@@ -19,7 +19,8 @@ import { onAuthStateChanged } from 'firebase/auth';
 
 @Component({
   selector: 'app-cart-page',
-  imports: [LucideAngularModule, CurrencyPipe, JsonPipe, NgClass, CardItemCart, RouterLink],
+  standalone: true,
+  imports: [CommonModule, LucideAngularModule, CurrencyPipe, NgClass, CardItemCart, RouterLink],
   templateUrl: './cart-page.html',
   styleUrl: './cart-page.css',
 })

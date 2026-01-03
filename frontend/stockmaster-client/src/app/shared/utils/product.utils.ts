@@ -33,6 +33,7 @@ export class ProductUtils {
             priceUnit,
             priceBox,
             wholesaleDiscount,
+            wholesaleMinQty, // Extraction
             unitPerBox,
             description,
             // Destructure others to separate them from clean payload
@@ -56,7 +57,7 @@ export class ProductUtils {
 
         if (wholesaleDiscount > 0) {
             unitPrice.discounts?.push({
-                minQuantity: 3, // Regla de negocio: Mayorista desde 3 unidades (configurable si se desea)
+                minQuantity: wholesaleMinQty || 3, // Use dynamic value, fallback to 3
                 price: wholesalePrice
             });
         }

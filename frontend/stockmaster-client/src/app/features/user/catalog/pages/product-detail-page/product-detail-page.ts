@@ -10,6 +10,8 @@ import { CardPriceVariant } from '../../../../../shared/ui/cards/card-price-vari
 import { CartService } from '../../../cart/services/cart.service';
 import { CategoryService } from '../../../../../core/services/category.service';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ToastService } from '../../../../../core/services/toast.service';
+
 @Component({
     selector: 'app-product-detail-page',
     standalone: true,
@@ -27,6 +29,7 @@ export class ProductDetailPage implements OnInit {
     private productService = inject(ProductService);
     private cartService = inject(CartService);
     private categoryService = inject(CategoryService);
+    private toastService = inject(ToastService);
 
     product = signal<ProductModel | null>(null);
     loading = signal(true);
@@ -185,8 +188,7 @@ export class ProductDetailPage implements OnInit {
         });
 
         if (addedCount > 0) {
-            // Optional: User feedback
-            alert('Productos agregados al carrito correctamente.');
+            this.toastService.success('Productos agregados al carrito correctamente.');
         }
     }
 

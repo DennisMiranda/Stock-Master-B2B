@@ -1,160 +1,385 @@
-<app-modal (close)="close.emit()">
+<app-modal (close)="close.emit()" [maxWidthClass]="'sm:max-w-4xl'">
     <div class="p-6 max-w-4xl w-full mx-auto">
-        <h2 class="text-xl font-bold mb-6 text-gray-900 border-b pb-2">
-            {{ _product ? 'Editar Producto' : 'Nuevo Producto' }}
-        </h2>
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-6 border-b pb-4">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                    <lucide-icon [img]="BoxIcon" class="w-6 h-6 text-blue-600"></lucide-icon>
+                    {{ _product ? 'Editar Producto' : 'Nuevo Producto' }}
+                </h2>
+                <p class="text-sm text-gray-500 mt-1">Complete la información detallada para su catálogo digital.</p>
+            </div>
+        </div>
 
         <form [formGroup]="editForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Info Básica -->
-                <div class="space-y-4">
-                    <h3 class="font-medium text-gray-700">Información Básica</h3>
+            <!-- Section 1: Basic Info -->
+            <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+                <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2 mb-4">
+                    <lucide-icon [img]="FileTextIcon" class="w-5 h-5 text-gray-400"></lucide-icon>
+                    Información General
+                </h3>
 
-                    <div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del Producto</label>
-                        <input formControlName="name" type="text"
-                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">SKU</label>
-                            <input formControlName="sku" type="text"
-                                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Marca</label>
-                            <input formControlName="brand" type="text"
-                                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                        </div>
+                        <input formControlName="name" type="text" placeholder="Ej. Sierra Circular Profesional"
+                            class="w-full px-4 py-2 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 transition-colors shadow-sm"
+                            [class.border-red-500]="editForm.get('name')?.invalid && editForm.get('name')?.touched">
+                        @if (editForm.get('name')?.hasError('required') && editForm.get('name')?.touched) {
+                        <p class="text-xs text-red-500 mt-1">El nombre es obligatorio.</p>
+                        }
+                        @if (editForm.get('name')?.hasError('minlength') && editForm.get('name')?.touched) {
+                        <p class="text-xs text-red-500 mt-1">Mínimo 3 caracteres.</p>
+                        }
                     </div>
 
                     <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
+                        <select formControlName="categoryId"
+                            class="w-full px-4 py-2 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 transition-colors shadow-sm bg-white">
+                            <option value="" disabled selected>Seleccionar Categoría</option>
+                            @for (cat of categories(); track cat.id) {
+                            <option [value]="cat.id">{{ cat.name }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Subcategoría</label>
+                        <select formControlName="subcategoryId"
+                            [attr.disabled]="!editForm.get('categoryId')?.value ? '' : null"
+                            class="w-full px-4 py-2 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 transition-colors shadow-sm bg-white disabled:bg-gray-100 disabled:text-gray-400">
+                            <option value="" disabled selected>Seleccionar Subcategoría</option>
+                            @for (sub of currentSubcategories(); track sub.id) {
+                            <option [value]="sub.id">{{ sub.name }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Marca</label>
+                        <input formControlName="brand" type="text" placeholder="Marca..."
+                            class="w-full px-4 py-2 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 transition-colors shadow-sm"
+                            [class.border-red-500]="editForm.get('brand')?.invalid && editForm.get('brand')?.touched">
+                        @if (editForm.get('brand')?.invalid && editForm.get('brand')?.touched) {
+                        <p class="text-xs text-red-500 mt-1">Marca requerida (Mín. 2 chars).</p>
+                        }
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">SKU / Código</label>
+                        <input formControlName="sku" type="text" placeholder="Autogenerado al guardar"
+                            class="w-full px-4 py-2 rounded-lg border-gray-300 bg-gray-50 text-gray-500 cursor-not-allowed font-mono text-sm border-dashed">
+                    </div>
+
+                    <div class="col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
-                        <textarea formControlName="description" rows="3"
-                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
-                    </div>
-                </div>
-
-                <!-- Precios y Stock -->
-                <div class="space-y-4">
-                    <h3 class="font-medium text-gray-700">Precios y Stock (B2B)</h3>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Precio Unitario (S/)</label>
-                            <input formControlName="priceUnit" type="number"
-                                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Stock (Unidades)</label>
-                            <input formControlName="stockUnits" type="number"
-                                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                        </div>
-                    </div>
-
-                    <div class="p-4 bg-gray-50 rounded-lg border border-gray-200 space-y-4">
-                        <div class="flex items-center gap-2">
-                            <div
-                                class="h-5 w-5 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs">
-                                B</div>
-                            <span class="text-sm font-medium text-gray-900">Configuración de Caja/Mayorista</span>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-medium text-gray-500 mb-1">Unidades por Caja</label>
-                                <input formControlName="unitPerBox" type="number"
-                                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-medium text-gray-500 mb-1">Precio por Caja (S/)</label>
-                                <input formControlName="priceBox" type="number"
-                                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
-                            </div>
-                            <div class="col-span-2">
-                                <label class="block text-xs font-medium text-gray-500 mb-1">Stock (Cajas
-                                    Completas)</label>
-                                <input formControlName="stockBoxes" type="number"
-                                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
-                            </div>
-                        </div>
+                        <textarea formControlName="description" rows="3" placeholder="Describa las características..."
+                            class="w-full px-4 py-2 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 transition-colors shadow-sm resize-none"></textarea>
                     </div>
                 </div>
             </div>
 
-            <!-- Imágenes -->
-            <div class="space-y-3">
-                <div class="flex items-center justify-between">
-                    <h3 class="font-medium text-gray-700">Imágenes del Producto</h3>
-                    <label
-                        class="cursor-pointer bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm transition-all">
-                        <lucide-icon [img]="UploadIcon" class="w-4 h-4"></lucide-icon>
-                        Subir Imágenes
-                        <input type="file" multiple accept="image/*" class="hidden" (change)="onFileSelected($event)">
-                    </label>
+            <!-- Section 2: Inventory Management (Inputs) -->
+            <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+                <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2 mb-4">
+                    <lucide-icon [img]="PackageIcon" class="w-5 h-5 text-gray-400"></lucide-icon>
+                    Gestión de Inventario
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Stock (Unidades)</label>
+                        <div class="relative">
+                            <input formControlName="stockUnits" type="number"
+                                class="w-full pl-4 pr-12 py-2 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 transition-colors shadow-sm text-right"
+                                [class.border-red-500]="editForm.get('stockUnits')?.invalid && editForm.get('stockUnits')?.touched">
+                            <span
+                                class="absolute right-3 top-2 text-gray-400 text-xs font-bold uppercase pt-1">UND</span>
+                        </div>
+                        @if (editForm.get('stockUnits')?.invalid && editForm.get('stockUnits')?.touched) {
+                        <p class="text-xs text-red-500 mt-1">Inválido (Entero positivo).</p>
+                        }
+                        <p class="text-[10px] text-gray-400 mt-1">Conteo total de unidades sueltas.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Unidades/Caja</label>
+                        <div class="flex items-center gap-2">
+                            <input formControlName="unitPerBox" type="number"
+                                class="w-full px-4 py-2 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 transition-colors shadow-sm text-right"
+                                [class.border-red-500]="editForm.get('unitPerBox')?.invalid && editForm.get('unitPerBox')?.touched">
+                            <span class="text-xs font-bold text-gray-500 uppercase whitespace-nowrap">UND/CAJA</span>
+                        </div>
+                        @if (editForm.get('unitPerBox')?.invalid && editForm.get('unitPerBox')?.touched) {
+                        <p class="text-xs text-red-500 mt-1">Mínimo 1 (Entero).</p>
+                        }
+                        <p class="text-[10px] text-gray-400 mt-1">¿Cuántas unidades vienen por caja?</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Stock/Cajas</label>
+                        <div class="relative">
+                            <input formControlName="stockBoxes" type="number"
+                                class="w-full pl-4 pr-12 py-2 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 transition-colors shadow-sm text-right"
+                                [class.border-red-500]="editForm.get('stockBoxes')?.invalid && editForm.get('stockBoxes')?.touched">
+                            <span
+                                class="absolute right-3 top-2 text-gray-400 text-xs font-bold uppercase pt-1">CAJAS</span>
+                        </div>
+                        @if (editForm.get('stockBoxes')?.invalid && editForm.get('stockBoxes')?.touched) {
+                        <p class="text-xs text-red-500 mt-1">Inválido (Entero positivo).</p>
+                        }
+                        <p class="text-[10px] text-gray-400 mt-1">Inventario físico de cajas cerradas.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Pricing Strategy (Config + Preview) -->
+            <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                    <lucide-icon [img]="DollarIcon" class="w-32 h-32"></lucide-icon>
                 </div>
 
-                <div
-                    class="flex gap-3 overflow-x-auto pb-2 min-h-[100px] border-2 border-dashed border-gray-200 rounded-xl p-4 items-center">
+                <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2 mb-4 relative z-10">
+                    <lucide-icon [img]="CalculatorIcon" class="w-5 h-5 text-gray-400"></lucide-icon>
+                    Estrategia de Precios
+                </h3>
 
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
+                    <!-- Column 1: Configuration (Inputs) -->
+                    <div class="space-y-6">
+                        <!-- Base Price -->
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Precio Base de Venta</label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-2 text-gray-500 font-bold">S/</span>
+                                <input formControlName="priceUnit" type="number"
+                                    class="w-full pl-10 pr-4 py-2 text-lg font-bold text-gray-900 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500 shadow-sm">
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">Precio unitario estándar antes de descuentos.</p>
+                        </div>
+
+                        <!-- Discounts -->
+                        <div class="p-4 bg-blue-50/50 rounded-lg border border-blue-100">
+                            <h4 class="text-xs font-bold text-blue-500 uppercase tracking-wider mb-3">Reglas de
+                                Descuento B2B</h4>
+
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-blue-800 mb-1">Desc. Mayorista
+                                        (%)</label>
+                                    <div class="relative">
+                                        <input formControlName="wholesaleDiscount" type="number"
+                                            class="w-full pl-3 pr-8 py-1.5 rounded border-blue-200 text-sm text-blue-700 focus:ring-blue-500 focus:border-blue-500"
+                                            [class.border-red-500]="editForm.get('wholesaleDiscount')?.invalid">
+                                        <lucide-icon [img]="PercentIcon"
+                                            class="absolute right-2 top-2 w-3 h-3 text-blue-400"></lucide-icon>
+                                    </div>
+                                    @if (editForm.get('wholesaleDiscount')?.hasError('max')) {
+                                    <p class="text-[10px] text-red-500 mt-1">Máx 100%.</p>
+                                    }
+                                    @if (editForm.get('wholesaleDiscount')?.hasError('min')) {
+                                    <p class="text-[10px] text-red-500 mt-1">No negativo.</p>
+                                    }
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-blue-800 mb-1">Mínimo (Unidades)</label>
+                                    <input formControlName="wholesaleMinQty" type="number"
+                                        class="w-full px-3 py-1.5 rounded border-blue-200 text-sm text-blue-700 focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="col-span-2">
+                                    <label class="block text-xs font-bold text-blue-800 mb-1">Desc. por Caja (%)</label>
+                                    <div class="relative">
+                                        <input formControlName="boxDiscount" type="number"
+                                            class="w-full pl-3 pr-8 py-1.5 rounded border-blue-200 text-sm text-blue-700 focus:ring-blue-500 focus:border-blue-500"
+                                            [class.border-red-500]="editForm.get('boxDiscount')?.invalid">
+                                        <lucide-icon [img]="PercentIcon"
+                                            class="absolute right-2 top-2 w-3 h-3 text-blue-400"></lucide-icon>
+                                    </div>
+                                    @if (editForm.get('boxDiscount')?.hasError('max')) {
+                                    <p class="text-[10px] text-red-500 mt-1">Máx 100%.</p>
+                                    }
+                                    @if (editForm.get('boxDiscount')?.hasError('min')) {
+                                    <p class="text-[10px] text-red-500 mt-1">No negativo.</p>
+                                    }
+                                    <p class="text-[10px] text-blue-400 mt-1">Aplica al comprar cajas cerradas ({{
+                                        editForm.get('unitPerBox')?.value }} unds).</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Result Preview (Read Only) -->
+                    <div
+                        class="p-6 bg-gray-900 rounded-xl text-white shadow-lg flex flex-col justify-between h-full border border-gray-700">
+                        <div>
+                            <div class="flex items-center gap-2 mb-6 border-b border-gray-700 pb-2">
+                                <lucide-icon [img]="CalculatorIcon" class="w-4 h-4 text-blue-400"></lucide-icon>
+                                <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">Vista Previa de
+                                    Precios</span>
+                            </div>
+
+                            <!-- Final Unit Price -->
+                            <div class="mb-6">
+                                <p class="text-xs text-gray-400 mb-1 uppercase tracking-wide">Precio Unitario Final</p>
+                                <div class="flex items-baseline gap-1">
+                                    <span class="text-sm text-gray-500 font-bold">S/</span>
+                                    <span class="text-3xl font-bold tracking-tight text-white">{{
+                                        (editForm.get('priceUnit')?.value ?? 0) | number:'1.2-2' }}</span>
+                                </div>
+                                @if((editForm.get('wholesaleDiscount')?.value ?? 0) > 0) {
+                                <div
+                                    class="mt-2 inline-flex items-center gap-1.5 px-2 py-1 rounded bg-green-500/10 border border-green-500/20">
+                                    <span class="text-xs font-bold text-green-400">Desc. Mayorista: {{
+                                        editForm.get('wholesaleDiscount')?.value ?? 0 }}% (S/ {{
+                                        calculatedPrices().wholesalePrice | number:'1.2-2' }})</span>
+                                    <span class="text-[10px] text-green-500/60">(Min {{
+                                        editForm.get('wholesaleMinQty')?.value ?? 0 }} unds)</span>
+                                </div>
+                                }
+                            </div>
+
+                            <!-- Final Box Price -->
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <p class="text-xs text-blue-300 mb-1 uppercase tracking-wide font-bold">Precio Caja
+                                        Final</p>
+                                    @if ((editForm.get('boxDiscount')?.value ?? 0) > 0) {
+                                    <span class="text-[10px] font-bold bg-blue-600 px-1.5 py-0.5 rounded text-white">-{{
+                                        editForm.get('boxDiscount')?.value ?? 0 }}%</span>
+                                    }
+                                </div>
+                                <div class="flex items-baseline gap-1">
+                                    <span class="text-sm text-blue-300/50 font-bold">S/</span>
+                                    <span class="text-3xl font-bold tracking-tight text-blue-50">{{
+                                        (editForm.get('priceBox')?.value ?? 0) | number:'1.2-2' }}</span>
+                                </div>
+                                <!-- Helper Calculation -->
+                                <p class="text-xs text-gray-500 mt-1 font-mono">
+                                    S/ {{ ((editForm.get('priceBox')?.value ?? 0) / (editForm.get('unitPerBox')?.value
+                                    || 1)) | number:'1.2-2' }} c/u
+                                </p>
+
+                                @if (calculatedPrices().hasPriceInconsistency) {
+                                <div
+                                    class="mt-2 p-2 bg-amber-500/20 border border-amber-500/40 rounded text-[10px] text-amber-200 flex gap-2 items-start">
+                                    <lucide-icon [img]="AlertTriangleIcon"
+                                        class="w-3 h-3 shrink-0 mt-0.5"></lucide-icon>
+                                    <span>¡Cuidado! El precio por caja es más alto que comprar unidades sueltas.</span>
+                                </div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Hidden Inputs required for form submission but logic driven -->
+                        <input formControlName="priceBox" type="number" class="hidden">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Images -->
+            <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                        <lucide-icon [img]="ImageIcon" class="w-5 h-5 text-gray-400"></lucide-icon>
+                        Galería <span class="text-sm font-normal text-gray-500">({{ totalImageCount() }}/{{ MAX_IMAGES
+                            }})</span>
+                    </h3>
+                    <div class="relative">
+                        <!-- Disable label if full -->
+                        <label [class.opacity-50]="remainingSlots() <= 0"
+                            [class.cursor-not-allowed]="remainingSlots() <= 0"
+                            [class.hover:bg-blue-100]="remainingSlots() > 0"
+                            class="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg text-sm font-medium transition-colors">
+                            <lucide-icon [img]="UploadIcon" class="w-4 h-4"></lucide-icon>
+                            Subir Imagen
+                            <!-- Disable input if full -->
+                            <input type="file" multiple accept="image/*" class="hidden"
+                                [disabled]="remainingSlots() <= 0" (change)="onFileSelected($event)">
+                        </label>
+                    </div>
+                </div>
+
+                @if (totalImageCount() === 0 && editForm.touched) {
+                <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 animate-pulse">
+                    <lucide-icon [img]="AlertCircleIcon" class="w-4 h-4 text-red-600"></lucide-icon>
+                    <p class="text-xs text-red-600 font-bold">Se requiere al menos 1 imagen para el catálogo.</p>
+                </div>
+                }
+
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     @for (img of existingImages(); track $index) {
                     <div
-                        class="relative group flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden border border-gray-200">
-                        <img [src]="img" class="w-full h-full object-cover">
-                        <button type="button" (click)="removeExistingImage($index)"
-                            class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <lucide-icon [img]="XIcon" class="w-3 h-3"></lucide-icon>
-                        </button>
+                        class="relative group aspect-square rounded-lg border border-gray-200 overflow-hidden bg-white">
+                        <img [src]="img" class="w-full h-full object-contain p-2">
+                        <div
+                            class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <button type="button" (click)="removeExistingImage($index)"
+                                class="p-1.5 bg-white text-red-600 rounded-full shadow-lg hover:scale-110 transition-transform">
+                                <lucide-icon [img]="XIcon" class="w-4 h-4"></lucide-icon>
+                            </button>
+                        </div>
+                        <span
+                            class="absolute top-1 right-1 px-1.5 py-0.5 bg-gray-100/90 text-[10px] font-bold text-gray-600 rounded">Existente</span>
                     </div>
                     }
 
                     @for (img of newImages(); track $index) {
                     <div
-                        class="relative group flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden border border-green-200 ring-2 ring-green-100">
-                        <img [src]="img" class="w-full h-full object-cover">
-                        <button type="button" (click)="removeNewImage($index)"
-                            class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <lucide-icon [img]="XIcon" class="w-3 h-3"></lucide-icon>
-                        </button>
+                        class="relative group aspect-square rounded-lg border border-green-200 overflow-hidden bg-green-50/30">
+                        <img [src]="img" class="w-full h-full object-contain p-2">
                         <div
-                            class="absolute bottom-0 inset-x-0 bg-green-500/80 text-white text-[10px] text-center font-bold py-0.5">
-                            NUEVA</div>
+                            class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <button type="button" (click)="removeNewImage($index)"
+                                class="p-1.5 bg-white text-red-600 rounded-full shadow-lg hover:scale-110 transition-transform">
+                                <lucide-icon [img]="XIcon" class="w-4 h-4"></lucide-icon>
+                            </button>
+                        </div>
+                        <span
+                            class="absolute top-1 right-1 px-1.5 py-0.5 bg-green-100/90 text-[10px] font-bold text-green-700 rounded">Nueva</span>
                     </div>
                     }
 
                     @if (existingImages().length === 0 && newImages().length === 0) {
-                    <div class="w-full text-center text-gray-400 text-sm">
-                        No hay imágenes seleccionadas
+                    <div class="col-span-full py-8 text-center border-2 border-dashed border-gray-200 rounded-lg">
+                        <p class="text-sm text-gray-400">No hay imágenes. Sube alguna para empezar.</p>
                     </div>
                     }
                 </div>
             </div>
 
-            <!-- Botones -->
-            <div class="flex justify-between items-center pt-4 border-t border-gray-100">
+            <!-- Footer -->
+            <div class="sticky bottom-0 bg-white border-t pt-4 pb-2 z-20 flex justify-between items-center">
                 <div class="flex items-center gap-2">
-                    <input type="checkbox" formControlName="isActive" id="activeToggle"
-                        class="rounded text-blue-600 focus:ring-blue-500 w-4 h-4">
-                    <label for="activeToggle" class="text-sm text-gray-700">Producto Activo en Catálogo</label>
+                    <div class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" formControlName="isActive" id="activeToggle" class="sr-only peer">
+                        <label for="activeToggle"
+                            class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></label>
+                    </div>
+                    <label for="activeToggle"
+                        class="text-sm font-medium text-gray-700 cursor-pointer select-none">Visible en catálogo</label>
                 </div>
 
                 <div class="flex gap-3">
                     <button type="button" (click)="close.emit()"
-                        class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                        class="px-5 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors">
                         Cancelar
                     </button>
-                    <button type="submit" [disabled]="editForm.invalid || isSaving"
-                        class="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-sm">
+                    <button type="submit" [disabled]="editForm.invalid || isSaving || totalImageCount() === 0"
+                        class="px-5 py-2.5 rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm flex items-center gap-2">
                         @if (isSaving) {
                         <lucide-icon [img]="LoaderIcon" class="w-4 h-4 animate-spin"></lucide-icon>
                         Guardando...
                         } @else {
-                        Guardar Producto
+                        Guardar
                         }
                     </button>
                 </div>
             </div>
+
         </form>
     </div>
 </app-modal>
