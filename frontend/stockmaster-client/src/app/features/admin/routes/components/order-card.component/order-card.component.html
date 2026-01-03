@@ -1,0 +1,65 @@
+<div 
+  (click)="onCardClick()"
+  [class.ring-2]="isSelected()"
+  [class.ring-blue-500]="isSelected()"
+  class="group bg-gray-50 hover:bg-white border border-gray-200 rounded-lg p-4 transition-all hover:shadow-md cursor-pointer"
+>
+  <!-- Header -->
+  <div class="flex items-start justify-between mb-3">
+    <div class="flex-1 min-w-0">
+      <p class="font-bold text-gray-900">{{ order().id }}</p>
+      <p class="text-sm text-gray-600 truncate">{{ order().customer.companyName }}</p>
+    </div>
+    <span 
+      [ngClass]="getStatusClass(order().status!)"
+      class="px-2 py-1 rounded-lg text-xs font-semibold whitespace-nowrap"
+    >
+      {{ getStatusLabel(order().status!) }}
+    </span>
+  </div>
+
+  <!-- Total Items -->
+  <div class="mb-3 flex items-center gap-2 bg-blue-50 p-3 rounded-lg">
+    <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+      <lucide-icon [img]="ShoppingBagIcon" class="w-5 h-5 text-white"></lucide-icon>
+    </div>
+    <div>
+      <p class="text-2xl font-bold text-blue-900">{{ totalItems() }}</p>
+      <p class="text-xs text-blue-700">artículos en total</p>
+    </div>
+  </div>
+
+  <!-- Address -->
+  <div class="mb-3 flex items-start gap-2 text-xs text-gray-600 bg-gray-100 p-2 rounded">
+    <lucide-icon [img]="MapPinIcon" class="w-4 h-4 flex-shrink-0 mt-0.5 text-gray-400"></lucide-icon>
+    <div class="flex-1">
+      <p class="font-medium text-gray-900">{{ order().deliveryAddress.street }} {{ order().deliveryAddress.number }}</p>
+      <p>{{ order().deliveryAddress.district }}, {{ order().deliveryAddress.city }}</p>
+    </div>
+  </div>
+
+  <!-- Payment Info -->
+  <div class="mb-3 text-xs text-gray-600 bg-green-50 p-2 rounded flex justify-between items-center">
+    <span class="font-medium">Total:</span>
+    <span class="text-lg font-bold text-green-700">
+      {{ order().payment.currency }} {{ order().payment.total.toFixed(2) }}
+    </span>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex gap-2">
+    <button
+      (click)="onAssignToRoute($event)"
+      class="flex-1 px-3 py-2 bg-gray-900 text-white text-sm font-semibold rounded-lg hover:bg-gray-800 transition-colors"
+    >
+      Asignar a Ruta
+    </button>
+    <button
+      (click)="onViewDetails($event)"
+      class="px-3 py-2 border border-gray-300 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
+    >
+      <lucide-icon [img]="EyeIcon" class="w-4 h-4"></lucide-icon>
+      Ver más
+    </button>
+  </div>
+</div>

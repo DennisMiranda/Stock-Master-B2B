@@ -5,6 +5,9 @@ import productRoutes from "./routes/product.routes";
 import cartRouters from "./routes/cart.routes";
 import categoryRoutes from "./routes/category.routes";
 import { userRoutes } from "./routes/user.routes";
+import routesRoutes from './routes/routes.routes';
+import driversRoutes from './routes/drivers.routes';
+import deliveriesRoutes from './routes/deliveries.routes';
 import cors from "cors";
 import express from "express";
 const app = express();
@@ -23,6 +26,9 @@ app.use("/v1/api/categories", categoryRoutes);
 app.use("/v1/api/orders", orderRoutes);
 app.use("/v1/api/auth", authRoutes);
 app.use("/v1/api/users", userRoutes);
+app.use('/v1/api/routes', routesRoutes);
+app.use('/v1/api/drivers', driversRoutes);
+app.use('/v1/api/deliveries', deliveriesRoutes);
 app.use(errorMiddleware);
 
 

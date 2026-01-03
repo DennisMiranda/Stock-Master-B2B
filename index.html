@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>Leaflet + OSRM + Routes</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+      #map {
+        height: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+      // Simulación de tu signal<Route[]>
+      const routes = [
+        {
+          id: "R-001",
+          name: "Ruta Lince Norte",
+          driverId: "DRV-001",
+          orders: [
+            {
+              id: "ORD-001",
+              deliveryId: "DEL-001",
+              customer: {
+                companyName: "REAL SERVICE",
+                contactName: "Especialistas en bidón de agua mineral",
+              },
+              deliveryAddress: {
+                street: "Av. Francisco Lazo 2352",
+                district: "Lince",
+                city: "Lima",
+                postalCode: "15046",
+                location: { lat: -12.082228, lng: -77.03599 },
+              },
+              status: "CREATED",
+            },
+          ],
+          districts: ["Lince"],
+          status: "PLANNED",
+          createdAt: Date.now(),
+        },
+      ];
+
+      // Coordenadas de referencia
+      const center = { lat: -12.084984, lng: -77.034583 };
+      const distributor = { lat: -12.087458, lng: -77.033026 };
+
+      // Inicializar mapa
+      const map = L.map("map").setView([center.lat, center.lng], 15);
+
+      // Tiles de OpenStreetMap
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "© OpenStreetMap contributors",
+      }).addTo(map);
+
+      // Marcador del distribuidor
+      L.marker([distributor.lat, distributor.lng])
+        .addTo(map)
+        .bindPopup("Distribuidor");
+
+      // Marcador del centro
+      L.marker([center.lat, center.lng]).addTo(map).bindPopup("Centro");
+
+      // Marcadores de las órdenes
+      routes[0].orders.forEach((order) => {
+        const loc = order.deliveryAddress.location;
+        L.marker([loc.lat, loc.lng])
+          .addTo(map)
+          .bindPopup(`Orden ${order.id}<br>${order.customer.companyName}`);
+      });
+
+      // Ejemplo: calcular ruta con OSRM entre distribuidor y la primera orden
+      const origen = `${distributor.lng},${distributor.lat}`;
+      const destino = `${routes[0].orders[0].deliveryAddress.location.lng},${routes[0].orders[0].deliveryAddress.location.lat}`;
+
+      fetch(
+        `http://router.project-osrm.org/route/v1/driving/${origen};${destino}?overview=full&geometries=geojson`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          const route = data.routes[0].geometry;
+          L.geoJSON(route, {
+            style: { color: "blue", weight: 4 },
+          }).addTo(map);
+        });
+    </script>
+  </body>
+</html>
