@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { ApiService } from '../../http/api.service';
 import { Order } from '../../models/order.model';
 
-interface OrdersPaginatedResponse {
+export interface OrdersPaginatedResponse {
   orders: Order[];
   metadata: { count: number; pages: number };
 }
@@ -20,6 +20,7 @@ export class OrderService {
   getOrders() {
     return this.apiService.get<OrdersPaginatedResponse>('/orders');
   }
+  
 
   getOrderById(id: string) {
     return this.apiService.get<Order>(`/orders/${id}`);

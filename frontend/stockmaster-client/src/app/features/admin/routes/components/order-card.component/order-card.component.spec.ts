@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MapRouter } from './map-router';
+import { OrderCardComponent } from './order-card.component';
 
-describe('MapRouter', () => {
-  let component: MapRouter;
-  let fixture: ComponentFixture<MapRouter>;
+describe('OrderCardComponent', () => {
+  let component: OrderCardComponent;
+  let fixture: ComponentFixture<OrderCardComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MapRouter]
+      imports: [OrderCardComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(MapRouter);
+    fixture = TestBed.createComponent(OrderCardComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

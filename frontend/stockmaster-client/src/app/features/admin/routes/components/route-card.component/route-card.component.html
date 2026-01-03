@@ -1,0 +1,72 @@
+<div 
+  (click)="onCardClick()"
+  [class.ring-2]="isSelected()"
+  [class.ring-blue-500]="isSelected()"
+  class="group bg-gray-50 hover:bg-white border border-gray-200 rounded-lg p-4 transition-all hover:shadow-md cursor-pointer"
+>
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-3">
+    <div class="flex-1">
+      <p class="font-bold text-gray-900">{{ route().name || 'Ruta ' + route().id }}</p>
+      <p class="text-xs text-gray-500">{{ route().id }}</p>
+    </div>
+    <span 
+      [ngClass]="getStatusClass(route().status)"
+      class="px-2 py-1 rounded-lg text-xs font-semibold"
+    >
+      {{ getStatusLabel(route().status) }}
+    </span>
+  </div>
+
+  <!-- Driver Info -->
+  @if (route().driver) {
+    <div class="mb-3 flex items-center gap-2 bg-purple-50 p-2 rounded text-xs">
+      <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold">
+        {{ route().driver!.name.substring(0, 2).toUpperCase() }}
+      </div>
+      <div class="flex-1">
+        <p class="font-medium text-purple-900">{{ route().driver!.name }}</p>
+        <p class="text-purple-700">Conductor asignado</p>
+      </div>
+    </div>
+  }
+
+  <!-- Stats -->
+  <div class="grid grid-cols-2 gap-3 mb-3">
+<div class="bg-blue-50 p-3 rounded-lg">
+<p class="text-2xl font-bold text-blue-900">{{ route().orders.length }}</p>
+<p class="text-xs text-blue-700">pedidos</p>
+</div>
+<div class="bg-purple-50 p-3 rounded-lg">
+<p class="text-2xl font-bold text-purple-900">{{ route().districts?.length || 0 }}</p>
+<p class="text-xs text-purple-700">distritos</p>
+</div>
+  </div>
+  <!-- Districts -->
+@if (route().districts && route().districts!.length > 0) {
+<div class="flex flex-wrap gap-1 mb-3">
+@for (district of route().districts; track district) {
+<span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded inline-flex items-center gap-1">
+<lucide-icon [img]="MapPinIcon" class="w-3 h-3"></lucide-icon>
+{{ district }}
+</span>
+}
+</div>
+}
+  <!-- Actions -->
+  <div class="flex gap-2">
+    <button
+      (click)="onAssignDriver($event)"
+      class="flex-1 px-3 py-2 bg-gray-900 text-white text-sm font-semibold rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
+    >
+      <lucide-icon [img]="UserPlusIcon" class="w-4 h-4"></lucide-icon>
+      Asignar Conductor
+    </button>
+    <button
+      (click)="onViewDetails($event)"
+      class="px-3 py-2 border border-gray-300 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+    >
+      <lucide-icon [img]="ChevronRightIcon" class="w-4 h-4"></lucide-icon>
+    </button>
+  </div>
+</div>

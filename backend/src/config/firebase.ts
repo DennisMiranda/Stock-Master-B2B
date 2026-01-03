@@ -12,3 +12,11 @@ admin.initializeApp({
 export const db = admin.firestore();
 
 export default admin;
+
+export const COLLECTIONS = {
+  USERS: 'users',
+  ORDERS: 'orders',
+  ROUTES: 'routes',
+  DRIVERS: 'drivers',
+  DELIVERIES: 'deliveries',
+} as const;
