@@ -13,7 +13,7 @@ interface SoldProductStatistic {
 
 export class StatisticService {
   private get soldProductsCollection() {
-    return db.collection("statistics/sold_products");
+    return db.collection("statistics").doc("sold_products").collection("data");
   }
 
   /**
@@ -27,13 +27,34 @@ export class StatisticService {
       return db.runTransaction(async (tx) => {
         const soldProductsRef = this.soldProductsCollection;
 
-        for (const item of orderItems) {
-          const productDocRef = soldProductsRef.doc(item.id);
+        const soldProducts: Record<string, SoldProductStatistic> = {};
 
-          const productDoc = await tx.get(productDocRef);
-          const productData = productDoc.data() as
-            | SoldProductStatistic
-            | undefined;
+        // 1.Guardamos refs y lecturas
+        const docRefs = orderItems.map((item) => soldProductsRef.doc(item.id));
+        const snapshots = await tx.getAll(...docRefs);
+
+        // 2.Guardamos los datos en un objeto
+        for (const snapshot of snapshots) {
+          const data = snapshot.data() as SoldProductStatistic | undefined;
+          if (data) {
+            soldProducts[data.id] = data;
+          }
+        }
+
+        // 3.Actualizamos los datos del objeto
+        for (const item of orderItems) {
+          if (!soldProducts[item.id]) {
+            soldProducts[item.id] = {
+              id: item.id,
+              name: item.name!,
+              unitSold: 0,
+              boxSold: 0,
+              totalUnitSold: 0,
+            };
+          }
+
+          const productDocRef = soldProductsRef.doc(item.id);
+          let productData: SoldProductStatistic = soldProducts[item.id]!;
 
           let unitSold = productData?.unitSold || 0;
           let boxSold = productData?.boxSold || 0;
@@ -47,15 +68,19 @@ export class StatisticService {
             totalUnitSold += item.quantity * item.unitPerBox!;
           }
 
-          const newProductData: SoldProductStatistic = {
+          soldProducts[item.id] = {
             id: item.id,
             name: item.name!,
             unitSold,
             boxSold,
             totalUnitSold,
           };
+        }
 
-          tx.set(productDocRef, newProductData, { merge: true });
+        for (const statistic of Object.values(soldProducts)) {
+          tx.set(this.soldProductsCollection.doc(statistic.id), statistic, {
+            merge: true,
+          });
         }
 
         return CustomResponse.success(null, "Sold products updated");
