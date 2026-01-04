@@ -3,6 +3,7 @@ import { orderSchema } from "../models/order.model";
 import { OrderService } from "../services/order/order.service";
 import { ProductService } from "../services/product.service";
 import { CustomResponse } from "../utils/custom-response";
+import { StatisticService } from "../services/statistic.service";
 
 class OrderController {
   private orderService: OrderService;
@@ -134,6 +135,7 @@ class OrderController {
 }
 
 const productService = new ProductService();
-const orderService = new OrderService(productService);
+const statisticService = new StatisticService();
+const orderService = new OrderService(productService, statisticService);
 const orderController = new OrderController(orderService);
 export default orderController;
