@@ -1,17 +1,17 @@
 import { Transaction } from "@google-cloud/firestore";
 import { Filter } from "firebase-admin/firestore";
 import { db } from "../config/firebase";
-
 import type { Product, ProductDoc } from "../models/product.model";
 import { CategoryService } from "./category.service";
 import { SequenceService } from "./sequence.service";
+import { OrderVariant, ORDER_VARIANT } from "../models/order.model";
 
 export class ProductService {
   private productsCollection = db.collection("products");
   private categoryService = new CategoryService();
   private sequenceService = new SequenceService();
 
-  constructor() { }
+  constructor() {}
 
   /**
    * Servicio para buscar productos con filtros opcionales (listado + paginación)
@@ -26,6 +26,8 @@ export class ProductService {
     brand?: string;
     inStockOnly?: boolean;
     isActive?: boolean;
+    minRequiredStock?: number;
+    variant?: OrderVariant;
   }) {
     try {
       const searchTerm = params.search?.toUpperCase() ?? "";
@@ -48,8 +50,23 @@ export class ProductService {
         query = query.where("brand", "==", params.brand);
       }
 
-      if (params.inStockOnly) {
-        query = query.where("stockUnits", ">", 0);
+      if (params.inStockOnly || params.minRequiredStock || params.variant) {
+        const minRequiredStock = params.minRequiredStock || 0;
+
+        if (params.variant) {
+          if (params.variant === ORDER_VARIANT.box) {
+            query = query.where("stockBoxes", ">", minRequiredStock);
+          } else {
+            query = query.where("stockUnits", ">", minRequiredStock);
+          }
+        } else {
+          query = query.where(
+            Filter.or(
+              Filter.where("stockUnits", ">", minRequiredStock),
+              Filter.where("stockBoxes", ">", minRequiredStock)
+            )
+          );
+        }
       }
 
       if (params.isActive !== undefined) {
@@ -80,7 +97,7 @@ export class ProductService {
       // Con término de búsqueda: usar solo el primer término para evitar problemas con Firestore
       // Nota: Firestore tiene limitaciones con múltiples términos, por lo que se usa solo el primero
       const firstTerm = searchTerm.split(" ")[0];
-      const baseQuery = query.where(
+      query = query.where(
         Filter.or(
           Filter.and(
             Filter.where("searchName", ">=", firstTerm),
@@ -93,36 +110,6 @@ export class ProductService {
           Filter.where("searchArray", "array-contains", searchTerm)
         )
       );
-
-      if (params.brand) {
-        query = query.where("brand", "==", params.brand);
-      }
-
-      if (params.inStockOnly) {
-        query = query.where("stockUnits", ">", 0);
-      }
-
-      if (params.subcategoryId) {
-        query = query.where("subcategoryId", "==", params.subcategoryId);
-      }
-
-      // Aplicar búsqueda de texto si existe
-      if (searchTerm) {
-        const firstTerm = searchTerm.split(" ")[0];
-        query = query.where(
-          Filter.or(
-            Filter.and(
-              Filter.where("searchName", ">=", firstTerm),
-              Filter.where("searchName", "<=", firstTerm + "\uf8ff")
-            ),
-            Filter.and(
-              Filter.where("sku", ">=", searchTerm),
-              Filter.where("sku", "<=", searchTerm + "\uf8ff")
-            ),
-            Filter.where("searchArray", "array-contains", searchTerm)
-          )
-        );
-      }
 
       // Obtener total de productos (para paginación)
       const snapshotTotal = await query.count().get();
@@ -221,14 +208,19 @@ export class ProductService {
 
     // 1. Validar Categoría y Subcategoría
     if (!data.categoryId || !data.subcategoryId) {
-      throw new Error("Category and Subcategory are required for SKU generation");
+      throw new Error(
+        "Category and Subcategory are required for SKU generation"
+      );
     }
 
-    const category = await this.categoryService.getCategoryById(data.categoryId);
+    const category = await this.categoryService.getCategoryById(
+      data.categoryId
+    );
     if (!category) throw new Error("Category not found");
 
-    const subcategories = await this.categoryService.getSubcategoriesByCategoryId(data.categoryId);
-    const subcategory = subcategories.find(s => s.id === data.subcategoryId);
+    const subcategories =
+      await this.categoryService.getSubcategoriesByCategoryId(data.categoryId);
+    const subcategory = subcategories.find((s) => s.id === data.subcategoryId);
     if (!subcategory) throw new Error("Subcategory not found");
 
     // 2. Generar Prefijo de SKU (3 letras CAT + 3 letras SUB)
@@ -237,30 +229,32 @@ export class ProductService {
     const skuPrefix = `${catPrefix}${subPrefix}`;
 
     // 3. Obtener Siguiente Secuencia
-    const sequenceValue = await this.sequenceService.getNextSequenceValue(skuPrefix);
+    const sequenceValue = await this.sequenceService.getNextSequenceValue(
+      skuPrefix
+    );
 
     // 4. Formatear SKU final (ej. FER-MAN-00001)
-    const sku = `${skuPrefix}-${sequenceValue.toString().padStart(5, '0')}`;
+    const sku = `${skuPrefix}-${sequenceValue.toString().padStart(5, "0")}`;
 
     // Generar índices de búsqueda
-    const searchName = (data.name || '').toUpperCase();
-    const finalData = { ...data, sku, name: data.name || '' }; // Ensure data has sku/name for search array
+    const searchName = (data.name || "").toUpperCase();
+    const finalData = { ...data, sku, name: data.name || "" }; // Ensure data has sku/name for search array
     const searchArray = this.generateSearchArray(finalData);
 
     const newProduct: ProductDoc = {
       ...data,
       id: docRef.id,
       sku: sku, // Override/Set SKU
-      name: data.name || '',
+      name: data.name || "",
       searchName,
       searchArray,
       categoryId: data.categoryId,
       subcategoryId: data.subcategoryId,
-      brand: data.brand || '',
+      brand: data.brand || "",
       prices: data.prices || [],
       unitPerBox: data.unitPerBox || 1,
       images: data.images || [],
-      description: data.description || '',
+      description: data.description || "",
       isActive: data.isActive ?? true,
       createdAt: Date.now(),
       updatedAt: Date.now(),
@@ -289,9 +283,9 @@ export class ProductService {
 
       if (data.name || data.sku || data.brand) {
         const dummyForSearch = {
-          name: data.name || '',
-          sku: data.sku || '',
-          brand: data.brand || ''
+          name: data.name || "",
+          sku: data.sku || "",
+          brand: data.brand || "",
         };
         // Solo actualizamos searchArray si tenemos el nombre, que es lo más crítico
         if (data.name) {
@@ -319,8 +313,10 @@ export class ProductService {
       data.name,
       data.sku,
       data.brand,
-      ...(data.name?.split(' ') || [])
-    ].filter(Boolean).map(t => t!.toUpperCase());
+      ...(data.name?.split(" ") || []),
+    ]
+      .filter(Boolean)
+      .map((t) => t!.toUpperCase());
 
     // Eliminar duplicados
     return [...new Set(terms)];
