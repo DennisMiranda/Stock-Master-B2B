@@ -1,0 +1,252 @@
+<div class="p-4 md:p-8 space-y-8 animate-in fade-in duration-500 pb-20">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Dashboard Financiero & Logístico</h1>
+            <p class="text-sm text-gray-500 mt-1">Visión general del rendimiento y alertas de inventario</p>
+        </div>
+
+        @if (isLoading()) {
+        <div
+            class="flex items-center gap-2 text-indigo-600 animate-pulse bg-indigo-50 px-3 py-1.5 rounded-full text-xs font-medium">
+            <span class="w-2 h-2 bg-indigo-600 rounded-full"></span>
+            Actualizando datos...
+        </div>
+        }
+    </div>
+
+    @if (stats(); as data) {
+    <!-- SECCIÓN 1: PRODUCTOS ESTRELLA (Top Selling) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Columna Izquierda: Top Unidades -->
+        <div class="flex flex-col bg-white rounded-2xl border border-gray-200 shadow-xl overflow-hidden relative">
+            <!-- Decorative Header Background -->
+            <div
+                class="absolute top-0 w-full h-32 bg-gradient-to-r from-blue-600 to-indigo-600 opacity-10 pointer-events-none">
+            </div>
+
+            <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between relative z-10">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-blue-100 text-blue-700 rounded-xl shadow-sm">
+                        <lucide-angular [img]="PackageIcon" class="w-5 h-5"></lucide-angular>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-900">Más Vendidos (Unidades)</h3>
+                        <p class="text-xs text-gray-500 font-medium">Venta al por menor</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="overflow-auto flex-1 p-0">
+                <table class="w-full text-sm">
+                    <tbody class="divide-y divide-gray-50">
+                        @for (item of data.topSelling.byUnit; track item.id; let i = $index) {
+                        <tr class="group">
+                            <td class="pl-6 py-4 w-16 text-center">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-gray-50 text-gray-400 font-bold flex items-center justify-center text-sm group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                    {{ i + 1 }}
+                                </div>
+                            </td>
+                            <td class="px-4 py-4 w-16">
+                                @if (item.images.length && item.images[0]) {
+                                <img [src]="item.images[0]"
+                                    class="w-12 h-12 rounded-lg object-cover bg-gray-50 ring-1 ring-gray-100 shadow-sm">
+                                } @else {
+                                <div
+                                    class="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400">
+                                    <lucide-angular [img]="PackageIcon" class="w-5 h-5 opacity-50"></lucide-angular>
+                                </div>
+                                }
+                            </td>
+                            <td class="px-4 py-4">
+                                <span class="block font-bold text-gray-900 text-lg mb-0.5">{{ item.name }}</span>
+                                <span class="text-xs text-gray-500">Unidad Individual</span>
+                            </td>
+                            <td class="pr-6 py-4 text-right">
+                                <span class="block font-bold text-xl text-blue-700">{{ item.unitSold }}</span>
+                                <span
+                                    class="text-xs text-blue-600/80 font-medium uppercase tracking-wider">Unidades</span>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Columna Derecha: Top Cajas -->
+        <div class="flex flex-col bg-white rounded-2xl border border-gray-200 shadow-xl overflow-hidden relative">
+            <!-- Decorative Header Background -->
+            <div
+                class="absolute top-0 w-full h-32 bg-gradient-to-r from-amber-500 to-orange-600 opacity-10 pointer-events-none">
+            </div>
+
+            <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between relative z-10">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-amber-100 text-amber-700 rounded-xl shadow-sm">
+                        <lucide-angular [img]="BoxIcon" class="w-5 h-5"></lucide-angular>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-900">Más Vendidos (Cajas)</h3>
+                        <p class="text-xs text-gray-500 font-medium">Venta Mayorista</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="overflow-auto flex-1 p-0">
+                <table class="w-full text-sm">
+                    <tbody class="divide-y divide-gray-50">
+                        @for (item of data.topSelling.byBox; track item.id; let i = $index) {
+                        <tr class="group">
+                            <td class="pl-6 py-4 w-16 text-center">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-gray-50 text-gray-400 font-bold flex items-center justify-center text-sm group-hover:bg-amber-500 group-hover:text-white transition-colors">
+                                    {{ i + 1 }}
+                                </div>
+                            </td>
+                            <td class="px-4 py-4 w-16">
+                                @if (item.images.length && item.images[0]) {
+                                <img [src]="item.images[0]"
+                                    class="w-12 h-12 rounded-lg object-cover bg-gray-50 ring-1 ring-gray-100 shadow-sm">
+                                } @else {
+                                <div
+                                    class="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400">
+                                    <lucide-angular [img]="BoxIcon" class="w-5 h-5 opacity-50"></lucide-angular>
+                                </div>
+                                }
+                            </td>
+                            <td class="px-4 py-4">
+                                <span class="block font-bold text-gray-900 text-lg mb-0.5">{{ item.name }}</span>
+                                <span class="text-xs text-gray-500">Caja Master</span>
+                            </td>
+                            <td class="pr-6 py-4 text-right">
+                                <span class="block font-bold text-xl text-amber-700">{{ item.boxSold }}</span>
+                                <span
+                                    class="text-xs text-amber-600/80 font-medium uppercase tracking-wider">Cajas</span>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SECCIÓN 2: URGENCIA (Low Stock) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+
+        <!-- Low Stock Unidades -->
+        <div
+            class="bg-white rounded-xl border border-red-100 shadow-sm overflow-hidden ring-1 ring-red-50 flex flex-col">
+            <div class="px-5 py-4 border-b border-red-100 bg-red-50/30 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <lucide-angular [img]="AlertIcon" class="w-4 h-4 text-red-500"></lucide-angular>
+                    <h3 class="font-semibold text-red-700">Stock Crítico: Unidades</h3>
+                </div>
+                <span class="text-xs font-semibold bg-red-100 text-red-700 px-2 py-1 rounded">Reponer Urgente</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-50 text-gray-500">
+                        <tr>
+                            <th class="px-5 py-2 text-left font-medium">Producto</th>
+                            <th class="px-5 py-2 text-right font-medium">Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-red-50">
+                        @for (item of data.lowStock.byUnit; track item.id) {
+                        <tr class="bg-white">
+                            <td class="px-5 py-3 flex items-center gap-3">
+                                @if (item.images.length && item.images[0]) {
+                                <img [src]="item.images![0]"
+                                    class="w-9 h-9 rounded object-cover border border-gray-200">
+                                } @else {
+                                <div class="w-9 h-9 rounded bg-gray-100 flex items-center justify-center text-gray-400">
+                                    <lucide-angular [img]="PackageIcon" class="w-4 h-4"></lucide-angular>
+                                </div>
+                                }
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-gray-700">{{ item.name }}</span>
+                                    <span class="text-xs text-gray-400">SKU: {{ item.sku }}</span>
+                                </div>
+                            </td>
+                            <td class="px-5 py-3 text-right align-middle">
+                                <app-stock-badge [value]="item.stockUnits" type="unit"></app-stock-badge>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Low Stock Cajas -->
+        <div
+            class="bg-white rounded-xl border border-orange-100 shadow-sm overflow-hidden ring-1 ring-orange-50 flex flex-col">
+            <div class="px-5 py-4 border-b border-orange-100 bg-orange-50/30 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <lucide-angular [img]="AlertIcon" class="w-4 h-4 text-orange-500"></lucide-angular>
+                    <h3 class="font-semibold text-orange-700">Stock Crítico: Cajas</h3>
+                </div>
+                <span class="text-xs font-semibold bg-orange-100 text-orange-700 px-2 py-1 rounded">Solicitar
+                    Proveedor</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-50 text-gray-500">
+                        <tr>
+                            <th class="px-5 py-2 text-left font-medium">Producto</th>
+                            <th class="px-5 py-2 text-right font-medium">Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-orange-50">
+                        @for (item of data.lowStock.byBox; track item.id) {
+                        <tr class="bg-white">
+                            <td class="px-5 py-3 flex items-center gap-3">
+                                @if (item.images.length && item.images[0]) {
+                                <img [src]="item.images![0]"
+                                    class="w-9 h-9 rounded object-cover border border-gray-200">
+                                } @else {
+                                <div class="w-9 h-9 rounded bg-gray-100 flex items-center justify-center text-gray-400">
+                                    <lucide-angular [img]="BoxIcon" class="w-4 h-4"></lucide-angular>
+                                </div>
+                                }
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-gray-700">{{ item.name }}</span>
+                                    <span class="text-xs text-gray-400">SKU: {{ item.sku }}</span>
+                                </div>
+                            </td>
+                            <td class="px-5 py-3 text-right align-middle">
+                                <app-stock-badge [value]="item.stockBoxes" type="box"></app-stock-badge>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    }
+
+    @else {
+    <!-- Skeleton State -->
+    <div class="animate-pulse space-y-6">
+        <!-- Top Selling Grid Skeleton -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="h-80 bg-gray-100 rounded-2xl border border-gray-200"></div>
+            <div class="h-80 bg-gray-100 rounded-2xl border border-gray-200"></div>
+        </div>
+        <!-- Low Stock Grid Skeleton -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="h-64 bg-gray-100 rounded-xl border border-gray-200"></div>
+            <div class="h-64 bg-gray-100 rounded-xl border border-gray-200"></div>
+        </div>
+    </div>
+    }
+
+
+</div>

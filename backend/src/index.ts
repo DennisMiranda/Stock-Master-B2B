@@ -11,6 +11,7 @@ import driversRoutes from './routes/drivers.routes';
 import cors from "cors";
 import express from "express";
 import bodyParser from 'body-parser';
+import dashboardRoutes from './routes/dashboard.routes';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -31,6 +32,7 @@ app.use("/v1/api/users", userRoutes);
 app.use("/v1/api/newsletter", newsletterRoutes);
 app.use('/v1/api/routes', routesRoutes);
 app.use('/v1/api/drivers', driversRoutes);
+app.use('/v1/api/dashboard', dashboardRoutes);
 app.use(errorMiddleware);
 
 app.listen(PORT, () => {
