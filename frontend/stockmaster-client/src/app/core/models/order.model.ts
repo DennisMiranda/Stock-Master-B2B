@@ -4,6 +4,12 @@ export const ORDER_VARIANT = {
   unit: 'unit',
   box: 'box',
 } as const;
+
+export const ORDER_VARIANT_LABELS = {
+  [ORDER_VARIANT.unit]: 'unidad',
+  [ORDER_VARIANT.box]: 'caja',
+};
+
 //usar type para definir la interfaz
 export type OrderVariant = (typeof ORDER_VARIANT)[keyof typeof ORDER_VARIANT];
 

@@ -1,0 +1,49 @@
+<section title="Productos sugeridos" class="space-y-6 mt-8 md:mx-8 mx-4 mb-4">
+  <h3 class="text-lg text-gray-400">
+    Lo sentimos la compra no se ha completado, algunos productos no tienen stock suficiente.
+  </h3>
+  <h2 class="text-2xl font-semibold">Productos sugeridos</h2>
+
+  @for (itemError of itemsWithError(); track itemError.item.id + itemError.item.variant) {
+  <div class="bg-gray-100 p-4 rounded-lg">
+    <div class="flex md:flex-row md:items-center gap-4 shadow-sm p-2 rounded-lg">
+      <img
+        [src]="itemError.item.imageUrl"
+        [alt]="itemError.item.name"
+        class="w-16 h-16 object-cover rounded-md"
+      />
+      <div class="flex flex-col">
+        <p class="text-sm md:text-base text-gray-800">
+          <strong>{{ itemError.item.name }} </strong>
+        </p>
+        <p class="text-sm text-gray-700">
+          Cantidad solicitada: {{ itemError.item.quantity }} ({{
+            itemError.item.variant | variant
+          }})
+        </p>
+        <p class="text-sm text-gray-700">
+          Stock disponible:
+          {{
+            itemError.item.variant == 'unit' ? itemError.item.stockUnits : itemError.item.stockBoxes
+          }}
+          ({{ itemError.item.variant | variant }})
+        </p>
+        <p class="text-gray-600 italic font-semibold">No hay stock suficiente</p>
+      </div>
+    </div>
+
+    @if(itemError.suggestions?.length){
+
+    <br />
+    <p class="mb-4">Estos productos te podrian interesar:</p>
+    <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 md:gap-4 gap-2">
+      @for(item of itemError.suggestions; track item.id) {
+      <li>
+        <app-card-product [product]="itemError.suggestions?.[0]"></app-card-product>
+      </li>
+      }
+    </ul>
+    }
+  </div>
+  }
+</section>
