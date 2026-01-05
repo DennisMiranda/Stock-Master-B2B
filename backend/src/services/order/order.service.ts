@@ -10,18 +10,29 @@ import {
   ORDER_VARIANT,
   OrderDetailItem,
 } from "../../models/order.model";
-
+import { Product } from "../../models/product.model";
 import { CustomResponse } from "../../utils/custom-response";
 import { paginateQuery } from "../../utils/pagination";
 import { ProductService } from "../product.service";
+import { StatisticService } from "../statistic.service";
+
+interface CreateOrderError {
+  item: Partial<OrderDetailItem>;
+  suggestions?: Product[];
+}
 
 export class OrderService {
   private ordersCollection = db.collection("orders");
   private productsCollection = db.collection("products");
   private productService: ProductService;
+  private statisticService: StatisticService;
 
-  constructor(productService: ProductService) {
+  constructor(
+    productService: ProductService,
+    statisticService: StatisticService
+  ) {
     this.productService = productService;
+    this.statisticService = statisticService;
   }
 
   async getOrdersPaginated(params: { page?: number; limit?: number }) {
@@ -59,12 +70,9 @@ export class OrderService {
   async createOrder(
     order: Order
   ): Promise<
-    CustomResponseModel<
-      Order | null,
-      ResponseError<Partial<OrderDetailItem>>[] | null
-    >
+    CustomResponseModel<Order | null, ResponseError<CreateOrderError>[] | null>
   > {
-    const errors: ResponseError<Partial<OrderDetailItem>>[] = [];
+    const errors: ResponseError<CreateOrderError>[] = [];
     try {
       return await db.runTransaction(async (tx) => {
         const orderItems: OrderDetailItem[] = [];
@@ -83,7 +91,7 @@ export class OrderService {
             errors.push({
               code: "PRODUCT_NOT_FOUND",
               message: "Producto no encontrado",
-              details: item,
+              details: { item },
             });
             continue;
           }
@@ -98,13 +106,25 @@ export class OrderService {
           }
 
           if (availableStock < item.quantity) {
+            const suggestions = await this.productService.searchProducts({
+              subcategoryId: product.subcategoryId,
+              limit: 5,
+              minRequiredStock: item.quantity,
+              variant: item.variant,
+            });
+
             errors.push({
               code: "INSUFFICIENT_STOCK",
               message: "Stock insuficiente",
               details: {
-                ...item,
-                stockUnits: product.stockUnits,
-                stockBoxes: product.stockBoxes,
+                item: {
+                  ...item,
+                  name: product.name,
+                  imageUrl: product.images?.[0],
+                  stockUnits: product.stockUnits,
+                  stockBoxes: product.stockBoxes,
+                },
+                suggestions: suggestions.products,
               },
             });
             continue;
@@ -123,13 +143,19 @@ export class OrderService {
             });
           }
 
-          const priceVariant = product.prices.find((price) => price.label === item.variant);
+          const priceVariant = product.prices.find(
+            (price) => price.label === item.variant
+          );
           let unitPrice = priceVariant?.price || 0;
 
           // Calcular precio con descuento (B2B Logic)
           if (priceVariant?.discounts?.length) {
-            const sortedDiscounts = [...priceVariant.discounts].sort((a, b) => b.minQuantity - a.minQuantity);
-            const applicableDiscount = sortedDiscounts.find(d => item.quantity >= d.minQuantity);
+            const sortedDiscounts = [...priceVariant.discounts].sort(
+              (a, b) => b.minQuantity - a.minQuantity
+            );
+            const applicableDiscount = sortedDiscounts.find(
+              (d) => item.quantity >= d.minQuantity
+            );
             if (applicableDiscount) {
               unitPrice = applicableDiscount.price;
             }
@@ -167,6 +193,9 @@ export class OrderService {
         };
 
         tx.set(orderRef, finalOrder);
+
+        // 5. SAVE SOLD PRODUCTS COUNT
+        await this.statisticService.updateSoldProducts(orderItems);
 
         return CustomResponse.success(finalOrder, "Orden creada exitosamente");
       });

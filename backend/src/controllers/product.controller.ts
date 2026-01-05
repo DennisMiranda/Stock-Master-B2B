@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { ProductService } from "../services/product.service";
+import { Order, OrderVariant } from "../models/order.model";
 
 class ProductController {
   private productService: ProductService;
@@ -18,6 +19,8 @@ class ProductController {
         subcategoryId,
         brand,
         inStockOnly,
+        minRequiredStock,
+        variant,
       } = req.query;
 
       const params = {
@@ -28,7 +31,14 @@ class ProductController {
         subcategoryId: subcategoryId as string,
         brand: brand as string,
         inStockOnly: inStockOnly === "true",
-        isActive: req.query.isActive !== undefined ? req.query.isActive === 'true' : undefined
+        isActive:
+          req.query.isActive !== undefined
+            ? req.query.isActive === "true"
+            : undefined,
+        minRequiredStock: minRequiredStock
+          ? Number(minRequiredStock)
+          : undefined,
+        variant: variant as OrderVariant | undefined,
       };
 
       const { products, metadata } = await this.productService.searchProducts(
@@ -53,14 +63,20 @@ class ProductController {
       const product = await this.productService.getProductById(id as string);
 
       if (!product) {
-        res.status(404).json({ success: false, error: { message: "Producto no encontrado" } });
+        res.status(404).json({
+          success: false,
+          error: { message: "Producto no encontrado" },
+        });
         return;
       }
 
       res.status(200).json({ success: true, data: product });
     } catch (error) {
       console.error("Error getting product:", error);
-      res.status(500).json({ success: false, error: { message: "Error interno del servidor" } });
+      res.status(500).json({
+        success: false,
+        error: { message: "Error interno del servidor" },
+      });
     }
   }
 
@@ -70,7 +86,9 @@ class ProductController {
       // 'images' debe ser array de strings (URL o Base64)
       let images = req.body.images || [];
       const processedImages: string[] = [];
-      const { cloudinaryService } = await import("../services/cloudinary.service");
+      const { cloudinaryService } = await import(
+        "../services/cloudinary.service"
+      );
 
       for (const img of images) {
         if (img.startsWith("data:image")) {
@@ -85,21 +103,20 @@ class ProductController {
 
       const productData = {
         ...req.body,
-        images: processedImages
+        images: processedImages,
       };
 
       const productId = await this.productService.createProduct(productData);
 
       res.status(201).json({
         success: true,
-        data: { id: productId, ...productData }
+        data: { id: productId, ...productData },
       });
-
     } catch (error) {
       console.error("Error creating product:", error);
       res.status(500).json({
         success: false,
-        error: { message: "Error al crear producto" }
+        error: { message: "Error al crear producto" },
       });
     }
   }
@@ -111,7 +128,9 @@ class ProductController {
       // Manejo de Imágenes similar a create
       let processedImages = req.body.images;
       if (processedImages && Array.isArray(processedImages)) {
-        const { cloudinaryService } = await import("../services/cloudinary.service");
+        const { cloudinaryService } = await import(
+          "../services/cloudinary.service"
+        );
         const finalImages: string[] = [];
         for (const img of processedImages) {
           if (img.startsWith("data:image")) {
@@ -127,10 +146,12 @@ class ProductController {
       await this.productService.updateProduct(id as string, req.body);
 
       res.status(200).json({ success: true, message: "Producto actualizado" });
-
     } catch (error) {
       console.error("Error updating product:", error);
-      res.status(500).json({ success: false, error: { message: "Error al actualizar producto" } });
+      res.status(500).json({
+        success: false,
+        error: { message: "Error al actualizar producto" },
+      });
     }
   }
 
@@ -141,7 +162,10 @@ class ProductController {
       res.status(200).json({ success: true, message: "Producto eliminado" });
     } catch (error) {
       console.error("Error deleting product:", error);
-      res.status(500).json({ success: false, error: { message: "Error al eliminar producto" } });
+      res.status(500).json({
+        success: false,
+        error: { message: "Error al eliminar producto" },
+      });
     }
   }
 }
