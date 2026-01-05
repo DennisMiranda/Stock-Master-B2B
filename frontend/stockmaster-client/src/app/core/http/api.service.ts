@@ -35,4 +35,7 @@ export class ApiService {
     console.log('mostrnado url', this.apiUrl + path);
     return this.http.delete<ApiResponse<T>>(this.apiUrl + path, options);
   }
+  patch<T>(path: string, data: unknown, options?: HttpOptions): Observable<ApiResponse<T>> {
+    return this.http.patch<ApiResponse<T>>(this.apiUrl + path, data, options);
+  }
 }

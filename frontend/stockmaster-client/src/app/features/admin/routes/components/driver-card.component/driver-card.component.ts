@@ -1,34 +1,41 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, Truck, UserPlus } from 'lucide-angular';
+import { 
+  LucideAngularModule, 
+  Truck, 
+  UserPlus, 
+  MoreVertical,
+  UserMinus,
+  RefreshCw,
+  BarChart3
+} from 'lucide-angular';
 import { Driver, DriverStatus } from '../../../../../core/models/driver.model';
 
 @Component({
   selector: 'app-driver-card',
+  standalone: true,
   imports: [LucideAngularModule, CommonModule],
   templateUrl: './driver-card.component.html',
-  styleUrl: './driver-card.component.css',
 })
 export class DriverCardComponent {
-  // Inputs
   driver = input.required<Driver>();
   isSelected = input<boolean>(false);
-
-  // Outputs
+readonly DriverStatus = DriverStatus;
   cardClick = output<string>();
   assignRoute = output<string>();
+  changeStatus = output<{ driverId: string; status: DriverStatus }>();
 
-  // Icons
+  showMenu = signal(false);
+
   readonly TruckIcon = Truck;
   readonly UserPlusIcon = UserPlus;
+  readonly MoreVerticalIcon = MoreVertical;
+  readonly UserMinusIcon = UserMinus;
+  readonly RefreshCwIcon = RefreshCw;
+  readonly BarChart3Icon = BarChart3;
 
   getInitials(name: string): string {
-    return name
-      ?.split(' ')
-      .map(n => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2) || '??';
+    return name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || '??';
   }
 
   getStatusClass(status: DriverStatus): string {
@@ -65,8 +72,14 @@ export class DriverCardComponent {
     this.cardClick.emit(this.driver().id);
   }
 
-  onAssignRoute(event: Event): void {
+  onChangeStatus(event: Event, status: DriverStatus): void {
     event.stopPropagation();
-    this.assignRoute.emit(this.driver().id);
+    this.changeStatus.emit({ driverId: this.driver().id, status });
+    this.showMenu.set(false);
+  }
+
+  toggleMenu(event: Event): void {
+    event.stopPropagation();
+    this.showMenu.update(v => !v);
   }
 }

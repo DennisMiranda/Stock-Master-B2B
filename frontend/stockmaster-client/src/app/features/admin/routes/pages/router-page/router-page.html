@@ -8,24 +8,36 @@
           <p class="text-sm text-gray-600">Gestión en tiempo real de conductores y pedidos</p>
         </div>
         @if (hasActiveFilter()) {
-          <button
-            (click)="resetMapFilter()"
-            class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors"
-          >
-            Ver todo
+        <button
+          (click)="resetMapFilter()"
+          class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors"
+        >
+          Ver todo
+        </button>
+        } @if (error()) {
+        <div class="bg-red-50 border border-red-200 rounded-lg p-3 flex items-center gap-2">
+          <svg class="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fill-rule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          <span class="text-sm text-red-800">{{ error() }}</span>
+          <button (click)="refreshData()" class="ml-auto text-red-600 hover:text-red-800">
+            Reintentar
           </button>
+        </div>
         }
       </div>
     </header>
-    
-        <app-map-router 
-      [drivers]="filteredDrivers()" 
-      [orders]="filteredOrders()" 
+
+    <app-map-router
+      [drivers]="filteredDrivers()"
+      [orders]="filteredOrders()"
       [entregas]="filteredEntregas()"
       [routes]="filteredRoutes()"
     />
-
-
   </div>
 
   <!-- Tabs (40%) -->
@@ -33,101 +45,133 @@
     <!-- Tab Headers -->
     <div class="flex gap-2">
       @for (tab of tabs; track tab.key) {
-        <button
-          (click)="activeTab.set(tab.key); resetMapFilter()"
-          [class]="
-            activeTab() === tab.key
-              ? 'bg-gray-900 text-white'
-              : 'bg-white text-gray-600 hover:bg-gray-50'
-          "
-          class="flex-1 px-2 py-3 rounded-lg shadow-sm border border-gray-100 font-semibold transition-all flex items-center justify-center gap-2"
-        >
-          <lucide-icon [img]="tab.icon" class="w-5 h-5"></lucide-icon>
-          <span class="hidden sm:inline text-sm">{{ tab.label }}</span>
-        </button>
+      <button
+        (click)="activeTab.set(tab.key); resetMapFilter()"
+        [class]="
+          activeTab() === tab.key
+            ? 'bg-gray-900 text-white'
+            : 'bg-white text-gray-600 hover:bg-gray-50'
+        "
+        class="flex-1 px-2 py-3 rounded-lg shadow-sm border border-gray-100 font-semibold transition-all flex items-center justify-center gap-2"
+      >
+        <lucide-icon [img]="tab.icon" class="w-5 h-5"></lucide-icon>
+        <span class="hidden sm:inline text-sm">{{ tab.label }}</span>
+      </button>
       }
     </div>
 
     <!-- Tab Content -->
-    <div class="flex-1 bg-white rounded-xl shadow-sm overflow-hidden flex flex-col">
-      
+    <div class="flex-1 bg-white overflow-hidden flex flex-col">
       <!-- Loading State -->
       @if (loading()) {
-        <div class="flex-1 flex items-center justify-center">
-          <div class="text-center">
-            <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-gray-200 border-t-gray-900"></div>
-            <p class="mt-4 text-gray-600">Cargando datos...</p>
-          </div>
+      <div class="flex-1 flex items-center justify-center">
+        <div class="text-center">
+          <div
+            class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-gray-200 border-t-gray-900"
+          ></div>
+          <p class="mt-4 text-gray-600">Cargando datos...</p>
         </div>
-      }
-
-
-      @if (activeTab() === 'drivers' && !loading()) {
-        <div class="flex-1 overflow-y-auto p-4">
-          @if (drivers().length === 0) {
-            <div class="flex items-center justify-center h-full">
-              <p class="text-gray-500">No hay conductores disponibles</p>
-            </div>
-          } @else {
-            <div class="space-y-3">
-              @for (driver of drivers(); track driver.id) {
-                <app-driver-card
-                  [driver]="driver"
-                  [isSelected]="selectedDriverId() === driver.id"
-                  (cardClick)="onDriverClick($event)"
-                  (assignRoute)="assignRouteToDriver($event)"
-                />
-              }
-            </div>
+      </div>
+      } @if (activeTab() === 'drivers' && !loading()) {
+      <section class="flex-1 overflow-y-auto p-4">
+        @if (drivers().length === 0) {
+        <div class="flex items-center justify-center h-full">
+          <p class="text-gray-500">No hay conductores disponibles</p>
+        </div>
+        } @else {
+        <ul class="space-y-2 flex flex-col">
+          @for (driver of drivers(); track driver.id) {
+          <app-driver-card
+            [driver]="driver"
+            [isSelected]="selectedDriverId() === driver.id"
+            (cardClick)="onDriverClick($event)"
+            (changeStatus)="onDriverChangeStatus($event)"
+          />
           }
-        </div>
+        </ul>
+        }
+      </section>
       }
 
       <!-- 📦 ORDERS TAB -->
       @if (activeTab() === 'orders' && !loading()) {
-        <div class="flex-1 overflow-y-auto p-4">
-          @if (orders().length === 0) {
-            <div class="flex items-center justify-center h-full">
-              <p class="text-gray-500">No hay pedidos disponibles</p>
-            </div>
-          } @else {
-            <div class="space-y-3">
-              @for (order of orders(); track order.id) {
-                <app-order-card
-                  [order]="order"
-                  [isSelected]="selectedOrderId() === order.id"
-                  (cardClick)="onOrderClick($event)"
-                  (assignToRoute)="assignOrderToRoute($event)"
-                  (viewDetails)="viewOrderDetails($event)"
-                />
-              }
-            </div>
-          }
+      <section class="flex-1 overflow-y-auto p-4">
+        @if (orders().length === 0) {
+        <div class="flex items-center justify-center h-full">
+          <p class="text-gray-500">No hay pedidos disponibles</p>
         </div>
+        } @else {
+        <ul class="space-y-2 flex flex-col">
+          @for (order of orders(); track order.id) {
+          <app-order-card
+            [order]="order"
+            [isSelected]="selectedOrderId() === order.id"
+            (cardClick)="onOrderClick($event)"
+            (assignToRoute)="assignOrderToRoute($event)"
+            (changeStatus)="onOrderChangeStatus($event)"
+            (cancelOrder)="onOrderCancel($event)"
+          />
+          }
+        </ul>
+        }
+      </section>
       }
 
+      <!-- 🚚 ROUTES TAB -->
+@if (activeTab() === 'routes' && !loading()) {
+<section class="flex-1 overflow-y-auto p-4">
+  <!-- ✅ Botón para crear ruta -->
+  <div class="mb-4">
+    <button
+      (click)="showCreateRouteModal.set(true)"
+      class="w-full px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+    >
+      <lucide-icon [img]="PlusIcon" class="w-5 h-5"></lucide-icon>
+      Crear Nueva Ruta
+    </button>
+  </div>
 
-      @if (activeTab() === 'routes' && !loading()) {
-        <div class="flex-1 overflow-y-auto p-4">
-          @if (routes().length === 0) {
-            <div class="flex items-center justify-center h-full">
-              <p class="text-gray-500">No hay rutas disponibles</p>
-            </div>
-          } @else {
-            <div class="space-y-3">
-              @for (route of routes(); track route.id) {
-                <app-route-card
-                  [route]="route"
-                  [isSelected]="selectedRouteId() === route.id"
-                  (cardClick)="onRouteClick($event)"
-                  (assignDriver)="assignDriverToRoute($event)"
-                  (viewDetails)="viewRouteDetails($event)"
-                />
-              }
-            </div>
-          }
-        </div>
-      }
+  @if (routes().length === 0) {
+  <div class="flex items-center justify-center h-full">
+    <p class="text-gray-500">No hay rutas disponibles</p>
+  </div>
+  } @else {
+  <ul class="space-y-2 flex flex-col">
+    @for (route of routes(); track route.id) {
+    <app-route-card
+      [route]="route"
+      [isSelected]="selectedRouteId() === route.id"
+      [deliveredOrders]="getDeliveredOrders(route.id)"
+      (cardClick)="onRouteClick($event)"
+      (assignDriver)="assignDriverToRoute($event)"
+      (viewDetails)="viewRouteDetails($event)"
+      (startRoute)="onRouteStart($event)"
+      (completeRoute)="onRouteComplete($event)"
+      (cancelRoute)="onRouteCancel($event)"
+      (markOrderDelivered)="onMarkOrderDelivered($event)"
+      (removeOrder)="onRemoveOrder($event)"
+    />
+    }
+  </ul>
+  }
+</section>
+}
+
+
     </div>
   </div>
+  @if (showAssignModal()) {
+  <app-assign-route-modal
+    [routes]="routes()"
+    (routeSelected)="onRouteSelected($event)"
+    (close)="closeAssignModal()"
+  />
+  }
+  <!-- ✅ Modal de crear ruta -->
+@if (showCreateRouteModal()) {
+  <app-create-route-modal
+    (close)="showCreateRouteModal.set(false)"
+    (create)="onCreateRoute($event)"
+  />
+}
 </div>

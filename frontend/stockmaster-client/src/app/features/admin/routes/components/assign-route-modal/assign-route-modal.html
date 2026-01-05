@@ -1,0 +1,134 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+  <!-- Overlay con backdrop blur -->
+  <div 
+    class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+    (click)="onClose()"
+  ></div>
+
+  <!-- Modal -->
+  <div class="relative w-full max-w-md transform transition-all duration-300 scale-100 opacity-100">
+    <!-- Contenedor del modal -->
+    <div class="bg-white rounded-xl shadow-2xl overflow-hidden">
+      <!-- Header -->
+      <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="bg-white/20 backdrop-blur p-2 rounded-lg">
+              <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-lg font-bold text-white">Asignar a Ruta</h2>
+              <p class="text-sm text-blue-100">Selecciona una ruta disponible</p>
+            </div>
+          </div>
+          <button 
+            (click)="onClose()" 
+            class="text-white/80 hover:text-white hover:bg-white/10 p-2 rounded-lg transition-colors"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="p-6">
+        <!-- Indicador de cantidad -->
+        <div class="mb-4 flex items-center justify-between">
+          <span class="text-sm text-gray-600">
+            Mostrando <span class="font-semibold text-gray-800">{{ routes().length }}</span> rutas disponibles
+          </span>
+        </div>
+
+        <!-- Lista de rutas -->
+        <ul class="space-y-3 max-h-[400px] overflow-y-auto pr-2">
+          @for (route of routes(); track route.id) {
+            <li>
+              <button
+                (click)="selectRoute(route.id)"
+                class="w-full px-4 py-4 text-left rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-md bg-white hover:bg-blue-50 transition-all duration-200 group"
+              >
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-3">
+                    <div class="bg-blue-100 group-hover:bg-blue-200 p-2 rounded-lg transition-colors">
+                      <svg class="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2L1 21h22L12 2zm0 3.99L19.53 19H4.47L12 5.99z"/>
+                        <path d="M11 10h2v5h-2zm0 6h2v2h-2z"/>
+                      </svg>
+                    </div>
+                    <span class="font-semibold text-gray-900">
+                      {{ route.name || ('Ruta #' + route.id.slice(-6)) }}
+                    </span>
+                  </div>
+                  <!-- Estado -->
+                  <span 
+                    class="text-xs font-medium px-2.5 py-1 rounded-full"
+                    [ngClass]="{
+                      'bg-blue-100 text-blue-800': route.status === 'PLANNED',
+                      'bg-purple-100 text-purple-800': route.status === 'IN_PROGRESS',
+                      'bg-emerald-100 text-emerald-800': route.status === 'COMPLETED',
+                      'bg-gray-100 text-gray-800': !route.status
+                    }"
+                  >
+                    {{ getStatusLabel(route.status) }}
+                  </span>
+                </div>
+
+                <!-- Detalles adicionales -->
+                <div class="grid grid-cols-2 gap-2 text-sm text-gray-600">
+                  <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+                    </svg>
+                    <span>{{ route.orders.length || 0 }} pedidos</span>
+                  </div>
+                </div>
+
+                <!-- Flecha indicadora -->
+                <div class="mt-3 flex justify-end">
+                  <span class="text-blue-600 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
+                    Seleccionar
+                    <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                    </svg>
+                  </span>
+                </div>
+              </button>
+            </li>
+          }
+          @empty {
+            <!-- Estado vacío -->
+            <div class="text-center py-8">
+              <div class="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                <svg class="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                </svg>
+              </div>
+              <p class="text-gray-600 font-medium">No hay rutas disponibles</p>
+              <p class="text-sm text-gray-500 mt-1">Intenta más tarde o crea una nueva ruta</p>
+            </div>
+          }
+        </ul>
+
+        <!-- Footer -->
+        <div class="mt-6 pt-4 border-t border-gray-100">
+          <div class="flex justify-between items-center">
+            <button 
+              (click)="onClose()" 
+              class="px-4 py-2 text-gray-700 hover:text-gray-900 font-medium text-sm transition-colors"
+            >
+              Cancelar
+            </button>
+            <div class="text-xs text-gray-500">
+              Haz clic en una ruta para asignar
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+

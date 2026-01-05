@@ -1,65 +1,122 @@
-<div 
+<li
   (click)="onCardClick()"
   [class.ring-2]="isSelected()"
   [class.ring-blue-500]="isSelected()"
-  class="group bg-gray-50 hover:bg-white border border-gray-200 rounded-lg p-4 transition-all hover:shadow-md cursor-pointer"
+  class="group grid grid-cols-2 gap-1 space-y-1 bg-gray-50 hover:bg-white border border-gray-200 rounded-sm p-4 transition-all hover:shadow-md cursor-pointer relative"
 >
-  <!-- Header -->
-  <div class="flex items-start justify-between mb-3">
+  <!-- Menu Button -->
+  <button
+    (click)="toggleMenu($event)"
+    class="absolute top-3 right-3 p-1 hover:bg-gray-100 rounded-sm transition-colors"
+  >
+    <lucide-icon [img]="MoreVerticalIcon" class="w-5 h-5 text-gray-500"></lucide-icon>
+  </button>
+
+  <!-- Dropdown Menu -->
+  @if (showMenu()) {
+  <div
+    class="absolute top-12 right-3 bg-white border border-gray-200 rounded-sm shadow-lg z-10 min-w-[180px]"
+  >
+    <a
+      [routerLink]="['/admin/orders', order().id]"
+      class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+    >
+      <lucide-icon [img]="EyeIcon" class="w-4 h-4 text-gray-500"></lucide-icon>
+      Ver Detalles
+    </a>
+
+    <hr class="my-1 border-gray-200" />
+
+    <div class="px-3 py-1 text-xs text-gray-500 font-semibold">Cambiar Estado</div>
+
+    @if (order().status === ORDER_STATUS.created) {
+    <button
+      (click)="onChangeStatus($event, ORDER_STATUS.inPacking)"
+      class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+    >
+      <lucide-icon [img]="PackageIcon" class="w-4 h-4 text-blue-600"></lucide-icon>
+      Empaquetar
+    </button>
+    } @if (order().status === ORDER_STATUS.inPacking) {
+    <button
+      (click)="onChangeStatus($event, ORDER_STATUS.ready)"
+      class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+    >
+      <lucide-icon [img]="CheckCircle2Icon" class="w-4 h-4 text-blue-600"></lucide-icon>
+      Marcar Listo
+    </button>
+    } @if (order().status !== ORDER_STATUS.cancelled && order().status !== ORDER_STATUS.delivered) {
+    <button
+      (click)="onCancelOrder($event, ORDER_STATUS.cancelled)"
+      class="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-100"
+    >
+      <lucide-icon [img]="XCircleIcon" class="w-4 h-4 text-red-600"></lucide-icon>
+      Cancelar Pedido
+    </button>
+    }
+  </div>
+  }
+
+  <!-- Rest of the card content -->
+  <div class="flex col-span-2 items-start justify-between mb-3 mr-6">
     <div class="flex-1 min-w-0">
       <p class="font-bold text-gray-900">{{ order().id }}</p>
-      <p class="text-sm text-gray-600 truncate">{{ order().customer.companyName }}</p>
+      <p class="text-sm text-gray-500 truncate">{{ order().customer.companyName }}</p>
     </div>
-    <span 
+    <span
       [ngClass]="getStatusClass(order().status!)"
-      class="px-2 py-1 rounded-lg text-xs font-semibold whitespace-nowrap"
+      class="px-2 py-1 rounded-sm text-xs font-semibold whitespace-nowrap"
     >
       {{ getStatusLabel(order().status!) }}
     </span>
   </div>
 
-  <!-- Total Items -->
-  <div class="mb-3 flex items-center gap-2 bg-blue-50 p-3 rounded-lg">
-    <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
-      <lucide-icon [img]="ShoppingBagIcon" class="w-5 h-5 text-white"></lucide-icon>
-    </div>
-    <div>
-      <p class="text-2xl font-bold text-blue-900">{{ totalItems() }}</p>
-      <p class="text-xs text-blue-700">artículos en total</p>
-    </div>
-  </div>
+ <!-- Items resumen -->
+<!-- Items resumen -->
+<div class="flex items-start gap-2 p-2 rounded-sm">
+  
+    <lucide-icon [img]="ShoppingBagIcon" class="w-4 h-4  text-blue-600"></lucide-icon>
 
-  <!-- Address -->
-  <div class="mb-3 flex items-start gap-2 text-xs text-gray-600 bg-gray-100 p-2 rounded">
-    <lucide-icon [img]="MapPinIcon" class="w-4 h-4 flex-shrink-0 mt-0.5 text-gray-400"></lucide-icon>
-    <div class="flex-1">
-      <p class="font-medium text-gray-900">{{ order().deliveryAddress.street }} {{ order().deliveryAddress.number }}</p>
-      <p>{{ order().deliveryAddress.district }}, {{ order().deliveryAddress.city }}</p>
-    </div>
-  </div>
-
-  <!-- Payment Info -->
-  <div class="mb-3 text-xs text-gray-600 bg-green-50 p-2 rounded flex justify-between items-center">
-    <span class="font-medium">Total:</span>
-    <span class="text-lg font-bold text-green-700">
-      {{ order().payment.currency }} {{ order().payment.total.toFixed(2) }}
-    </span>
-  </div>
-
-  <!-- Actions -->
-  <div class="flex gap-2">
-    <button
-      (click)="onAssignToRoute($event)"
-      class="flex-1 px-3 py-2 bg-gray-900 text-white text-sm font-semibold rounded-lg hover:bg-gray-800 transition-colors"
-    >
-      Asignar a Ruta
-    </button>
-    <button
-      (click)="onViewDetails($event)"
-      class="px-3 py-2 border border-gray-300 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
-    >
-      <lucide-icon [img]="EyeIcon" class="w-4 h-4"></lucide-icon>
-      Ver más
-    </button>
+  <div class="">
+    <p class=" font-semibold text-gray-900">{{ totalItems() }}</p>
+    <p class="text-xs text-gray-500">Artículos en total</p>
   </div>
 </div>
+
+<!-- Dirección -->
+<div class="flex items-start gap-2 p-2 rounded-sm ">
+  <lucide-icon
+    [img]="MapPinIcon"
+    class="w-4 h-4 flex-shrink-0 text-blue-600"
+  ></lucide-icon>
+  <div class="">
+    <p class="font-medium text-gray-900">
+      {{ order().deliveryAddress.street }} {{ order().deliveryAddress.number }}
+    </p>
+    <p class="text-xs text-gray-500">
+      {{ order().deliveryAddress.district }}, {{ order().deliveryAddress.city }}
+    </p>
+  </div>
+</div>
+
+<!-- Total -->
+<div class="mb-3 flex col-span-2 justify-between items-center p-2 rounded-sm">
+  <span class="text-sm font-medium text-gray-700">Total</span>
+  <span class="text-lg font-semibold text-blue-600">
+    {{ order().payment.currency }} {{ order().payment.total.toFixed(2) }}
+  </span>
+</div>
+
+
+
+  <div class="flex gap-2 col-span-2">
+    <button
+      (click)="onAssignToRoute($event)"
+      [disabled]="!canAssignToRoute()"
+      class="flex-1 px-3 py-2 bg-gray-800 text-white text-sm font-semibold rounded-sm hover:bg-gray-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+    >
+      <lucide-icon [img]="TruckIcon" class="w-4 h-4 text-white"></lucide-icon>
+      Asignar a Ruta
+    </button>
+  </div>
+</li>

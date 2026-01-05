@@ -18,29 +18,30 @@ const defaultResponse: ProductsResponse = {
 export class HomeService {
   private api = inject(ApiService);
 
-  products = signal<Product[]>(productsData as Product[]);
+  products = signal<Product[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
 
-  getProducts(page: number = 1, limit: number = 12, search: string = '') {
-    this.loading.set(true);
-    this.error.set(null);
+getProducts(page: number = 1, limit: number = 12, search: string = '') {
+  this.loading.set(true);
+  this.error.set(null);
 
-    this.api
-      .get<ProductsResponse>('/products', {
-        params: { search, page, limit },
+  this.api
+    .get<ProductsResponse>('/products', {
+      params: { search, page, limit },
+    })
+    .pipe(
+      map((response) => response.data || defaultResponse),
+      catchError((err) => {
+        console.error(err);
+        this.error.set('Error al cargar productos');
+        return of(defaultResponse);
       })
-      .pipe(
-        map((response) => response.data || defaultResponse),
-        catchError((err) => {
-          console.error(err);
-          this.error.set('Error al cargar productos');
-          return of(defaultResponse);
-        })
-      )
-      .subscribe((data) => {
-        // this.products.set(data.products);
-        this.loading.set(false);
-      });
-  }
+    )
+    .subscribe((data) => {
+      this.products.set(data.products); // ✅ ahora sí actualiza el signal
+      this.loading.set(false);
+    });
+}
+
 }

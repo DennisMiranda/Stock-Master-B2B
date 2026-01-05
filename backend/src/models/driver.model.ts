@@ -1,9 +1,10 @@
-// driver.model.ts
 import { z } from "zod";
 
 export const DRIVER_STATUS = {
   available: "AVAILABLE",
   assigned: "ASSIGNED",
+  onRoute: "ON_ROUTE",  
+  offline: "OFFLINE",
 } as const;
 export type DriverStatus = (typeof DRIVER_STATUS)[keyof typeof DRIVER_STATUS];
 
@@ -15,3 +16,9 @@ export const driverSchema = z.object({
   currentRouteId: z.string().nullable().optional(),
 });
 export interface Driver extends z.infer<typeof driverSchema> {}
+export interface DriverWithUserInfo extends Driver {
+  displayName?: string;
+  email?: string;
+  photoURL?: string;
+  isActive?: boolean;
+}

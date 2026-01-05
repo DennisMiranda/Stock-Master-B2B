@@ -131,6 +131,17 @@ class OrderController {
         );
     }
   }
+  async updateStatus(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+      const order = await orderService.updateStatus(id!, status);
+      res.json({ success: true, data: order });
+    } catch (error: any) {
+      res.status(400).json({ success: false, error: error.message });
+    }
+  }
+
 }
 
 const productService = new ProductService();

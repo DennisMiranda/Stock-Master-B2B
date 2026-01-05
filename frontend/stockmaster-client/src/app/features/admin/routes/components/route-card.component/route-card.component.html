@@ -1,16 +1,66 @@
-<div 
+<li
   (click)="onCardClick()"
   [class.ring-2]="isSelected()"
   [class.ring-blue-500]="isSelected()"
-  class="group bg-gray-50 hover:bg-white border border-gray-200 rounded-lg p-4 transition-all hover:shadow-md cursor-pointer"
+  class="group bg-gray-50 hover:bg-white border border-gray-200 rounded-sm p-4 transition-all hover:shadow-md cursor-pointer relative"
 >
+  <!-- Menu Button -->
+  <button
+    (click)="toggleMenu($event)"
+    class="absolute top-3 right-3 p-1 hover:bg-gray-200 rounded transition-colors z-10"
+  >
+    <lucide-icon [img]="MoreVerticalIcon" class="w-5 h-5 text-gray-600"></lucide-icon>
+  </button>
+
+  <!-- Dropdown Menu -->
+  @if (showMenu()) {
+  <div
+    class="absolute top-12 right-3 bg-white border border-gray-200 rounded-lg shadow-lg z-20 min-w-[180px]"
+  >
+    @if (route().status === RouteStatus.PLANNED) {
+    <button
+      (click)="onStartRoute($event)"
+      class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+    >
+      <lucide-icon [img]="PlayIcon" class="w-4 h-4"></lucide-icon>
+      Iniciar Ruta
+    </button>
+    } @if (route().status === RouteStatus.IN_PROGRESS) {
+    <button
+      (click)="onCompleteRoute($event)"
+      class="w-full flex items-center gap-2 px-4 py-2 text-sm text-green-700 hover:bg-green-50"
+    >
+      <lucide-icon [img]="CheckCircle2Icon" class="w-4 h-4"></lucide-icon>
+      Completar Ruta
+    </button>
+    } @if (route().status !== RouteStatus.COMPLETED && route().status !== RouteStatus.CANCELLED) {
+    <button
+      (click)="onCancelRoute($event)"
+      class="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-700 hover:bg-red-50"
+    >
+      <lucide-icon [img]="XCircleIcon" class="w-4 h-4"></lucide-icon>
+      Cancelar Ruta
+    </button>
+    }
+        @if (route().status === RouteStatus.CANCELLED) {
+    <button
+      (click)="onStartRoute($event)"
+      class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+    >
+      <lucide-icon [img]="PlayIcon" class="w-4 h-4"></lucide-icon>
+      Reiniciar ruta
+    </button>
+    } 
+  </div>
+  }
+
   <!-- Header -->
-  <div class="flex items-center justify-between mb-3">
+  <div class="flex items-center justify-between mb-3 mr-6">
     <div class="flex-1">
       <p class="font-bold text-gray-900">{{ route().name || 'Ruta ' + route().id }}</p>
       <p class="text-xs text-gray-500">{{ route().id }}</p>
     </div>
-    <span 
+    <span
       [ngClass]="getStatusClass(route().status)"
       class="px-2 py-1 rounded-lg text-xs font-semibold"
     >
@@ -20,53 +70,115 @@
 
   <!-- Driver Info -->
   @if (route().driver) {
-    <div class="mb-3 flex items-center gap-2 bg-purple-50 p-2 rounded text-xs">
-      <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold">
-        {{ route().driver!.name.substring(0, 2).toUpperCase() }}
-      </div>
-      <div class="flex-1">
-        <p class="font-medium text-purple-900">{{ route().driver!.name }}</p>
-        <p class="text-purple-700">Conductor asignado</p>
-      </div>
+  <div class="mb-3 flex items-center gap-2 bg-purple-50 p-2 rounded text-xs">
+    <div
+      class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold"
+    >
+      {{ route().driver!.name.substring(0, 2).toUpperCase() }}
     </div>
+    <div class="flex-1">
+      <p class="font-medium text-purple-900">{{ route().driver!.name }}</p>
+      <p class="text-purple-700">Conductor asignado</p>
+    </div>
+  </div>
   }
 
-  <!-- Stats -->
-  <div class="grid grid-cols-2 gap-3 mb-3">
-<div class="bg-blue-50 p-3 rounded-lg">
-<p class="text-2xl font-bold text-blue-900">{{ route().orders.length }}</p>
-<p class="text-xs text-blue-700">pedidos</p>
-</div>
-<div class="bg-purple-50 p-3 rounded-lg">
-<p class="text-2xl font-bold text-purple-900">{{ route().districts?.length || 0 }}</p>
-<p class="text-xs text-purple-700">distritos</p>
-</div>
+  <!-- Progress Bar -->
+  @if (route().status === RouteStatus.IN_PROGRESS || route().status === RouteStatus.COMPLETED) {
+  <div class="mb-3">
+    <div class="flex justify-between items-center mb-1">
+      <span class="text-xs font-medium text-gray-700">Progreso</span>
+      <span class="text-xs font-bold text-gray-900">
+        {{ completedOrdersCount() }}/{{ route().orders.length }}
+      </span>
+    </div>
+    <div class="w-full bg-gray-200 rounded-full h-2">
+      <div
+        class="bg-blue-600 h-2 rounded-full transition-all duration-300"
+        [style.width.%]="progressPercentage()"
+      ></div>
+    </div>
   </div>
-  <!-- Districts -->
-@if (route().districts && route().districts!.length > 0) {
-<div class="flex flex-wrap gap-1 mb-3">
-@for (district of route().districts; track district) {
-<span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded inline-flex items-center gap-1">
-<lucide-icon [img]="MapPinIcon" class="w-3 h-3"></lucide-icon>
-{{ district }}
-</span>
-}
+  }
+
+  <!-- Stats
+     <div class=" p-3 rounded-sm flex flex-col items-center justify-center">
+      <p class="text-2xl font-bold text-gray-900">{{ route().orders.length }}</p>
+      <p class="text-xs text-gray-500">Pedidos</p>
+    </div>
+ -->
+
+  
+
+  <!-- Orders Checklist (Solo en IN_PROGRESS) -->
+@if (route().status === RouteStatus.IN_PROGRESS && route().orders.length > 0) {
+<div class="mb-3">
+  <button
+    (click)="toggleOrders($event)"
+    class="w-full flex items-center justify-between px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+  >
+    <span class="text-xs font-semibold text-gray-700 flex items-center gap-2">
+      <lucide-icon [img]="PackageIcon" class="w-4 h-4"></lucide-icon>
+      Lista de Pedidos
+    </span>
+    <lucide-icon
+      [img]="ChevronRightIcon"
+      class="w-4 h-4 transition-transform"
+      [class.rotate-90]="showOrders()"
+    ></lucide-icon>
+  </button>
+
+  @if (showOrders()) {
+  <div class="mt-2 space-y-1 max-h-40 overflow-y-auto">
+    @for (orderId of route().orders; track orderId) {
+    <div
+      class="flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded hover:bg-gray-50 transition-colors"
+    >
+      <span
+        class="text-xs flex-1"
+        [class.line-through]="isOrderDelivered(orderId)"
+        [class.text-gray-400]="isOrderDelivered(orderId)"
+      >
+        {{ orderId }}
+      </span>
+      
+      @if (!isOrderDelivered(orderId)) {
+      <!-- Botón Marcar como Entregado -->
+      <button
+        (click)="onMarkAsDelivered($event, orderId)"
+        class="p-1 hover:bg-green-100 rounded transition-colors"
+        title="Marcar como entregado"
+      >
+        <lucide-icon [img]="CheckCircle2Icon" class="w-4 h-4 text-green-600"></lucide-icon>
+      </button>
+      }
+      
+      @if (isOrderDelivered(orderId)) {
+      <lucide-icon [img]="CheckCircle2Icon" class="w-4 h-4 text-green-500"></lucide-icon>
+      }
+      
+      <!-- Botón Eliminar -->
+      <button
+        (click)="onRemoveOrder($event, orderId)"
+        class="p-1 hover:bg-red-100 rounded transition-colors"
+        title="Eliminar de la ruta"
+      >
+        <lucide-icon [img]="XCircleIcon" class="w-4 h-4 text-red-600"></lucide-icon>
+      </button>
+    </div>
+    }
+  </div>
+  }
 </div>
 }
+
   <!-- Actions -->
   <div class="flex gap-2">
     <button
-      (click)="onAssignDriver($event)"
-      class="flex-1 px-3 py-2 bg-gray-900 text-white text-sm font-semibold rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
-    >
-      <lucide-icon [img]="UserPlusIcon" class="w-4 h-4"></lucide-icon>
-      Asignar Conductor
-    </button>
-    <button
       (click)="onViewDetails($event)"
-      class="px-3 py-2 border border-gray-300 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+      class="flex-1 px-3 py-2 border border-gray-300 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-50 transition-colors"
     >
-      <lucide-icon [img]="ChevronRightIcon" class="w-4 h-4"></lucide-icon>
+      Ver Detalles
     </button>
   </div>
-</div>
+</li>

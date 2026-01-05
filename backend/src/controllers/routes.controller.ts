@@ -76,6 +76,79 @@ export class RoutesController {
       res.status(500).json({ success: false, error: error.message });
     }
   }
+    async addOrder(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const { orderId, startLocation } = req.body;
+
+      if (!orderId) {
+        return res.status(400).json({ 
+          success: false, 
+          error: 'orderId es requerido' 
+        });
+      }
+
+      if (!startLocation || !startLocation.lat || !startLocation.lng) {
+        return res.status(400).json({ 
+          success: false, 
+          error: 'startLocation con lat y lng es requerido' 
+        });
+      }
+
+      const route = await routesService.addOrder(id!, orderId, startLocation);
+      
+      res.json({ 
+        success: true, 
+        data: route,
+        message: 'Pedido agregado y ruta re-optimizada exitosamente'
+      });
+    } catch (error: any) {
+      res.status(400).json({ success: false, error: error.message });
+    }
+  }
+
+  /**
+   * ✅ Remover pedido de ruta
+   * DELETE /api/routes/:id/orders/:orderId
+   */
+  async removeOrder(req: Request, res: Response) {
+    try {
+      const { id, orderId } = req.params;
+      const { startLocation } = req.body;
+
+      if (!startLocation || !startLocation.lat || !startLocation.lng) {
+        return res.status(400).json({ 
+          success: false, 
+          error: 'startLocation con lat y lng es requerido' 
+        });
+      }
+
+      const route = await routesService.removeOrder(id!, orderId!, startLocation);
+      
+      res.json({ 
+        success: true, 
+        data: route,
+        message: 'Pedido removido y ruta re-optimizada exitosamente'
+      });
+    } catch (error: any) {
+      res.status(400).json({ success: false, error: error.message });
+    }
+  }
+  async markOrderAsDelivered(req: Request, res: Response) {
+  try {
+    const { id, orderId } = req.params;
+
+    const route = await routesService.markOrderAsDelivered(id!, orderId!);
+    
+    res.json({ 
+      success: true, 
+      data: route,
+      message: 'Pedido marcado como entregado exitosamente'
+    });
+  } catch (error: any) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+}
 }
 
 export const routesController = new RoutesController();

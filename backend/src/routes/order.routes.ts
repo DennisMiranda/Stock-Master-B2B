@@ -8,5 +8,7 @@ router.get("/user/:userId", (req, res) =>
   orderController.getByUserId(req, res)
 );
 router.put("/:id", (req, res) => orderController.updateOrder(req, res));
+router.patch("/:id/status", orderController.updateStatus.bind(orderController));
+
 
 export default router;

@@ -20,7 +20,10 @@ export class OrderService {
   getOrders() {
     return this.apiService.get<OrdersPaginatedResponse>('/orders');
   }
-  
+
+  updateOrderStatus(id: string, status: string) {
+    return this.apiService.patch<Order>(`/orders/${id}/status`, { status });
+  }
 
   getOrderById(id: string) {
     return this.apiService.get<Order>(`/orders/${id}`);

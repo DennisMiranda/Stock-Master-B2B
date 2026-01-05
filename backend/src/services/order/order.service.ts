@@ -8,7 +8,7 @@ import {
   Order,
   ORDER_STATUS,
   ORDER_VARIANT,
-  OrderDetailItem,
+  OrderDetailItem, OrderStatus
 } from "../../models/order.model";
 import { Product } from "../../models/product.model";
 import { CustomResponse } from "../../utils/custom-response";
@@ -216,5 +216,15 @@ export class OrderService {
     });
 
     return await this.getOrderById(orderId);
+  }
+
+  async updateStatus(id: string, status: OrderStatus): Promise<Order> {
+    return this.update(id, { status });
+  }
+  async update(id: string, data: Partial<Order>): Promise<Order> {
+    const docRef = this.ordersCollection.doc(id);
+    await docRef.update({ ...data, updatedAt: Date.now() });
+    const snapshot = await docRef.get();
+    return snapshot.data() as Order;
   }
 }

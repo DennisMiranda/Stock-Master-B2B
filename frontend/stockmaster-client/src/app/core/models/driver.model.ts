@@ -11,16 +11,11 @@ export interface Driver {
   vehicle: string;
   status: DriverStatus;
   currentRouteId: string | null;
+  // ✅ Datos enriquecidos del usuario
   displayName?: string;
   email?: string;
-  phone?: string;
+  photoURL?: string;
   isActive?: boolean;
-  orders?: string[];
-  assignedRoute?: string;
-  location?: {
-    lat: number;
-    lng: number;
-  };
 }
 
 export interface DriverStats {

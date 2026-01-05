@@ -8,8 +8,6 @@ import { userRoutes } from "./routes/user.routes";
 import newsletterRoutes from "./routes/newsletter.routes";
 import routesRoutes from './routes/routes.routes';
 import driversRoutes from './routes/drivers.routes';
-
-
 import cors from "cors";
 import express from "express";
 import bodyParser from 'body-parser';

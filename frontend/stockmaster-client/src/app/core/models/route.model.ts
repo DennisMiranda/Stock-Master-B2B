@@ -13,12 +13,11 @@ export interface RouteGeometry {
 export interface Route {
   id: string;
   name?: string;
-  driverId: string;
   orders: string[];
   geometry: RouteGeometry; 
   status: RouteStatus;
   createdAt: number;
-  districts?: string[];
+  deliveredOrders?: string[];
   driver?: {
     id: string;
     name: string;

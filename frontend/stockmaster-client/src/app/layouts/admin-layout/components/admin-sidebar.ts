@@ -10,15 +10,10 @@ import { AuthService } from '../../../core/auth/auth.service';
   template: `
     <aside class="w-64 bg-white border-r border-gray-200 flex flex-col h-full">
       <!-- Logo -->
-      <div class="h-16 flex items-center px-6 border-b border-gray-200">
-        <a routerLink="/admin" class="flex items-center gap-2">
-          <div class="bg-blue-600 p-1.5 rounded-lg">
-            <span class="text-white font-bold text-lg">SM</span>
-          </div>
-          <div>
-            <h1 class="font-bold text-gray-900 leading-none">StockMaster</h1>
-            <span class="text-xs text-gray-500 font-medium">B2B Sistema</span>
-          </div>
+      <div class="h-16 flex items-center px-1 border-b border-gray-200 ">
+        <a routerLink="/admin" class="flex justify-around  gap-1">
+          <img src="/images/logo.svg" alt="Logo de stock master" class=" h-10  w-full">
+          <img src="/images/logonombre.svg" alt="Logo de stock master" class="h-10 w-full object-cover  px-1">
         </a>
       </div>
 

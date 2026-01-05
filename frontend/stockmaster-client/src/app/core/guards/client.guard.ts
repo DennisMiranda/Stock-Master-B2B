@@ -20,7 +20,7 @@ export const clientGuard: CanActivateFn = (route, state): Observable<boolean | U
         return router.createUrlTree(['/auth/login']);
       }
 
-      if (role && role !== 'client') {
+      if (role == 'client') {
         return true;
       }
 
