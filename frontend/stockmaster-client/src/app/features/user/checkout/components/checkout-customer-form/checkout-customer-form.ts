@@ -1,8 +1,10 @@
-import { Component, inject, OnDestroy, OnInit, output } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { Component, inject, OnDestroy, OnInit, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { OrderCustomerInfo, OrderDeliveryAddress } from '../../../../../core/models/order.model';
 import { Map } from '../../../../../shared/ui/maps/map/map';
+import { CheckoutService } from '../../services/checkout.service';
 
 interface CheckoutFormValues {
   businessName: string;
@@ -22,7 +24,7 @@ interface CheckoutFormValues {
 
 @Component({
   selector: 'app-checkout-customer-form',
-  imports: [ReactiveFormsModule, Map],
+  imports: [ReactiveFormsModule, Map, AsyncPipe],
   templateUrl: './checkout-customer-form.html',
   styleUrl: './checkout-customer-form.css',
 })
@@ -30,6 +32,7 @@ export class CheckoutCustomerForm implements OnInit, OnDestroy {
   valueChanges = output<{ customer: OrderCustomerInfo; deliveryAddress: OrderDeliveryAddress }>();
   isValidChange = output<boolean>();
 
+  private checkoutService = inject(CheckoutService);
   private fb = inject(FormBuilder);
   private subscriptions = new Subscription();
 
@@ -51,7 +54,7 @@ export class CheckoutCustomerForm implements OnInit, OnDestroy {
     receiverPhone: ['', [Validators.required, Validators.pattern(/^\d{9}$/)]],
 
     // ===== Dirección =====
-    city: ['', [Validators.required, Validators.minLength(3)]],
+    city: ['Lima', [Validators.required, Validators.minLength(3)]],
     district: ['', [Validators.required, Validators.minLength(3)]],
     street: ['', [Validators.required, Validators.minLength(3)]],
     number: ['', [Validators.required, Validators.minLength(1)]],
@@ -60,6 +63,7 @@ export class CheckoutCustomerForm implements OnInit, OnDestroy {
     longitude: [0, Validators.required],
   });
 
+  districts = signal<string[]>([]);
   constructor() {
     this.form.valueChanges.subscribe((value) => {
       this.valueChanges.emit(this.mapFormValues(value as CheckoutFormValues));
@@ -68,6 +72,14 @@ export class CheckoutCustomerForm implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.checkoutService.getDistricts().subscribe((response) => {
+      if (!response.data) {
+        console.error('No data in districts response');
+        return;
+      }
+      const districts = response.data.map((d) => d.name);
+      this.districts.set(districts);
+    });
     this.onlyNumbers('taxId');
     this.onlyNumbers('businessPhone');
     this.onlyNumbers('receiverPhone');

@@ -16,4 +16,8 @@ export class CheckoutService {
   createOrder(order: Order) {
     return this.apiService.post<Order | null, CreateOrderError>('/orders', order);
   }
+
+  getDistricts() {
+    return this.apiService.get<{ id: number; name: string }[]>('/settings/districts');
+  }
 }
