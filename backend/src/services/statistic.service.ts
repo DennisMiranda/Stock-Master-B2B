@@ -3,7 +3,7 @@ import { CustomResponse as CustomResponseModel } from "../models/custom-response
 import { ORDER_VARIANT, OrderDetailItem } from "../models/order.model";
 import { CustomResponse } from "../utils/custom-response";
 
-interface SoldProductStatistic {
+export interface SoldProductStatistic {
   id: string;
   name: string;
   unitSold: number;
@@ -91,6 +91,32 @@ export class StatisticService {
         "STATISTIC_ERROR",
         "Error updating sold products"
       );
+    }
+  }
+
+
+
+  /**
+   * Obtiene el Top de productos vendidos ordenados por diferentes criterios.
+   * @param {'totalUnitSold' | 'unitSold' | 'boxSold'} orderByField - Campo por el cual ordenar.
+   * @param {number} limit - Límite de resultados (default 5).
+   */
+  async getTopSelling(
+    orderByField: 'totalUnitSold' | 'unitSold' | 'boxSold',
+    limit: number = 5
+  ): Promise<SoldProductStatistic[]> {
+    try {
+      const snapshot = await this.soldProductsCollection
+        .orderBy(orderByField, 'desc')
+        .limit(limit)
+        .get();
+
+      return snapshot.docs.map(
+        (doc) => doc.data() as SoldProductStatistic
+      );
+    } catch (error) {
+      console.error(`Error fetching top selling by ${orderByField}:`, error);
+      return [];
     }
   }
 }

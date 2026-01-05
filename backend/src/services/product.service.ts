@@ -5,13 +5,14 @@ import type { Product, ProductDoc } from "../models/product.model";
 import { CategoryService } from "./category.service";
 import { SequenceService } from "./sequence.service";
 import { OrderVariant, ORDER_VARIANT } from "../models/order.model";
+import { STOCK_THRESHOLDS } from "../config/constants";
 
 export class ProductService {
   private productsCollection = db.collection("products");
   private categoryService = new CategoryService();
   private sequenceService = new SequenceService();
 
-  constructor() {}
+  constructor() { }
 
   /**
    * Servicio para buscar productos con filtros opcionales (listado + paginación)
@@ -320,5 +321,30 @@ export class ProductService {
 
     // Eliminar duplicados
     return [...new Set(terms)];
+  }
+
+  // Statistics & Dashboard
+  static async getLowStock(
+    type: 'unit' | 'box',
+    limit: number = 5
+  ): Promise<Product[]> {
+    try {
+      const field = type === 'unit' ? 'stockUnits' : 'stockBoxes';
+      const threshold = type === 'unit' ? STOCK_THRESHOLDS.unit : STOCK_THRESHOLDS.box;
+
+      // Firestore requiere un índice compuesto para consultar 'active' + 'field'
+      // Query: Active Products AND Stock <= Threshold, Ordered by Stock ASC
+      const snapshot = await db.collection("products")
+        .where("isActive", "==", true)
+        .where(field, "<=", threshold)
+        .orderBy(field, "asc")
+        .limit(limit)
+        .get();
+
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
+    } catch (error) {
+      console.error(`Error fetching low stock for ${type}:`, error);
+      return [];
+    }
   }
 }
