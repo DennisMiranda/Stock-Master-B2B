@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { roleGuard } from './core/guards/role.guard';
 import { clientGuard } from './core/guards/client.guard';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   {
@@ -19,13 +19,15 @@ export const routes: Routes = [
     children: [
       {
         path: 'profile',
-        loadComponent: () => import('./features/admin/profile/profile-page').then((m) => m.ProfilePage),
+        loadComponent: () =>
+          import('./features/admin/profile/profile-page').then((m) => m.ProfilePage),
       },
       {
         path: 'settings',
-        loadComponent: () => import('./features/admin/settings/settings-page').then((m) => m.SettingsPage),
-      }
-    ]
+        loadComponent: () =>
+          import('./features/admin/settings/settings-page').then((m) => m.SettingsPage),
+      },
+    ],
   },
   {
     path: 'shop',
@@ -57,14 +59,14 @@ export const routes: Routes = [
       },
       {
         path: 'checkout',
-        loadComponent: () =>
-          import('./features/user/checkout/pages/checkout-page/checkout').then((c) => c.Checkout),
+        loadChildren: () =>
+          import('./features/user/checkout/checkout.routes').then((c) => c.checkoutRoutes),
       },
       // 404
       {
         path: '**',
-        redirectTo: ''
-      }
+        redirectTo: '',
+      },
     ],
   },
   {

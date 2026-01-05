@@ -1,9 +1,14 @@
 import { Routes } from '@angular/router';
-import { CheckoutCustomerForm } from './components/checkout-customer-form/checkout-customer-form';
+import { Checkout } from './pages/checkout-page/checkout';
 
 export const checkoutRoutes: Routes = [
   {
     path: '',
-    component: CheckoutCustomerForm,
+    component: Checkout,
+  },
+  {
+    path: 'error',
+    loadComponent: () =>
+      import('./pages/checkout-error-page/checkout-error-page').then((m) => m.CheckoutErrorPage),
   },
 ];

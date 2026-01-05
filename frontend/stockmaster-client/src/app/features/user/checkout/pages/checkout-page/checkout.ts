@@ -11,7 +11,7 @@ import { CartService } from '../../../cart/services/cart.service';
 import { CheckoutCustomerForm } from '../../components/checkout-customer-form/checkout-customer-form';
 import { CheckoutPayForm } from '../../components/checkout-pay-form/checkout-pay-form';
 import { CheckoutTotal } from '../../components/checkout-total/checkout-total';
-import { CheckoutService } from '../../services/checkout.service';
+import { CheckoutService, CreateOrderError, ItemWithError } from '../../services/checkout.service';
 
 @Component({
   selector: 'app-checkout',
@@ -61,15 +61,30 @@ export class Checkout implements OnInit {
       })
       .subscribe({
         next: (response) => {
-          this.toastService.success('Orden creada exitosamente');
-          this.cartService.clearCart().subscribe({
-            next: () => console.log('Carrito vaciado en frontend'),
-            error: (err) => console.error('Error:', err),
-          });
+          console.log(response);
 
-          this.router.navigate(['/']);
+          if (response.success) {
+            this.toastService.success('Orden creada exitosamente');
+            this.cartService.clearCart().subscribe({
+              next: () => console.log('Carrito vaciado en frontend'),
+              error: (err) => console.error('Error:', err),
+            });
+
+            this.router.navigate(['/']);
+          } else {
+            // TODO: Show suggestions
+            this.toastService.error('Error al crear la orden');
+            console.log('Error al crear la orden', response.error?.details);
+
+            if (response.error?.details) {
+              const itemsWithError: ItemWithError[] = response.error.details.map(
+                (error) => error.details!
+              );
+              this.router.navigate(['/checkout/error'], { state: { itemsWithError } });
+            }
+          }
         },
-        error: (error) => {
+        error: (error: CreateOrderError) => {
           this.toastService.error('Error al crear la orden');
         },
       });
