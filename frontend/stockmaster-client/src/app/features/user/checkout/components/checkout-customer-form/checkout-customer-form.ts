@@ -24,7 +24,7 @@ interface CheckoutFormValues {
 
 @Component({
   selector: 'app-checkout-customer-form',
-  imports: [ReactiveFormsModule, Map, AsyncPipe],
+  imports: [Map, ReactiveFormsModule],
   templateUrl: './checkout-customer-form.html',
   styleUrl: './checkout-customer-form.css',
 })

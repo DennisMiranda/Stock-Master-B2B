@@ -3,7 +3,7 @@ import type { DataUser } from "../../models/PDF/document.model";
 import { PDFStorageService } from "../../services/PDF/Storage.service";
 import { PDFGeneratorService } from "../../services/PDF/Generator.service";
 import {Readable} from "stream";
-
+import { StatisticService } from "../../services/statistic.service";
 import { OrderService } from "../../services/order/order.service";
 import { ProductService } from "../../services/product.service";
 import { db } from "../../config/firebase";
@@ -13,7 +13,8 @@ export class PDFController {
         private pdfStorage = new PDFStorageService(),
         private pdfGenerator = new PDFGeneratorService(),
         private productService = new ProductService(),
-        private orderService = new OrderService(productService)
+        private statisticService = new StatisticService(),
+        private orderService = new OrderService(productService, statisticService)
     ){} 
 
     emitFactura = async (req: Request, res: Response) => {
