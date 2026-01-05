@@ -24,7 +24,7 @@ app.use("/v1/api/categories", categoryRoutes);
 app.use("/v1/api/orders", orderRoutes);
 app.use("/v1/api/auth", authRoutes);
 app.use("/v1/api/users", userRoutes);
-app.use("/v1/api/pdf", pdf);
+app.use("/v1/api/document", pdf);
 app.use(errorMiddleware);
 
 

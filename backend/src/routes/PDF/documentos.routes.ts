@@ -5,10 +5,13 @@ import pdfController from "../../controllers/PDF/PDF.controller";
 const router = Router();
 
 // ruta para mostrar el pdf de factura
-router.get("/factura/:orderDoc", UserDocCheck , (req, res, next) => streamDocController.streamPdf(req, res, "factura"));
+router.get("/factura/:orderDoc" , (req, res, next) => streamDocController.streamPdf(req, res, "factura"));
 // ruta para mostrar guias
-router.get("/guide/:orderDoc", UserDocCheck , (req, res, next) => streamDocController.streamPdf(req, res, "guide"));
+router.get("/guide/:orderDoc" , (req, res, next) => streamDocController.streamPdf(req, res, "guide"));
+// ruta para emitir guia
+router.post("/create/guide", pdfController.emitGuia);
 
-router.post("/", UserDocCheck, pdfController.emitGuia);
+//ruta para test de datos de order
+router.get("/orderTest", pdfController.emitFactura) 
 
 export default router;
