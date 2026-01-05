@@ -2,11 +2,13 @@
   "compilerOptions": {
     // Entorno y características modernas
     "lib": ["ESNext"],
+    "typeRoots": ["node_modules/@types", "src/types"],
     "target": "ES2020",
     "module": "ESNext",
     "rootDir": "./src",
     "outDir": "./dist",
     "moduleResolution": "Node",
+    "resolveJsonModule": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
 

@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 
-export type ModalType = 'terms' | 'faq' | 'about' | null;
+export type ModalType = 'terms' | 'faq' | 'about' | 'newsletter-success' | 'newsletter-duplicate' |null;
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +25,16 @@ export class ModalService {
   openAbout(): void {
     this.activeModal.set('about');
     document.body.style.overflow = 'hidden';
+  }  
+
+  openNewsletterSuccess(): void {
+  this.activeModal.set('newsletter-success');
+  document.body.style.overflow = 'hidden';
+  }
+
+  openNewsletterDuplicate(): void {
+  this.activeModal.set('newsletter-duplicate');
+  document.body.style.overflow = 'hidden';
   }
 
   close(): void {

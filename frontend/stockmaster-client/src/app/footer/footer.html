@@ -81,12 +81,16 @@
           id="newsletter-email"
           type="email" 
           [(ngModel)]="newsletterEmail"
+          name="email"
           placeholder="tu@email.com" 
           class="newsletter-input"
           required
           aria-label="Correo electrónico para newsletter">
-        <button type="submit" class="newsletter-button" aria-label="Suscribirse">
+        <button type="submit" class="newsletter-button" aria-label="Suscribirse" [disabled]="isLoading">
           <lucide-icon [img]="Send" [size]="18"></lucide-icon>
+          @if (isLoading) {
+            <span class="loading-text">Enviando...</span>
+          }
         </button>
       </form>
     </article>
