@@ -1,23 +1,29 @@
+import { number } from "zod";
+
     export type OrderItem = {
-    id: string;
     name: string;
     price: number;
     quantity: number;
+    typeBox: number;
     };
 
     export type Address = {
     city: string;
     street: string;
-    number: string;
+    number: number | string;
     };
 
-    export type DataOrder = {
-    address: Address;
-    items: OrderItem[];
-    total: number;
-    userId: string
-    };
+    export type Customer = {
+    companyName: string;
+    RUC : number;
+    addres: Address;
+    payMethod: string;
+    date: string;
+    moneda:string;
+    }
 
-    export type DataUser = {
-    name: string;
-    };
+    export type Payment = {
+        subtotal: number,
+        tax: number,
+        total: number
+    }

@@ -1,12 +1,11 @@
 import  type { Request, Response } from "express";
-import type { DataUser } from "../../models/PDF/document.model";
+import type { OrderItem, Address, Customer, Payment } from "../../models/PDF/document.model";
 import { PDFStorageService } from "../../services/PDF/Storage.service";
 import { PDFGeneratorService } from "../../services/PDF/Generator.service";
 import {Readable} from "stream";
 import { StatisticService } from "../../services/statistic.service";
 import { OrderService } from "../../services/order/order.service";
 import { ProductService } from "../../services/product.service";
-import { db } from "../../config/firebase";
 export class PDFController {
     
     constructor (
@@ -20,31 +19,64 @@ export class PDFController {
     emitFactura = async (req: Request, res: Response) => {
         
         //extraemos id de order generada en el controller anterior
-        const orderId = res.locals.orderId;
+        const orderId: string = res.locals.orderId as string;
         if (!orderId) {
             return  res.status(400).json({ message: "Order ID not found in request context" });
         }
         console.log("Order ID:", orderId);
         // aumentar el contador de guias y obtener el nuevo valor
-        const facturaNumber :number = await this.pdfStorage.increaseCount("Factura");
-        console.log("valo actual es :", facturaNumber);
+        const snapFacturaNumber :number = await this.pdfStorage.increaseCount("Factura");
+        console.log("valo actual es :", snapFacturaNumber);
         // obtenemos datos de order y usuario
         const dataOrder = await this.orderService.getOrderById(orderId);
-        if (!dataOrder) {
-            return res.status(404).json({ message: "Order not found" });
+        if( !dataOrder ) {
+            return  res.status(400).json({ message: "Order ID not found in data base" });
         }
+        console.log(dataOrder);
         // generar el PDF de la factura
-        const userSnap  = await (await db.collection("usuarios").doc(dataOrder?.userId).get())
-        if(!userSnap .exists){
-            return res.status(404).json({message: "User not fount"})
+        const facturaNumber: string = snapFacturaNumber.toString().padStart(4, '0');
+
+        const addressUser:Address = {
+            city: dataOrder?.deliveryAddress.city,
+            street: dataOrder?.deliveryAddress.street,
+            number: dataOrder?.deliveryAddress.number || `001`
+        }
+
+        const fechaEmision: string = String(new Date().toISOString().split('T')[0]);
+
+        const customerUser : Customer = {
+            companyName: dataOrder?.customer.companyName,
+            RUC: dataOrder?.customer.taxId,
+            addres: addressUser,
+            payMethod: dataOrder?.payment.method,
+            date: fechaEmision,
+            moneda: dataOrder?.payment.currency
+        }
+
+        let items:OrderItem[] = [];
+
+        dataOrder?.items.forEach( item => {
+            let order:OrderItem = {
+                name: item.name,
+                quantity: item.quantity,
+                price: item.unitPrice,
+                typeBox: item.typeBox
+            }
+
+            items.push(order);
+        })
+
+        const payment: Payment = {
+            subtotal: dataOrder?.payment.subtotal,
+            tax: dataOrder?.payment.tax,
+            total: dataOrder?.payment.total
         }
         
-        const dataUser  = userSnap.data() as DataUser
-         const pdf: Readable = this.pdfGenerator.createFactura(
-            "20123456789",           // RUC empresa
-            facturaNumber,
-            dataOrder,
-            dataUser
+         const pdf : Readable = this.pdfGenerator.createFactura(
+                facturaNumber,
+                customerUser,
+                items,
+                payment
             );
 
         try {
@@ -60,7 +92,7 @@ export class PDFController {
             // responder al cliente con el ID del archivo
             console.log(`id de achivo subido es ${fileID}`);
             
-            res.status(200).json({ fileID });
+            res.status(200).json(`ss`);
         } catch (error) {
             console.error("Error al emitir la factura:", (error as Error).message);
             res.status(500).json({ message: "Error al emitir la factura" });

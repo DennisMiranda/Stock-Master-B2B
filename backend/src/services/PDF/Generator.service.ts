@@ -1,36 +1,15 @@
-import type { DataOrder, DataUser, OrderItem } from "../../models/PDF/document.model";
+import type { Customer, OrderItem, Payment } from "../../models/PDF/document.model";
 
 import PDFDocument from "pdfkit";
 import "pdfkit-table";
 import { Readable } from "stream";
-import { any } from "zod";
-
-   // header: {
-    //   serie: string,
-    //   numero: string,
-    //   fechaEmision: string
-    // },
-    // userData: { 
-    //   ruc: string, name: string, direccion:string,
-    // },
-    // items: Array<{
-    //   descripcion: string,
-    //   cantidad: number,
-    //   precioUnitario: number,
-    // }>,
-    // totals: {
-    //   subTotal: number,
-    //   igv: number,
-    //   total: number,
-    // }
-
 export class PDFGeneratorService {
 
   createFactura(
-  ruc: string,
-  facturaNumber: number,
-  dataOrder: any,
-  dataUser: DataUser
+  facturaNumber:string,
+  dataUser: Customer,
+  dataOrder: OrderItem[],
+  payment: Payment
 ): Readable {
 
   const doc = new PDFDocument({
@@ -48,7 +27,7 @@ export class PDFGeneratorService {
        align: "center"
      });
 
-  const direccionCompleta = `${dataOrder.address.street} ${dataOrder.address.number}, ${dataOrder.address.city}`;
+  const direccionCompleta = `Direccion`;
 
   doc.fontSize(10)
      .text(direccionCompleta, 50, 110)
@@ -64,7 +43,7 @@ export class PDFGeneratorService {
   doc.rect(boxX, boxY, boxW, 90).stroke();
 
   doc.fontSize(14).font("Helvetica-Bold")
-     .text(`RUC: ${ruc}`, boxX, boxY + 10, {
+     .text(`RUC: ${dataUser.RUC}`, boxX, boxY + 10, {
        align: "center",
        width: boxW
      });
@@ -93,7 +72,7 @@ export class PDFGeneratorService {
      .text("DATOS DEL CLIENTE", 50, 175);
 
   doc.fontSize(10).font("Helvetica")
-     .text(`Nombre: ${dataUser.name}`, 50, 195)
+     .text(`Nombre: ${dataUser.companyName}`, 50, 195)
      .text(`Dirección: ${direccionCompleta}`, 50, 210);
 
   /* ─────────────────────────────
@@ -113,7 +92,7 @@ export class PDFGeneratorService {
 
   let y = tableTop + 25;
 
-     const items:OrderItem[] = dataOrder.items
+     const items:OrderItem[] = dataOrder
     items.forEach(item => {
     const totalItem = item.price * item.quantity;
 
@@ -130,7 +109,7 @@ export class PDFGeneratorService {
   ───────────────────────────── */
   doc.font("Helvetica-Bold");
   doc.text("TOTAL:", 360, y + 30);
-  doc.text(`S/ ${dataOrder.total.toFixed(2)}`, 450, y + 30);
+  doc.text(`S/ ${payment.total.toFixed(2)}`, 450, y + 30);
 
   /* ─────────────────────────────
      FOOTER
