@@ -2,6 +2,7 @@ import { Component, inject, OnInit, output } from '@angular/core';
 import * as L from 'leaflet';
 import { ToastService } from '../../../../core/services/toast.service';
 
+L.Icon.Default.imagePath = '/media/';
 const LIMA_LIMITS = L.latLngBounds(L.latLng(-12.3, -77.2), L.latLng(-11.8, -76.8));
 
 @Component({
