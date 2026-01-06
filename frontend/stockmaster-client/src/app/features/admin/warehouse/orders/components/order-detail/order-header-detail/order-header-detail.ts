@@ -14,4 +14,11 @@ export class OrderHeaderDetail {
   totalAmount = input.required<number>();
   address = input.required<OrderDeliveryAddress>();
   companytName = input.required<string>();
+
+ openFacturaPdf() {
+  const baseUrl = 'http://localhost:3000/v1/api/document';
+  const orderId = this.orderId();
+  const url = `${baseUrl}/factura/${orderId}`;
+  window.open(url, '_blank');
+  }
 }
