@@ -16,7 +16,7 @@ import { AssignRouteModal } from '../../components/assign-route-modal/assign-rou
 import { WAREHOUSE_LOCATION } from '../../config/location';
 import { ToastService } from '../../../../../core/services/toast.service';
 import { CreateRouteModal } from '../../components/create-route-modal/create-route-modal';
-
+import { AuthService } from '../../../../../core/auth/auth.service';
 type TabKey = 'drivers' | 'orders' | 'routes';
 
 interface Tab {
@@ -46,8 +46,11 @@ export class RouterPage implements OnInit {
   private routesService = inject(RoutesService);
   private ordersService = inject(OrderService);
   private toastService = inject(ToastService);
+  private authService = inject(AuthService);
 
-  activeTab = signal<TabKey>('drivers');
+  currentUser = this.authService.userRole();
+
+  activeTab = signal<TabKey>('routes');
   selectedDriverId = signal<string | null>(null);
   selectedOrderId = signal<string | null>(null);
   selectedRouteId = signal<string | null>(null);
@@ -65,13 +68,22 @@ export class RouterPage implements OnInit {
   readonly WAREHOUSE_LOCATION = WAREHOUSE_LOCATION;
 
   // Tabs
-  tabs: Tab[] = [
-    { key: 'drivers', label: 'Conductores', icon: Users },
-    { key: 'orders', label: 'Pedidos', icon: Package },
-    { key: 'routes', label: 'Rutas', icon: RouteIcon },
-  ];
+    tabs = computed(() => {
+    const allTabs: Tab[] = [
+         { key: 'routes', label: 'Rutas', icon: RouteIcon },
+      { key: 'drivers', label: 'Conductores', icon: Users },
+      { key: 'orders', label: 'Pedidos', icon: Package },
+   
+    ];
+    
+    // Si es conductor, solo mostrar tab de rutas
+    return this.isDriver() 
+      ? allTabs.filter(tab => tab.key === 'routes')
+      : allTabs;
+  });
 
-  // Computed - Filtered data for map
+  isDriver = computed(() => (this.currentUser ?? '') === 'driver');
+
   filteredDrivers = computed(() => {
     const selectedId = this.selectedDriverId();
     return selectedId ? this.drivers().filter((d) => d.id === selectedId) : this.drivers();
@@ -105,7 +117,7 @@ export class RouterPage implements OnInit {
     this.loading.set(true);
     this.error.set(null);
 
-    Promise.all([this.loadDrivers(), this.loadRoutes(), this.loadOrders(), this.loadReadyOrders()])
+    Promise.all([this.loadRoutes(),this.loadDrivers(),  this.loadOrders(), this.loadReadyOrders()])
       .catch((error) => {
         console.error('Error loading data:', error);
         this.error.set('Error al cargar los datos. Por favor, intenta de nuevo.');
@@ -115,30 +127,30 @@ export class RouterPage implements OnInit {
       });
   }
 
-   private async loadReadyOrders(): Promise<void> {
-  try {
-    const response = await this.ordersService.getPendingForDelivery().toPromise();
-    if (response?.data?.orders) {
-      this.ordersReady.set(response.data.orders);
-      console.log('✅ Pending orders loaded:', response.data.orders.length);
+  private async loadReadyOrders(): Promise<void> {
+    try {
+      const response = await this.ordersService.getPendingForDelivery().toPromise();
+      if (response?.data?.orders) {
+        this.ordersReady.set(response.data.orders);
+        console.log('✅ Pending orders loaded:', response.data.orders.length);
+      }
+    } catch (error) {
+      console.error('❌ Error loading pending orders:', error);
+      throw error;
     }
-  } catch (error) {
-    console.error('❌ Error loading pending orders:', error);
-    throw error;
   }
-}
   private async loadOrders(): Promise<void> {
-  try {
-    const response = await this.ordersService.getOrders().toPromise();
-    if (response?.data?.orders) {
-      this.orders.set(response.data.orders);
-      console.log('✅ Pending orders loaded:', response.data.orders.length);
+    try {
+      const response = await this.ordersService.getOrders().toPromise();
+      if (response?.data?.orders) {
+        this.orders.set(response.data.orders);
+        console.log('✅ Pending orders loaded:', response.data.orders.length);
+      }
+    } catch (error) {
+      console.error('❌ Error loading pending orders:', error);
+      throw error;
     }
-  } catch (error) {
-    console.error('❌ Error loading pending orders:', error);
-    throw error;
   }
-}
 
   private async loadDrivers(): Promise<void> {
     try {
@@ -206,7 +218,6 @@ export class RouterPage implements OnInit {
   closeAssignModal() {
     this.showAssignModal.set(false);
   }
-
 
   resetMapFilter(): void {
     this.selectedDriverId.set(null);
@@ -352,8 +363,6 @@ export class RouterPage implements OnInit {
     }
   }
 
-
-
   onMarkOrderDelivered(event: { routeId: string; orderId: string }): void {
     this.routesService.markOrderAsDelivered(event.routeId, event.orderId).subscribe({
       next: (response) => {
@@ -377,28 +386,30 @@ export class RouterPage implements OnInit {
   }
 
   onRemoveOrder(event: { routeId: string; orderId: string }): void {
-    this.routesService.removeOrderFromRoute(event.routeId, event.orderId, WAREHOUSE_LOCATION).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.routes.update((routes) =>
-            routes.map((route) => {
-              if (route.id === event.routeId) {
-                return {
-                  ...route,
-                  orders: route.orders.filter((id) => id !== event.orderId),
-                  deliveredOrders: route.deliveredOrders?.filter((id) => id !== event.orderId),
-                };
-              }
-              return route;
-            })
-          );
-          this.toastService.success('Orden removida correctamente');
-        }
-      },
-      error: (error) => {
-        this.toastService.error('Ocurrió un error al remover la orden');
-      },
-    });
+    this.routesService
+      .removeOrderFromRoute(event.routeId, event.orderId, WAREHOUSE_LOCATION)
+      .subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.routes.update((routes) =>
+              routes.map((route) => {
+                if (route.id === event.routeId) {
+                  return {
+                    ...route,
+                    orders: route.orders.filter((id) => id !== event.orderId),
+                    deliveredOrders: route.deliveredOrders?.filter((id) => id !== event.orderId),
+                  };
+                }
+                return route;
+              })
+            );
+            this.toastService.success('Orden removida correctamente');
+          }
+        },
+        error: (error) => {
+          this.toastService.error('Ocurrió un error al remover la orden');
+        },
+      });
   }
   onCreateRoute(data: { driverId: string; orderIds: string[] }): void {
     this.loading.set(true);
