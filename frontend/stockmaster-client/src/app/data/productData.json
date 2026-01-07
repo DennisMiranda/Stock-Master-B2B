@@ -3,7 +3,14 @@
     "id": "223l7JSzOsydHFAXWPwC",
     "sku": "TEC-MEC-2024-004",
     "name": "Teclado Mecánico RGB",
-    "searchName": "TECLADO MECÁNICO RGB",
+    "searchName": "TECLADO MECANICO RGB",
+    "searchArray": [
+      "TECLADO",
+      "MECANICO",
+      "MECÁNICO",
+      "RGB"
+    ],
+    "description": "Teclado mecánico con retroiluminación RGB personalizable, switches mecánicos táctiles para una respuesta precisa y construcción robusta. Ideal para gamers y profesionales que buscan precisión y comodidad en cada pulsación.",
     "brand": "KeyMaster",
     "prices": [
       {
@@ -37,7 +44,15 @@
     "id": "6Vn3nQCAFrPfALz7kZ63",
     "sku": "CAR-WL-2024-009",
     "name": "Cargador Inalámbrico Rápido",
-    "searchName": "CARGADOR INALÁMBRICO RÁPIDO",
+    "searchName": "CARGADOR INALAMBRICO RAPIDO",
+    "searchArray": [
+      "CARGADOR",
+      "INALAMBRICO",
+      "INALÁMBRICO",
+      "RAPIDO",
+      "RÁPIDO"
+    ],
+    "description": "Cargador inalámbrico de carga rápida compatible con dispositivos Qi. Carga tu smartphone sin cables a alta velocidad. Incluye protección contra sobrecarga, sobrecalentamiento y cortocircuitos.",
     "brand": "PowerFast",
     "prices": [
       {
@@ -71,7 +86,14 @@
     "id": "94VO79h8vkTCIq2ktx3P",
     "sku": "SPK-BT-2024-012",
     "name": "Altavoz Bluetooth Portátil",
-    "searchName": "ALTAVOZ BLUETOOTH PORTÁTIL",
+    "searchName": "ALTAVOZ BLUETOOTH PORTATIL",
+    "searchArray": [
+      "ALTAVOZ",
+      "BLUETOOTH",
+      "PORTATIL",
+      "PORTÁTIL"
+    ],
+    "description": "Altavoz Bluetooth resistente al agua con sonido estéreo potente y graves profundos. Batería de larga duración de hasta 20 horas, perfecto para fiestas al aire libre, playa o piscina.",
     "brand": "BoomSound",
     "prices": [
       {
@@ -106,6 +128,14 @@
     "sku": "SSD-1TB-2024-011",
     "name": "SSD NVMe 1TB Alta Velocidad",
     "searchName": "SSD NVME 1TB ALTA VELOCIDAD",
+    "searchArray": [
+      "SSD",
+      "NVME",
+      "1TB",
+      "ALTA",
+      "VELOCIDAD"
+    ],
+    "description": "Disco de estado sólido NVMe de 1TB con velocidades de lectura/escritura ultrarrápidas. Ideal para gamers, diseñadores y profesionales que necesitan alto rendimiento y capacidad de almacenamiento.",
     "brand": "SpeedDrive",
     "prices": [
       {
@@ -140,6 +170,13 @@
     "sku": "TAB-10-2024-010",
     "name": "Tablet Android 10.1 pulgadas",
     "searchName": "TABLET ANDROID 10.1 PULGADAS",
+    "searchArray": [
+      "TABLET",
+      "ANDROID",
+      "10.1",
+      "PULGADAS"
+    ],
+    "description": "Tablet Android de 10.1 pulgadas con pantalla Full HD, procesador de alto rendimiento y batería de larga duración. Perfecta para entretenimiento, trabajo y estudio con su diseño ligero y potente hardware.",
     "brand": "SmartTab",
     "prices": [
       {
@@ -173,7 +210,15 @@
     "id": "NHBXU04VTG4EiWq7lTZc",
     "sku": "MOU-WL-2024-003",
     "name": "Mouse Inalámbrico Ergonómico",
-    "searchName": "MOUSE INALÁMBRICO ERGONÓMICO",
+    "searchName": "MOUSE INALAMBRICO ERGONOMICO",
+    "searchArray": [
+      "MOUSE",
+      "INALAMBRICO",
+      "INALÁMBRICO",
+      "ERGONOMICO",
+      "ERGONÓMICO"
+    ],
+    "description": "Mouse inalámbrico ergonómico diseñado para prevenir el síndrome del túnel carpiano. Conexión inalámbrica estable de 2.4GHz, sensor óptico de alta precisión y diseño cómodo para uso prolongado.",
     "brand": "ErgoTech",
     "prices": [
       {
@@ -208,6 +253,15 @@
     "sku": "WEB-HD-2024-006",
     "name": "Cámara Web Full HD 1080p",
     "searchName": "CAMARA WEB FULL HD 1080P",
+    "searchArray": [
+      "CAMARA",
+      "CÁMARA",
+      "WEB",
+      "FULL",
+      "HD",
+      "1080P"
+    ],
+    "description": "Cámara web Full HD 1080p con micrófono integrado, enfoque automático y sistema de iluminación ajustable. Perfecta para videollamadas profesionales, transmisiones en vivo y conferencias con calidad de imagen nítida.",
     "brand": "ClearView",
     "prices": [
       {
@@ -242,6 +296,14 @@
     "sku": "MON-4K-2024-005",
     "name": "Monitor 4K UHD 27 pulgadas",
     "searchName": "MONITOR 4K UHD 27 PULGADAS",
+    "searchArray": [
+      "MONITOR",
+      "4K",
+      "UHD",
+      "27",
+      "PULGADAS"
+    ],
+    "description": "Monitor profesional de 27 pulgadas con resolución 4K UHD, colores precisos y ángulos de visión amplios. Ideal para diseño gráfico, edición de video y gaming con su tiempo de respuesta rápido y frecuencia de actualización de 144Hz.",
     "brand": "ViewMax",
     "prices": [
       {
@@ -272,6 +334,13 @@
     "sku": "MIC-USB-2024-007",
     "name": "Micrófono USB Profesional",
     "searchName": "MICROFONO USB PROFESIONAL",
+    "searchArray": [
+      "MICROFONO",
+      "MICRÓFONO",
+      "USB",
+      "PROFESIONAL"
+    ],
+    "description": "Micrófono de condensador USB con patrón polar cardioide, ideal para podcasting, streaming y grabación de voz profesional. Incluye trípode ajustable, filtro antipop y control de ganancia integrado.",
     "brand": "AudioPro",
     "prices": [
       {
@@ -298,13 +367,6 @@
     "updatedAt": 1733875200000,
     "stockUnits": 60,
     "stockBoxes": 6,
-    "searchArray": [
-      "MICROFONO",
-      "USB",
-      "PRO",
-      "PROF",
-      "PROFE"
-    ],
     "subcategoryId": "8XZT3rjf8wg0lb8kESdc",
     "categoryId": "ulvqKOWumki1UWku1aFB"
   },
@@ -313,6 +375,13 @@
     "sku": "LAP-PRO-2024-002",
     "name": "Laptop Gaming Elite X15",
     "searchName": "LAPTOP GAMING ELITE X15",
+    "searchArray": [
+      "LAPTOP",
+      "GAMING",
+      "ELITE",
+      "X15"
+    ],
+    "description": "Laptop gaming de alto rendimiento con pantalla de 15.6 pulgadas 144Hz, tarjeta gráfica dedicada y teclado retroiluminado. Potente procesador y sistema de enfriamiento avanzado para gaming y trabajo intensivo.",
     "brand": "TechPro",
     "prices": [
       {
@@ -337,6 +406,87 @@
     "stockBoxes": 0,
     "subcategoryId": "2zbNYSdvbfmtOl3J3MGI",
     "categoryId": "mMtEzbW48WqnJR8sjT5F"
+  },
+  {
+    "id": "prod-001",
+    "sku": "AUD-BT-2024-001",
+    "name": "Auriculares Bluetooth Pro",
+    "searchName": "AURICULARES BLUETOOTH PRO",
+    "searchArray": [
+      "AURICULARES",
+      "BLUETOOTH",
+      "PRO"
+    ],
+    "description": "Auriculares Bluetooth con cancelación de ruido activa, sonido envolvente 360° y batería de 30 horas de duración. Incluyen estuche de carga inalámbrica y micrófono integrado para llamadas claras.",
+    "categoryId": "cat-electronics-001",
+    "brand": "SoundTech",
+    "prices": [
+      {
+        "label": "unit",
+        "price": 89.99,
+        "discounts": [
+          {
+            "minQuantity": 10,
+            "price": 75.99
+          }
+        ]
+      },
+      {
+        "label": "box",
+        "price": 850.00
+      }
+    ],
+    "unitPerBox": 12,
+    "images": [
+      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop"
+    ],
+    "isActive": true,
+    "createdAt": 1704067200000,
+    "updatedAt": 1733875200000,
+    "stockUnits": 120,
+    "stockBoxes": 10
+  },
+  {
+    "id": "prod-008",
+    "sku": "HUB-USB-2024-008",
+    "name": "Hub USB-C 7 en 1",
+    "searchName": "HUB USB-C 7 EN 1",
+    "searchArray": [
+      "HUB",
+      "USB-C",
+      "USB",
+      "7",
+      "EN",
+      "1"
+    ],
+    "description": "Hub versátil que expande un solo puerto USB-C a 7 puertos diferentes, incluyendo HDMI 4K, USB 3.0, lector de tarjetas y más. Diseño compacto y portátil para mayor productividad en cualquier lugar.",
+    "categoryId": "cat-accessories-002",
+    "brand": "ConnectHub",
+    "prices": [
+      {
+        "label": "unit",
+        "price": 54.99,
+        "discounts": [
+          {
+            "minQuantity": 20,
+            "price": 45.00
+          }
+        ]
+      },
+      {
+        "label": "box",
+        "price": 480.00
+      }
+    ],
+    "unitPerBox": 12,
+    "images": [
+      "https://images.unsplash.com/photo-1625948515291-69613efd103f?w=400&h=400&fit=crop"
+    ],
+    "isActive": true,
+    "createdAt": 1704672000000,
+    "updatedAt": 1733875200000,
+    "stockUnits": 180,
+    "stockBoxes": 15
   },
   {
     "id": "prod-001",

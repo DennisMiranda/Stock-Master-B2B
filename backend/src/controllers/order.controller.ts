@@ -1,13 +1,14 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import { orderSchema } from "../models/order.model";
 import { OrderService } from "../services/order/order.service";
-import { CustomResponse } from "../utils/custom-response";
 import { NewPdfService } from "../services/PDF/newPDF.service";
+import { CustomResponse } from "../utils/custom-response";
 
 export class OrderController {
-  constructor( private orderService: OrderService = new OrderService(), private pdfService:NewPdfService= new NewPdfService()) {
-
-  }
+  constructor(
+    private orderService: OrderService = new OrderService(),
+    private pdfService: NewPdfService = new NewPdfService()
+  ) {}
 
   async createOrder(req: Request, res: Response) {
     try {
@@ -26,13 +27,18 @@ export class OrderController {
       }
 
       const createOrderResponse = await this.orderService.createOrder(req.body);
-      const respuestaid = createOrderResponse.data?.id;
-      await this.pdfService.emitFactura(respuestaid!);
+
+      try {
+        if (createOrderResponse.success) {
+          const respuestaid = createOrderResponse.data?.id;
+          await this.pdfService.emitFactura(respuestaid!);
+        }
+      } catch (error) {
+        console.error("Error generating PDF invoice", error);
+      }
 
       // luego de crear la orden, almacenamos el id en res.locals para usarlo en el siguiente controller
-         return  res.status(201).json(createOrderResponse);
-      
-
+      return res.status(201).json(createOrderResponse);
     } catch (error) {
       console.log(error);
       res
@@ -146,58 +152,60 @@ export class OrderController {
     }
   }
   async getPendingForDelivery(req: Request, res: Response) {
-  try {
-    const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 10;
-    
-    const result = await this.orderService.getOrdersPendingForDelivery({
-      page,
-      limit,
-    });
-    
-    res.status(200).json(
-      CustomResponse.success(
-        result,
-        "Pedidos pendientes obtenidos exitosamente"
-      )
-    );
-  } catch (error) {
-    console.log(error);
-    res.status(400).json(
-      CustomResponse.error(
-        "ORDER_ERROR",
-        "Error al obtener pedidos pendientes"
-      )
-    );
-  }
-}
-  async getReadyOrders(req: Request, res: Response) {
     try {
       const page = Number(req.query.page) || 1;
       const limit = Number(req.query.limit) || 10;
-      
+
       const result = await this.orderService.getOrdersPendingForDelivery({
         page,
         limit,
       });
-      
-      res.status(200).json(
-        CustomResponse.success(
-          result,
-          "Pedidos listos obtenidos exitosamente"
-        )
-      );
+
+      res
+        .status(200)
+        .json(
+          CustomResponse.success(
+            result,
+            "Pedidos pendientes obtenidos exitosamente"
+          )
+        );
     } catch (error) {
       console.log(error);
-      res.status(400).json(
-        CustomResponse.error(
-          "ORDER_ERROR",
-          "Error al obtener pedidos listos"
-        )
-      );
+      res
+        .status(400)
+        .json(
+          CustomResponse.error(
+            "ORDER_ERROR",
+            "Error al obtener pedidos pendientes"
+          )
+        );
     }
   }
+  async getReadyOrders(req: Request, res: Response) {
+    try {
+      const page = Number(req.query.page) || 1;
+      const limit = Number(req.query.limit) || 10;
 
+      const result = await this.orderService.getOrdersPendingForDelivery({
+        page,
+        limit,
+      });
+
+      res
+        .status(200)
+        .json(
+          CustomResponse.success(
+            result,
+            "Pedidos listos obtenidos exitosamente"
+          )
+        );
+    } catch (error) {
+      console.log(error);
+      res
+        .status(400)
+        .json(
+          CustomResponse.error("ORDER_ERROR", "Error al obtener pedidos listos")
+        );
+    }
+  }
 }
-
-
