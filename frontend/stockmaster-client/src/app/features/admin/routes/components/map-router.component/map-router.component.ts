@@ -7,6 +7,7 @@ import {
   PLATFORM_ID,
   inject,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import * as L from 'leaflet';
@@ -26,6 +27,7 @@ import { WAREHOUSE_LOCATION } from '../../config/location';
   imports: [CommonModule],
   templateUrl: './map-router.component.html',
   styleUrl: './map-router.component.css',
+  changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class MapRouterComponent implements OnInit, OnDestroy {
   private platformId = inject(PLATFORM_ID);
@@ -59,16 +61,23 @@ export class MapRouterComponent implements OnInit, OnDestroy {
     }
   }
 
-  private initMap(): void {
-    this.map = L.map('map').setView([-12.0464, -77.0428], 14);
+private initMap(): void {
+  this.map = L.map('map', {
+    center: [-12.0464, -77.0428],
+    zoom: 14,
+    minZoom: 10,  
+    maxZoom: 18    
+  });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors',
-    }).addTo(this.map);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors',
+  }).addTo(this.map);
 
-    this.updateMap();
-    this.addWarehouseMarker();
-  }
+  this.updateMap();
+  this.addWarehouseMarker();
+}
+
+
 
   private updateMap(): void {
     if (!this.map) return;

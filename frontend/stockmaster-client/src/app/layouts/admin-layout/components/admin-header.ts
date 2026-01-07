@@ -37,7 +37,15 @@ import { LayoutService } from '../../../core/services/layout.service';
           <div
             class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center"
           >
+            @if (currentUser()?.photoURL) {
+            <img
+              [src]="currentUser()!.photoURL"
+              [alt]="'foto de ' + currentUser()!.displayName"
+              class="w-10 h-10 rounded-full object-cover"
+            />
+            } @else {
             <lucide-icon [img]="UserIcon" class="w-6 h-6" />
+            }
           </div>
 
           <lucide-icon [img]="ChevronDownIcon" class="w-4 h-4 text-gray-400" />

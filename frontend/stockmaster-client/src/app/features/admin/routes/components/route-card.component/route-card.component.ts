@@ -1,38 +1,37 @@
-import { Component, input, output, signal, computed } from '@angular/core';
+import { Component, input, output, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { 
-  LucideAngularModule, 
-  UserPlus, 
-  ChevronRight, 
+import {
+  LucideAngularModule,
+  UserPlus,
+  ChevronRight,
   MapPin,
   MoreVertical,
   Play,
   CheckCircle2,
   XCircle,
-  Package
+  Package,
 } from 'lucide-angular';
 import { Route, RouteStatus } from '../../../../../core/models/route.model';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-route-card',
   standalone: true,
-  imports: [LucideAngularModule, CommonModule],
+  imports: [LucideAngularModule, CommonModule, RouterLink],
   templateUrl: './route-card.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RouteCardComponent {
   route = input.required<Route>();
   isSelected = input<boolean>(false);
-  deliveredOrders = input<Set<string>>(new Set()); // IDs de pedidos entregados
-readonly RouteStatus = RouteStatus;
+  readonly RouteStatus = RouteStatus;
   // Outputs
   cardClick = output<string>();
-  assignDriver = output<string>();
-  viewDetails = output<string>();
   startRoute = output<string>();
   completeRoute = output<string>();
   cancelRoute = output<string>();
 
-   // Nuevos outputs
+  // Nuevos outputs
   markOrderDelivered = output<{ routeId: string; orderId: string }>();
   removeOrder = output<{ routeId: string; orderId: string }>();
 
@@ -50,24 +49,43 @@ readonly RouteStatus = RouteStatus;
   readonly XCircleIcon = XCircle;
   readonly PackageIcon = Package;
 
-  completedOrdersCount = computed(() => {
-    return this.route().orders.filter(orderId => 
-      this.deliveredOrders().has(orderId)
-    ).length;
-  });
+  totalOrders = computed(() => this.route()?.orders.length || 0);
+deliveredOrdersCount = computed(() => this.route()?.deliveredOrders?.length || 0);
+deliveredOrdersList = computed(() => this.route()?.deliveredOrders ?? []);
 
-  progressPercentage = computed(() => {
-    const total = this.route().orders.length;
-    if (total === 0) return 0;
-    return Math.round((this.completedOrdersCount() / total) * 100);
-  });
+completedOrdersCount = computed(() => {
+  return this.route()?.orders.filter(orderId =>
+    this.deliveredOrdersList().includes(orderId)
+  ).length;
+});
+
+isOrderDelivered(orderId: string): boolean {
+  const delivered = this.deliveredOrdersList().map(id => String(id).trim());
+
+  console.log("orders:", this.route()?.orders);
+  console.log("deliveredOrders:", this.route()?.deliveredOrders);
+  console.log("checking:", orderId, "=>", delivered.includes(String(orderId).trim()));
+console.log("Route object:", this.route());
+console.log("Orders array:", this.route()?.orders);
+
+  return delivered.includes("a08YEG3CIDAOZHvPW7St") // => false
+
+}
+
+
+
+progressPercentage = computed(() => {
+  const total = this.totalOrders();
+  if (total === 0) return 0;
+  return Math.round((this.deliveredOrdersCount() / total) * 100);
+});
 
   getStatusClass(status: RouteStatus): string {
     const classes: Record<RouteStatus, string> = {
       [RouteStatus.PLANNED]: 'bg-yellow-100 text-yellow-800',
       [RouteStatus.IN_PROGRESS]: 'bg-blue-100 text-blue-800',
       [RouteStatus.COMPLETED]: 'bg-green-100 text-green-800',
-      [RouteStatus.CANCELLED]: 'bg-red-100 text-red-800'
+      [RouteStatus.CANCELLED]: 'bg-red-100 text-red-800',
     };
     return classes[status] || 'bg-gray-100 text-gray-800';
   }
@@ -77,27 +95,15 @@ readonly RouteStatus = RouteStatus;
       [RouteStatus.PLANNED]: 'Planificada',
       [RouteStatus.IN_PROGRESS]: 'En Progreso',
       [RouteStatus.COMPLETED]: 'Completada',
-      [RouteStatus.CANCELLED]: 'Cancelada'
+      [RouteStatus.CANCELLED]: 'Cancelada',
     };
     return labels[status] || status;
   }
 
-  isOrderDelivered(orderId: string): boolean {
-    return this.deliveredOrders().has(orderId);
-  }
+
 
   onCardClick(): void {
     this.cardClick.emit(this.route().id);
-  }
-
-  onAssignDriver(event: Event): void {
-    event.stopPropagation();
-    this.assignDriver.emit(this.route().id);
-  }
-
-  onViewDetails(event: Event): void {
-    event.stopPropagation();
-    this.viewDetails.emit(this.route().id);
   }
 
   onStartRoute(event: Event): void {
@@ -124,12 +130,12 @@ readonly RouteStatus = RouteStatus;
 
   toggleMenu(event: Event): void {
     event.stopPropagation();
-    this.showMenu.update(v => !v);
+    this.showMenu.update((v) => !v);
   }
 
   toggleOrders(event: Event): void {
     event.stopPropagation();
-    this.showOrders.update(v => !v);
+    this.showOrders.update((v) => !v);
   }
 
   // Reemplazar toggleOrderDelivered por estos dos métodos
@@ -144,5 +150,4 @@ readonly RouteStatus = RouteStatus;
       this.removeOrder.emit({ routeId: this.route().id, orderId });
     }
   }
-  
 }

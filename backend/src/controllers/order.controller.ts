@@ -1,14 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { orderSchema } from "../models/order.model";
 import { OrderService } from "../services/order/order.service";
-import { ProductService } from "../services/product.service";
 import { CustomResponse } from "../utils/custom-response";
-import { StatisticService } from "../services/statistic.service";
 
-class OrderController {
-  private orderService: OrderService;
-  constructor(orderService: OrderService) {
-    this.orderService = orderService;
+export class OrderController {
+  constructor( private orderService: OrderService = new OrderService()) {
+
   }
 
   async createOrder(req: Request, res: Response, next: NextFunction) {
@@ -31,8 +28,8 @@ class OrderController {
 
       // luego de crear la orden, almacenamos el id en res.locals para usarlo en el siguiente controller
       res.locals.orderId = createOrderResponse.data?.id; // Store orderId in res.locals
-          res.status(201).json(createOrderResponse);
-      return next();
+         return  res.status(201).json(createOrderResponse);
+      
 
     } catch (error) {
       console.log(error);
@@ -46,7 +43,7 @@ class OrderController {
     try {
       const page = Number(req.query.page) || 1;
       const limit = Number(req.query.limit) || 10;
-      const order = await orderService.getOrdersPaginated({
+      const order = await this.orderService.getOrdersPaginated({
         page,
         limit,
       });
@@ -68,7 +65,7 @@ class OrderController {
       if (!id) {
         return res.status(400).json({ message: "Order id is required" });
       }
-      const order = await orderService.getOrderById(id);
+      const order = await this.orderService.getOrderById(id);
 
       if (!order) {
         return res.status(404).json({ message: "Order not found" });
@@ -95,7 +92,7 @@ class OrderController {
         return res.status(400).json({ message: "User id is required" });
       }
 
-      const result = await orderService.getOrdersByUserId(userId, {
+      const result = await this.orderService.getOrdersByUserId(userId, {
         page,
         limit,
       });
@@ -140,7 +137,7 @@ class OrderController {
     try {
       const { id } = req.params;
       const { status } = req.body;
-      const order = await orderService.updateStatus(id!, status);
+      const order = await this.orderService.updateStatus(id!, status);
       res.json({ success: true, data: order });
     } catch (error: any) {
       res.status(400).json({ success: false, error: error.message });
@@ -172,11 +169,33 @@ class OrderController {
     );
   }
 }
+  async getReadyOrders(req: Request, res: Response) {
+    try {
+      const page = Number(req.query.page) || 1;
+      const limit = Number(req.query.limit) || 10;
+      
+      const result = await this.orderService.getOrdersPendingForDelivery({
+        page,
+        limit,
+      });
+      
+      res.status(200).json(
+        CustomResponse.success(
+          result,
+          "Pedidos listos obtenidos exitosamente"
+        )
+      );
+    } catch (error) {
+      console.log(error);
+      res.status(400).json(
+        CustomResponse.error(
+          "ORDER_ERROR",
+          "Error al obtener pedidos listos"
+        )
+      );
+    }
+  }
 
 }
 
-const productService = new ProductService();
-const statisticService = new StatisticService();
-const orderService = new OrderService(productService, statisticService);
-const orderController = new OrderController(orderService);
-export default orderController;
+

@@ -1,4 +1,4 @@
-import { Component, input, output, EventEmitter } from '@angular/core';
+import { Component, input, output, EventEmitter, OnInit } from '@angular/core';
 import type { Route } from '../../../../../core/models/route.model';
 import { NgClass } from '@angular/common';
 import { LucideAngularModule, Users, Package, Plus, Route as RouteIcon, X, AlertTriangle, Info, ChevronRight } from 'lucide-angular';
@@ -8,7 +8,7 @@ import { LucideAngularModule, Users, Package, Plus, Route as RouteIcon, X, Alert
   templateUrl: './assign-route-modal.html',
   styleUrl: './assign-route-modal.css',
 })
-export class AssignRouteModal {
+export class AssignRouteModal implements OnInit{
   routes = input<Route[]>([]);
   routeSelected = output<string>();
   close = output<void>();
@@ -20,6 +20,9 @@ readonly CloseIcon = X;
 readonly AlertIcon = AlertTriangle;
 readonly InfoIcon = Info;
 readonly ChevronRightIcon = ChevronRight;
+ngOnInit(): void {
+  
+}
 
   getStatusLabel(status: string): string {
     const labels: Record<string, string> = {
@@ -30,6 +33,12 @@ readonly ChevronRightIcon = ChevronRight;
     };
     return labels[status] || status;
   }
+  get filteredRoutes(): Route[] {
+  return this.routes().filter(
+    r => r.status === 'PLANNED' || r.status === 'IN_PROGRESS'
+  );
+}
+
   selectRoute(routeId: string) {
     this.routeSelected.emit(routeId);
   }

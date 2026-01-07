@@ -1,5 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, Pipe, PipeTransform, inject, computed, signal, effect } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  Pipe,
+  PipeTransform,
+  inject,
+  computed,
+  signal,
+  effect,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { SortableHeaderDirective, SortEvent } from '../../directives/sortable.directive';
 import { TableColumn } from './models/table.model';
 import { BreakpointService } from '../../utils/breakpoint.service';
@@ -24,6 +36,7 @@ export class GetPropertyPipe implements PipeTransform {
   standalone: true,
   imports: [CommonModule, SortableHeaderDirective, KeyToStringPipe, GetPropertyPipe],
   templateUrl: './data-table.component.html',
+  changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class DataTableComponent<T> {
   private breakpointService = inject(BreakpointService);

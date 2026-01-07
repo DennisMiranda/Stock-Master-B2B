@@ -16,6 +16,12 @@ export class OrderService {
   createOrder(order: Order) {
     return this.apiService.post('/orders', order);
   }
+  getReadyOrders(page?: number, limit?: number) {
+    const params: any = {};
+    if (page) params.page = page;
+    if (limit) params.limit = limit;
+    return this.apiService.get<OrdersPaginatedResponse>('/orders/ready', { params });
+  }
 
   getOrders(params: { page?: number } = { page: 1 }) {
     return this.apiService.get<OrdersPaginatedResponse>('/orders', { params });

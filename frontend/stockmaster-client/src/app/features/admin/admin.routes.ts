@@ -17,24 +17,33 @@ export const adminRoutes: Routes = [
     loadComponent: () => import('./users/pages/users-page/users-page').then((m) => m.UsersPage),
     canActivate: [roleGuard(['admin'])],
   },
-        {
-        path: 'products',
-        loadComponent: () => import('./products/pages/products-list-page/products-list-page').then(m => m.ProductsListPage),
-        canActivate: [roleGuard(['admin'])]
-    },
-
-    {
-        path: 'routes',
-        loadComponent: () => import('./routes/pages/router-page/router-page').then(m => m.RouterPage),
-        canActivate: [roleGuard(['admin', 'driver'])]
-    },
-
-          {
-        path: 'categories',
-        loadComponent: () => import('./categories/pages/categories-list-page/categories-list-page').then(m => m.CategoriesListPage),
-        canActivate: [roleGuard(['admin'])]
-
-    },
+  {
+    path: 'products',
+    loadComponent: () =>
+      import('./products/pages/products-list-page/products-list-page').then(
+        (m) => m.ProductsListPage
+      ),
+    canActivate: [roleGuard(['admin'])],
+  },
+  {
+    path: 'routes',
+    loadComponent: () => import('./routes/pages/router-page/router-page').then((m) => m.RouterPage),
+    canActivate: [roleGuard(['admin', 'driver'])],
+  },
+  {
+    path: 'routes-details/:id',
+    loadComponent: () =>
+      import('./routes/pages/router-details/router-details').then((m) => m.RouterDetails),
+    canActivate: [roleGuard(['admin', 'warehouse'])],
+  },
+  {
+    path: 'categories',
+    loadComponent: () =>
+      import('./categories/pages/categories-list-page/categories-list-page').then(
+        (m) => m.CategoriesListPage
+      ),
+    canActivate: [roleGuard(['admin'])],
+  },
   {
     path: 'profile',
     loadComponent: () => import('./profile/profile-page').then((m) => m.ProfilePage),

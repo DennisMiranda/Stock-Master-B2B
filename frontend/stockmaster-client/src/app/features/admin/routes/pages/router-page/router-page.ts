@@ -51,11 +51,12 @@ export class RouterPage implements OnInit {
   selectedDriverId = signal<string | null>(null);
   selectedOrderId = signal<string | null>(null);
   selectedRouteId = signal<string | null>(null);
-  deliveredOrdersMap = signal<Map<string, Set<string>>>(new Map());
+
   showCreateRouteModal = signal(false);
   readonly PlusIcon = Plus;
   drivers = signal<Driver[]>([]);
   orders = signal<Order[]>([]);
+  ordersReady = signal<Order[]>([]);
   routes = signal<Route[]>([]);
   deliveries = signal<Delivery[]>([]);
   loading = signal<boolean>(false);
@@ -104,7 +105,7 @@ export class RouterPage implements OnInit {
     this.loading.set(true);
     this.error.set(null);
 
-    Promise.all([this.loadDrivers(), this.loadRoutes(), this.loadOrders()])
+    Promise.all([this.loadDrivers(), this.loadRoutes(), this.loadOrders(), this.loadReadyOrders()])
       .catch((error) => {
         console.error('Error loading data:', error);
         this.error.set('Error al cargar los datos. Por favor, intenta de nuevo.');
@@ -114,10 +115,21 @@ export class RouterPage implements OnInit {
       });
   }
 
- 
-  private async loadOrders(): Promise<void> {
+   private async loadReadyOrders(): Promise<void> {
   try {
     const response = await this.ordersService.getPendingForDelivery().toPromise();
+    if (response?.data?.orders) {
+      this.ordersReady.set(response.data.orders);
+      console.log('✅ Pending orders loaded:', response.data.orders.length);
+    }
+  } catch (error) {
+    console.error('❌ Error loading pending orders:', error);
+    throw error;
+  }
+}
+  private async loadOrders(): Promise<void> {
+  try {
+    const response = await this.ordersService.getOrders().toPromise();
     if (response?.data?.orders) {
       this.orders.set(response.data.orders);
       console.log('✅ Pending orders loaded:', response.data.orders.length);
@@ -195,15 +207,6 @@ export class RouterPage implements OnInit {
     this.showAssignModal.set(false);
   }
 
-  async assignDriverToRoute(routeId: string): Promise<void> {
-    console.log('Assign driver to route:', routeId);
-    // TODO: Implementar lógica
-  }
-
-  viewRouteDetails(routeId: string): void {
-    console.log('View route details:', routeId);
-    // TODO: Implementar navegación o modal
-  }
 
   resetMapFilter(): void {
     this.selectedDriverId.set(null);
@@ -349,19 +352,7 @@ export class RouterPage implements OnInit {
     }
   }
 
-  async onRouteToggleOrderDelivered(data: { routeId: string; orderId: string }): Promise<void> {
-    const currentMap = new Map(this.deliveredOrdersMap());
-    const routeOrders = currentMap.get(data.routeId) || new Set();
 
-    if (routeOrders.has(data.orderId)) {
-      routeOrders.delete(data.orderId);
-    } else {
-      routeOrders.add(data.orderId);
-    }
-
-    currentMap.set(data.routeId, routeOrders);
-    this.deliveredOrdersMap.set(currentMap);
-  }
 
   onMarkOrderDelivered(event: { routeId: string; orderId: string }): void {
     this.routesService.markOrderAsDelivered(event.routeId, event.orderId).subscribe({
@@ -386,7 +377,7 @@ export class RouterPage implements OnInit {
   }
 
   onRemoveOrder(event: { routeId: string; orderId: string }): void {
-    this.routesService.removeOrder(event.routeId, event.orderId, WAREHOUSE_LOCATION).subscribe({
+    this.routesService.removeOrderFromRoute(event.routeId, event.orderId, WAREHOUSE_LOCATION).subscribe({
       next: (response) => {
         if (response.success) {
           this.routes.update((routes) =>

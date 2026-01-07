@@ -1,12 +1,12 @@
-<footer class="footer">
-  <section class="footer-main">
-    <article class="footer-section footer-about">
-           <a routerLink="/shop" class="flex font-mono items-center font-semibold gap-2 group">
+<footer class="footer bg-morado  px-4 py-10">
+  <section class=" grid grid-cols-1   sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:gap-2 xl:grid-cols-5 gap-4 ">
+    <article class="footer-section col-span-2 md:col-span-1">
+           <a routerLink="/shop" class="flex font-mono max-w-50 items-center  font-semibold  group">
         <img src="/images/logoblanco.svg" alt="Logo de stock master" class=" h-full max-h-20 ">
-              <img src="/images/logonombreblanco.svg" alt="Logo de stock master" class=" h-full max-h-10 ">
+              <img src="/images/logonombreblanco.svg" alt="Logo de stock master" class=" h-8 w-full  ">
       
       </a>
-      <p class="footer-description">
+      <p class=" text-sm font-normal text-gray-300">
         Solución integral para la gestión de inventario y operaciones B2B. 
         Optimiza tu negocio con nuestras herramientas avanzadas.
       </p>      
@@ -79,7 +79,7 @@
       <p class="newsletter-text">
         Suscríbete para recibir las últimas actualizaciones y ofertas.
       </p>
-      <form class="newsletter-form" (submit)="onSubmitNewsletter($event)">
+      <form class="newsletter-form flex flex-col" (submit)="onSubmitNewsletter($event)">
         <label for="newsletter-email" class="visually-hidden">Correo electrónico</label>
         <input 
           id="newsletter-email"
@@ -90,10 +90,12 @@
           class="newsletter-input"
           required
           aria-label="Correo electrónico para newsletter">
-        <button type="submit" class="newsletter-button" aria-label="Suscribirse" [disabled]="isLoading">
+        <button type="submit" class="newsletter-button gap-4" aria-label="Suscribirse" [disabled]="isLoading">
           <lucide-icon [img]="Send" [size]="18"></lucide-icon>
           @if (isLoading) {
             <span class="loading-text">Enviando...</span>
+          }@else{
+            <span class="loading-text">Suscribirse</span>
           }
         </button>
       </form>

@@ -4,6 +4,7 @@
 @theme {
     --font-poppins: "Poppins", sans-serif;
     --color-azul: #3182ce;
+    --color-morado:#2d3748;
 }
 
 @font-face {

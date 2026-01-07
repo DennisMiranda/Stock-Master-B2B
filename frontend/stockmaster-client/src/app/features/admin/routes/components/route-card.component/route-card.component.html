@@ -1,16 +1,23 @@
 <li
   (click)="onCardClick()"
   [class.ring-2]="isSelected()"
-  [class.ring-blue-500]="isSelected()"
+  [class.ring-azul]="isSelected()"
   class="group bg-gray-50 hover:bg-white border border-gray-200 rounded-sm p-4 transition-all hover:shadow-md cursor-pointer relative"
 >
   <!-- Menu Button -->
-  <button
-    (click)="toggleMenu($event)"
-    class="absolute top-3 right-3 p-1 hover:bg-gray-200 rounded transition-colors z-10"
-  >
-    <lucide-icon [img]="MoreVerticalIcon" class="w-5 h-5 text-gray-600"></lucide-icon>
-  </button>
+<button
+  (click)="toggleMenu($event)"
+  class="absolute top-3 right-3 p-1 rounded transition-colors z-10"
+  [disabled]="route().status === RouteStatus.COMPLETED"
+  [ngClass]="{
+    'hover:bg-gray-200 text-gray-600': route().status !== RouteStatus.COMPLETED,
+    'bg-gray-100 text-gray-400 cursor-not-allowed': route().status === RouteStatus.COMPLETED
+  }"
+>
+  <lucide-icon [img]="MoreVerticalIcon" class="w-5 h-5"></lucide-icon>
+</button>
+
+
 
   <!-- Dropdown Menu -->
   @if (showMenu()) {
@@ -57,15 +64,18 @@
   <!-- Header -->
   <div class="flex items-center justify-between mb-3 mr-6">
     <div class="flex-1">
-      <p class="font-bold text-gray-900">{{ route().name || 'Ruta ' + route().id }}</p>
-      <p class="text-xs text-gray-500">{{ route().id }}</p>
-    </div>
-    <span
+     <p class="text-gray-900 font-semibold text-lg flex justify-between  items-center"> Ruta 
+          <span
       [ngClass]="getStatusClass(route().status)"
-      class="px-2 py-1 rounded-lg text-xs font-semibold"
+      class="px-2 py-1   rounded-lg text-xs "
     >
       {{ getStatusLabel(route().status) }}
     </span>
+     </p>
+
+     <p class="font-semibold text-sm text-gray-600">{{ route().name || route().id }}</p>
+    </div>
+
   </div>
 
   <!-- Driver Info -->
@@ -128,57 +138,51 @@
     ></lucide-icon>
   </button>
 
-  @if (showOrders()) {
+@if (showOrders()) {
   <div class="mt-2 space-y-1 max-h-40 overflow-y-auto">
     @for (orderId of route().orders; track orderId) {
-    <div
-      class="flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded hover:bg-gray-50 transition-colors"
-    >
-      <span
-        class="text-xs flex-1"
-        [class.line-through]="isOrderDelivered(orderId)"
-        [class.text-gray-400]="isOrderDelivered(orderId)"
+      <div
+        class="flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded hover:bg-gray-50 transition-colors"
       >
-        {{ orderId }}
-      </span>
-      
-      @if (!isOrderDelivered(orderId) && route().status === RouteStatus.IN_PROGRESS) {
-      <!-- Botón Marcar como Entregado -->
-      <button
-        (click)="onMarkAsDelivered($event, orderId)"
-        class="p-1 hover:bg-green-100 rounded transition-colors"
-        title="Marcar como entregado"
-      >
-        <lucide-icon [img]="CheckCircle2Icon" class="w-4 h-4 text-green-600"></lucide-icon>
-      </button>
-      }
-      
-      @if (isOrderDelivered(orderId)) {
-      <lucide-icon [img]="CheckCircle2Icon" class="w-4 h-4 text-green-500"></lucide-icon>
-      }
-      
-      <!-- Botón Eliminar -->
-      <button
-        (click)="onRemoveOrder($event, orderId)"
-        class="p-1 hover:bg-red-100 rounded transition-colors"
-        title="Eliminar de la ruta"
-      >
-        <lucide-icon [img]="XCircleIcon" class="w-4 h-4 text-red-600"></lucide-icon>
-      </button>
-    </div>
+        <span
+          class="text-xs flex-1"
+          [class.line-through]="isOrderDelivered(orderId)"
+          [class.text-gray-400]="isOrderDelivered(orderId)"
+        >
+          {{ orderId }}
+        </span>
+
+        @if (!isOrderDelivered(orderId) && route().status === RouteStatus.IN_PROGRESS) {
+          <button
+            (click)="onMarkAsDelivered($event, orderId)"
+            class="p-1 hover:bg-green-100 rounded transition-colors"
+            title="Marcar como entregado"
+          >
+            <lucide-icon [img]="CheckCircle2Icon" class="w-4 h-4 text-green-600"></lucide-icon>
+          </button>
+        }
+
+        <button
+          (click)="onRemoveOrder($event, orderId)"
+          class="p-1 hover:bg-red-100 rounded transition-colors"
+          title="Eliminar de la ruta"
+        >
+          <lucide-icon [img]="XCircleIcon" class="w-4 h-4 text-red-600"></lucide-icon>
+        </button>
+      </div>
     }
   </div>
-  }
+}
+
 </div>
 }
 
   <!-- Actions -->
   <div class="flex gap-2">
-    <button
-      (click)="onViewDetails($event)"
+    <a [routerLink]="['/admin/routes-details', route().id]"
       class="flex-1 px-3 py-2 border border-gray-300 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-50 transition-colors"
     >
       Ver Detalles
-    </button>
+    </a>
   </div>
 </li>

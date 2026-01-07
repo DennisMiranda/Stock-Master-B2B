@@ -1,18 +1,20 @@
 import * as L from 'leaflet';
 export function createOrderIcon(status: string): L.DivIcon {
-    const colors: Record<string, string> = {
-      'CREATED': '#EAB308',
-      'IN_PACKING': '#3B82F6',
-      'READY': '#10B981',
-      'DELIVERED': '#6B7280',
-      'CANCELLED': '#EF4444'
-    };
+  const colors: Record<string, string> = {
+    CREATED: '#EAB308',
+    IN_PACKING: '#3B82F6',
+    READY: '#10B981',
+    DELIVERED: '#6B7280',
+    ASSIGNED: '#a855f7',
+    IN_TRANSIT: '#6B7280',
+    CANCELLED: '#EF4444',
+  };
 
-    const color = colors[status] || '#6B7280';
+  const color = colors[status] || '#6B7280';
 
-    return L.divIcon({
-      className: 'custom-icon',
-      html: `
+  return L.divIcon({
+    className: 'custom-icon',
+    html: `
         <div style="
           background: ${color};
           width: 36px;
@@ -29,8 +31,8 @@ export function createOrderIcon(status: string): L.DivIcon {
           </svg>
         </div>
       `,
-      iconSize: [36, 36],
-      iconAnchor: [18, 36],
-      popupAnchor: [0, -36]
-    });
-  }
+    iconSize: [36, 36],
+    iconAnchor: [18, 36],
+    popupAnchor: [0, -36],
+  });
+}

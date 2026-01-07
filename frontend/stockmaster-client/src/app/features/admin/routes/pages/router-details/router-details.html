@@ -1,0 +1,300 @@
+<div class="min-h-screen bg-gray-50 ">
+  <div class="max-w-7xl mx-auto  ">
+    
+    <!-- Loading State -->
+    @if (loading()) {
+      <div class="flex items-center justify-center h-96">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-azul"></div>
+      </div>
+    }
+
+    <!-- Error State -->
+    @else if (error()) {
+      <div class="bg-red-50 border border-red-200 rounded-lg p-6 flex items-start space-x-3">
+        <lucide-icon [img]="AlertCircleIcon" class="h-6 w-6 text-red-600 flex-shrink-0"></lucide-icon>
+        <div>
+          <h3 class="text-lg font-semibold text-red-800 mb-2">Error al cargar la ruta</h3>
+          <p class="text-red-700">{{ error() }}</p>
+          <div class="mt-4 flex space-x-3">
+            <button 
+              (click)="goBack()"
+              class="px-4 py-2 bg-white border border-red-300 text-red-700 rounded-lg hover:bg-red-50 transition-colors">
+              Volver
+            </button>
+            <button 
+              (click)="refresh()"
+              class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+              Reintentar
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Content -->
+    @else if (routeData()) {
+      <!-- Header -->
+      <div class="mb-6">
+        <button 
+          (click)="goBack()"
+          class="inline-flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors mb-4">
+          <lucide-icon [img]="ArrowLeftIcon" class="h-5 w-5"></lucide-icon>
+          <span class="font-medium">Volver</span>
+        </button>
+        
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900">Detalle de Ruta</h1>
+            <p class="text-gray-600 mt-1 text-sm">ID: {{ routeData()!.id }}</p>
+          </div>
+          <span [class]="'px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap ' + statusClass()">
+            {{ statusText() }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="text-lg font-semibold text-gray-900">Progreso de Entregas</h3>
+          <span class="text-2xl font-bold text-azul">{{ progressPercentage() }}%</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-3 mb-4">
+          <div 
+            class="bg-azul h-3 rounded-full transition-all duration-500"
+            [style.width.%]="progressPercentage()">
+          </div>
+        </div>
+        <div class="flex justify-between text-sm text-gray-600">
+          <span class="font-medium">{{ deliveredOrders() }} entregadas</span>
+          <span class="font-medium">{{ pendingOrders() }} pendientes</span>
+          <span class="font-medium">{{ totalOrders() }} total</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left Column - Driver & Route Info -->
+        <div class="lg:col-span-1 space-y-6">
+          
+          <!-- Driver Card -->
+          <div class="bg-white rounded-lg shadow-sm p-6">
+            <div class="flex items-center space-x-2 mb-4">
+              <h3 class="text-lg font-semibold text-gray-900">Conductor</h3>
+            </div>
+            
+            <div class="space-y-4">
+              <div class="flex items-center space-x-3">
+                @if (routeData()!.driver.photoURL) {
+                  <img 
+                    [src]="routeData()!.driver.photoURL" 
+                    [alt]="routeData()!.driver.displayName"
+                    class="w-12 h-12 rounded-full object-cover border-2 border-gray-200">
+                } @else {
+                  <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                    <span class="text-blue-600 font-semibold text-lg">
+                      {{ routeData()!.driver.displayName?.charAt(0) || '?' }}
+                    </span>
+                  </div>
+                }
+                <div class="flex-1">
+                  <p class="font-semibold text-gray-900">{{ routeData()!.driver.displayName || 'Sin nombre' }}</p>
+              
+                </div>
+              </div>
+
+              <div class="space-y-3 pt-3 border-t border-gray-100">
+                <div class="flex items-center space-x-2 text-sm text-gray-600">
+                  <lucide-icon [img]="TruckIcon" class="h-4 w-4 flex-shrink-0"></lucide-icon>
+                  <span class="truncate">{{ routeData()!.driver.vehicle }}</span>
+                </div>
+                
+                @if (routeData()!.driver.email) {
+                  <button 
+                    (click)="emailCustomer(routeData()!.driver.email!)"
+                    class="flex items-center space-x-2 text-sm text-gray-600 cursor-pointer transition-colors w-full">
+                    <lucide-icon [img]="MailIcon" class="h-4 w-4 flex-shrink-0"></lucide-icon>
+                    <span class="truncate">{{ routeData()!.driver.email }}</span>
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Route Info Card -->
+          <div class="bg-white rounded-lg shadow-sm p-6">
+            <div class="flex items-center space-x-2 mb-4">
+              <lucide-icon [img]="NavigationIcon" class="h-5 w-5 "></lucide-icon>
+              <h3 class="text-lg font-semibold text-gray-900">Información de Ruta</h3>
+            </div>
+            
+            <div class="space-y-3">
+              <div class="flex items-start justify-between gap-2">
+                <div class="flex items-center space-x-2">
+                  <lucide-icon [img]="CalendarIcon" class="h-4 w-4 text-gray-400 flex-shrink-0"></lucide-icon>
+                  <span class="text-sm text-gray-600">Creada</span>
+                </div>
+                <span class="text-sm font-medium text-gray-900 text-right">
+                  {{ routeData()?.createdAt | date:'dd/MM/yyyy HH:mm':'es-PE' }}
+                </span>
+              </div>
+              
+              <div class="h-px bg-gray-100"></div>
+              
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <lucide-icon [img]="PackageIcon" class="h-4 w-4 text-gray-400"></lucide-icon>
+                  <span class="text-sm text-gray-600">Total Pedidos</span>
+                </div>
+                <span class="text-sm font-semibold text-gray-900">{{ totalOrders() }}</span>
+              </div>
+              
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <lucide-icon [img]="CheckCircleIcon" class="h-4 w-4 text-green-500"></lucide-icon>
+                  <span class="text-sm text-gray-600">Entregados</span>
+                </div>
+                <span class="text-sm font-semibold text-green-600">{{ deliveredOrders() }}</span>
+              </div>
+              
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <lucide-icon [img]="ClockIcon" class="h-4 w-4 text-yellow-500"></lucide-icon>
+                  <span class="text-sm text-gray-600">Pendientes</span>
+                </div>
+                <span class="text-sm font-semibold text-yellow-600">{{ pendingOrders() }}</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column - Orders List -->
+        <div class="lg:col-span-2">
+          <div class="bg-white rounded-lg shadow-sm p-6">
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center space-x-2">
+                <lucide-icon [img]="PackageIcon" class="h-5 w-5 "></lucide-icon>
+                <h3 class="text-lg font-semibold text-gray-900">Pedidos ({{ totalOrders() }})</h3>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              @for (order of routeData()!.orders; track order.id) {
+                <div 
+                  [class]="'border rounded-lg p-4 transition-all duration-200 ' + 
+                    (isOrderDelivered(order.id!) ? 'border-green-200 bg-green-50' : 'border-gray-200 bg-white hover:border-blue-300 hover:shadow-md')">
+                  
+                  <!-- Order Header -->
+                  <div class="flex items-start justify-between mb-3 gap-3">
+                    <div class="flex items-start space-x-3 flex-1 min-w-0">
+                      @if (isOrderDelivered(order.id!)) {
+                        <lucide-icon [img]="CheckCircleIcon" class="h-6 w-6 text-green-600 flex-shrink-0 mt-0.5"></lucide-icon>
+                      } @else {
+                        <lucide-icon [img]="ClockIcon" class="h-6 w-6 text-yellow-600 flex-shrink-0 mt-0.5"></lucide-icon>
+                      }
+                      <div class="min-w-0 flex-1">
+                        <h4 class="font-semibold text-gray-900 truncate">{{ order.customer.companyName }}</h4>
+                        <p class="text-sm text-gray-600 truncate">ID: {{ order.id }}</p>
+                      </div>
+                    </div>
+                    <span [class]="'px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap flex-shrink-0 ' + 
+                      (isOrderDelivered(order.id!) ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800')">
+                      {{ isOrderDelivered(order.id!) ? 'Entregado' : 'Pendiente' }}
+                    </span>
+                  </div>
+
+                  <!-- Customer Info -->
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                    <div class="flex items-center space-x-2 text-sm text-gray-600 min-w-0">
+                      <lucide-icon [img]="UserIcon" class="h-4 w-4 flex-shrink-0"></lucide-icon>
+                      <span class="truncate">{{ order.customer.contactName }}</span>
+                    </div>
+                    
+                    <button 
+                      (click)="callCustomer(order.customer.phone)"
+                      class="flex items-center space-x-2 text-sm cursor-pointer text-gray-600 transition-colors min-w-0 justify-start sm:justify-end">
+                      <lucide-icon [img]="PhoneIcon" class="h-4 w-4 flex-shrink-0"></lucide-icon>
+                      <span class="truncate">{{ order.customer.phone }}</span>
+                    </button>
+                  </div>
+
+                  <!-- Delivery Address -->
+                  <div class="bg-gray-50 rounded-lg p-3 mb-3">
+                    <div class="flex items-start justify-between gap-3">
+                      <div class="flex items-start space-x-2 flex-1 min-w-0">
+                        <lucide-icon [img]="MapPinIcon" class="h-4 w-4 text-gray-600 mt-0.5 flex-shrink-0"></lucide-icon>
+                        <div class="text-sm min-w-0 flex-1">
+                          <p class="font-medium text-gray-900">{{ order.deliveryAddress.street }} {{ order.deliveryAddress.number }}</p>
+                          <p class="text-gray-600">{{ order.deliveryAddress.district }}, {{ order.deliveryAddress.city }}</p>
+                          @if (order.deliveryAddress.reference) {
+                            <p class="text-gray-500 text-xs mt-1">Ref: {{ order.deliveryAddress.reference }}</p>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Order Items -->
+                  <div class="border-t border-gray-200 pt-3">
+                    <p class="text-sm font-medium text-gray-700 mb-3 flex items-center space-x-2">
+                      <lucide-icon [img]="PackageIcon" class="h-4 w-4 text-gray-500"></lucide-icon>
+                      <span>Productos ({{ order.items.length }})</span>
+                    </p>
+                    <div class="space-y-2">
+                      @for (item of order.items; track item.id) {
+                        <div class="flex items-center justify-between text-sm gap-3">
+                          <div class="flex items-center space-x-3 flex-1 min-w-0">
+                            @if (item.imageUrl) {
+                              <img 
+                                [src]="item.imageUrl" 
+                                [alt]="item.name"
+                                class="w-12 h-12 rounded object-cover flex-shrink-0 border border-gray-200">
+                            } @else {
+                              <div class="w-12 h-12 rounded bg-gray-100 flex items-center justify-center flex-shrink-0">
+                                <lucide-icon [img]="PackageIcon" class="h-6 w-6 text-gray-400"></lucide-icon>
+                              </div>
+                            }
+                            <div class="min-w-0 flex-1">
+                              <p class="text-gray-900 font-medium truncate">{{ item.name }}</p>
+                              <div class="flex items-center space-x-2 text-xs text-gray-500">
+                                <span>{{ item.quantity }} {{ item.variant === 'box' ? 'cajas' : 'unidades' }}</span>
+                                @if (item.brand) {
+                                  <span class="text-gray-300">•</span>
+                                  <span class="truncate">{{ item.brand }}</span>
+                                }
+                              </div>
+                            </div>
+                          </div>
+                          <span class="text-gray-700 font-semibold whitespace-nowrap">{{ item.subTotal | currency:'PEN':'symbol':'1.2-2' }}</span>
+                        </div>
+                      }
+                    </div>
+                  </div>
+
+                  <!-- Order Total -->
+                  <div class="border-t border-gray-200 mt-3 pt-3 flex justify-between items-center">
+                    <div class="flex items-center space-x-2">
+                      
+                      <span class="text-sm font-semibold text-gray-700">Total</span>
+                    </div>
+                    <span class="text-lg font-bold text-gray-900">{{ order.payment.total | currency:'PEN':'symbol':'1.2-2' }}</span>
+                  </div>
+
+                </div>
+              } @empty {
+                <div class="text-center py-16">
+                  <lucide-icon [img]="PackageIcon" class="h-16 w-16 text-gray-300 mx-auto mb-4"></lucide-icon>
+                  <p class="text-gray-500 text-lg font-medium">No hay pedidos en esta ruta</p>
+                  <p class="text-gray-400 text-sm mt-1">Los pedidos aparecerán aquí cuando sean asignados</p>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+      </div>
+    }
+
+  </div>
+</div>

@@ -73,7 +73,16 @@
           class="hidden sm:flex p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer"
           aria-label="Perfil"
         >
-          <lucide-icon [img]="UserIcon" class="w-5 h-5" />
+               @if (currentUser()?.photoURL) {
+                <img
+                  [src]="currentUser()!.photoURL"
+                  [alt]="'foto de ' + currentUser()!.displayName"
+                  class="w-9 h-auto rounded-full object-cover"
+                />
+                } @else {
+                   <lucide-icon [img]="UserIcon" class="w-5 h-5" />
+                }
+      
         </a>
         }
 
@@ -128,6 +137,7 @@
         (click)="layoutService.openLogin(); closeMenu()"
         class="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors sm:hidden"
       >
+      
         <lucide-icon [img]="UserIcon" class="w-5 h-5" />
         Iniciar Sesión
       </button>
