@@ -35,11 +35,6 @@ export class StreamDocController {
             }                
         }
     };
-
-    testOrders = async (req: Request, res: Response) => {
-
-    }
-
 }
 
 const streamDocController = new StreamDocController();

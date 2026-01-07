@@ -41,7 +41,7 @@ export class PDFStorageService {
     };
 
     //funcion para aumentar count de factura o guia en Firestore
-    async increaseCount ( typePdf: "Factura" | "Guia" ): Promise<number> {
+    async increaseCount ( typePdf: "Guia" | "Guia" ): Promise<number> {
 
         const countField = "valor";
         // aumentamos el contador en Firestore

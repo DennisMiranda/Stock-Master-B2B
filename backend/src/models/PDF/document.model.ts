@@ -1,5 +1,3 @@
-import { number } from "zod";
-
     export type OrderItem = {
     name: string;
     price: number;
@@ -26,4 +24,8 @@ import { number } from "zod";
         subtotal: number,
         tax: number,
         total: number
+    }
+
+    export type Driver = {
+
     }
