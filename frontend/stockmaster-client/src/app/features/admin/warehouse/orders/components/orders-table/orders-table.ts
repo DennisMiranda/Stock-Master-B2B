@@ -15,10 +15,10 @@ import { OrderStatusPipe } from '../../../../../../shared/pipes/order-status.pip
 import { DataTableComponent } from '../../../../../../shared/ui/data-table/data-table.component';
 import { TableColumn } from '../../../../../../shared/ui/data-table/models/table.model';
 import { BasicPagination } from '../../../../../../shared/ui/pagination/basic-pagination/basic-pagination';
+import { BreakpointService } from '../../../../../../shared/utils/breakpoint.service';
 import { ORDER_ACTION, OrderAction } from '../order-actions/order-action.model';
 import { OrderActions } from '../order-actions/order-actions';
 import { OrderEditModal } from '../order-edit-modal/order-edit-modal';
-import { BreakpointService } from '../../../../../../shared/utils/breakpoint.service';
 
 interface OrderRow {
   id: string;

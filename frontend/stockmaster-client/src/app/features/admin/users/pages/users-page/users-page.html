@@ -1,138 +1,172 @@
 <div class="space-y-6">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Gestión de Usuarios</h1>
-            <p class="text-sm text-gray-500 mt-1">Administra usuarios, permisos y estados del sistema</p>
-        </div>
-
-
-        <app-primary-button (onClick)="openCreateModal()">
-            <lucide-icon [img]="PlusIcon" class="w-5 h-5 mr-2"></lucide-icon>
-            Nuevo Usuario
-        </app-primary-button>
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Gestión de Usuarios</h1>
+      <p class="text-sm text-gray-500 mt-1">Administra usuarios, permisos y estados del sistema</p>
     </div>
 
-    <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col sm:flex-row gap-4">
-        <app-search-input [control]="searchControl" placeholder="Buscar por nombre, email o rol..."
-            class="w-full sm:w-96" />
-        <div class="hidden sm:flex items-center gap-3 ml-auto text-sm text-gray-500">
-            <div class="px-3 py-1 bg-gray-50 rounded-lg border border-gray-200">
-                Total: <span class="font-bold text-gray-900">{{ totalUsers() }}</span>
-            </div>
-            <div class="px-3 py-1 bg-green-50 rounded-lg border border-green-200 text-green-700">
-                Activos: <span class="font-bold">{{ activeUsersCount() }}</span>
-            </div>
-        </div>
+    <app-primary-button (onClick)="openCreateModal()">
+      <lucide-icon [img]="PlusIcon" class="w-5 h-5 mr-2"></lucide-icon>
+      Nuevo Usuario
+    </app-primary-button>
+  </div>
+
+  <div
+    class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col sm:flex-row gap-4"
+  >
+    <app-search-input
+      [control]="searchControl"
+      placeholder="Buscar por nombre, email o rol..."
+      class="w-full sm:w-96"
+    />
+    <div class="hidden sm:flex items-center gap-3 ml-auto text-sm text-gray-500">
+      <div class="px-3 py-1 bg-gray-50 rounded-lg border border-gray-200">
+        Total: <span class="font-bold text-gray-900">{{ totalUsers() }}</span>
+      </div>
+      <div class="px-3 py-1 bg-green-50 rounded-lg border border-green-200 text-green-700">
+        Activos: <span class="font-bold">{{ activeUsersCount() }}</span>
+      </div>
     </div>
+  </div>
 
-    <!-- Mobile Card Layout (< 1024px) -->
-    <div class="lg:hidden bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-        @if (isLoading()) {
-        <div class="p-6 text-center text-gray-500">Cargando...</div>
-        } @else if (filteredUsers().length === 0) {
-        <div class="p-6 text-center text-gray-500">No se encontraron usuarios</div>
-        } @else {
-        <div class="divide-y divide-gray-100">
-            @for (user of filteredUsers(); track user.uid) {
-            <div class="p-4 bg-white hover:bg-gray-50 transition-colors">
-                <!-- Row 1: Name + Email + Status -->
-                <div class="flex items-start justify-between gap-3 mb-2">
-                    <div class="flex-1 min-w-0">
-                        <span class="block font-medium text-gray-900 truncate">{{ user.displayName || 'Sin Nombre'
-                            }}</span>
-                        <span class="text-xs text-gray-500 truncate block">{{ user.email }}</span>
-                    </div>
-                    @if (user.isActive) {
-                    <span
-                        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 border border-green-200 whitespace-nowrap">
-                        <lucide-icon [img]="CheckIcon" class="w-3 h-3"></lucide-icon>
-                        Activo
-                    </span>
-                    } @else {
-                    <span
-                        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200 whitespace-nowrap">
-                        <lucide-icon [img]="XIcon" class="w-3 h-3"></lucide-icon>
-                        Inactivo
-                    </span>
-                    }
-                </div>
-
-                <!-- Row 2: Role + Actions -->
-                <div class="flex items-center justify-between">
-                    <span
-                        [class]="'px-2.5 py-1 rounded-full text-xs font-medium border ' + getRoleBadgeColor(user.role)">
-                        {{ getRoleLabel(user.role) }}
-                    </span>
-                    <app-user-actions-menu (edit)="onEdit(user)" (resetPassword)="onResetPassword(user)">
-                    </app-user-actions-menu>
-                </div>
-            </div>
-            }
-        </div>
-        }
-    </div>
-
-    <!-- Desktop Table (>= 1024px) -->
-    <div class="hidden lg:block">
-        <app-data-table [data]="filteredUsers()" [columns]="columns" (sort)="onSort($event)">
-        </app-data-table>
-    </div>
-
-    <!-- Templates for Custom Columns (Desktop Table) -->
-
-    <!-- 1. User Info Template -->
-    <ng-template #userTemplate let-user>
-        <div class="flex flex-col">
-            <span class="font-medium text-gray-900">{{ user.displayName || 'Sin Nombre' }}</span>
-            <span class="text-xs text-gray-500">{{ user.email }}</span>
-        </div>
-    </ng-template>
-
-    <!-- 2. Role Template -->
-    <ng-template #roleTemplate let-user>
-        <span [class]="'px-2.5 py-1 rounded-full text-xs font-medium border ' + getRoleBadgeColor(user.role)">
-            {{ getRoleLabel(user.role) }}
-        </span>
-    </ng-template>
-
-    <!-- 3. Status Template -->
-    <ng-template #statusTemplate let-user>
-        @if (user.isActive) {
-        <span
-            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 border border-green-200">
+  <!-- Mobile Card Layout (< 1024px) -->
+  <div class="lg:hidden bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+    @if (isLoading()) {
+    <div class="p-6 text-center text-gray-500">Cargando...</div>
+    } @else if (filteredUsers().length === 0) {
+    <div class="p-6 text-center text-gray-500">No se encontraron usuarios</div>
+    } @else {
+    <div class="divide-y divide-gray-100">
+      @for (user of filteredUsers(); track user.uid) {
+      <div class="p-4 bg-white hover:bg-gray-50 transition-colors">
+        <!-- Row 1: Name + Email + Status -->
+        <div class="flex items-start justify-between gap-3 mb-2">
+          <div class="flex-1 min-w-0">
+            <span class="block font-medium text-gray-900 truncate">{{
+              user.displayName || 'Sin Nombre'
+            }}</span>
+            <span class="text-xs text-gray-500 truncate block">{{ user.email }}</span>
+          </div>
+          @if (user.isActive) {
+          <span
+            class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 border border-green-200 whitespace-nowrap"
+          >
             <lucide-icon [img]="CheckIcon" class="w-3 h-3"></lucide-icon>
             Activo
-        </span>
-        } @else {
-        <span
-            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
+          </span>
+          } @else {
+          <span
+            class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200 whitespace-nowrap"
+          >
             <lucide-icon [img]="XIcon" class="w-3 h-3"></lucide-icon>
             Inactivo
-        </span>
-        }
-    </ng-template>
-
-    <!-- 4. Actions Template -->
-    <ng-template #actionsTemplate let-user>
-        <div class="flex justify-end">
-            <app-user-actions-menu (edit)="onEdit(user)" (resetPassword)="onResetPassword(user)">
-            </app-user-actions-menu>
+          </span>
+          }
         </div>
-    </ng-template>
 
-    @if (selectedUser()) {
-    <app-user-edit-modal [user]="selectedUser()" [isSaving]="isSaving" (save)="onSave($event)"
-        (close)="closeEditModal()">
-    </app-user-edit-modal>
+        <!-- Row 2: Role + Actions -->
+        <div class="flex items-center justify-between">
+          <span
+            [class]="
+              'px-2.5 py-1 rounded-full text-xs font-medium border ' + getRoleBadgeColor(user.role)
+            "
+          >
+            {{ getRoleLabel(user.role) }}
+          </span>
+          <app-user-actions-menu (edit)="onEdit(user)" (resetPassword)="onResetPassword(user)">
+          </app-user-actions-menu>
+        </div>
+      </div>
+      }
+    </div>
     }
+  </div>
 
-    @if (isCreating()) {
-    <app-user-create-modal [isSaving]="isSaving" (save)="onCreate($event)" (close)="closeCreateModal()">
-    </app-user-create-modal>
+  <!-- Desktop Table (>= 1024px) -->
+  <div class="hidden lg:block">
+    <app-data-table [data]="filteredUsers()" [columns]="columns" (sort)="onSort($event)">
+    </app-data-table>
+  </div>
+  <app-basic-pagination
+    [page]="page()"
+    [totalPages]="totalPages()"
+    (pageChange)="onPageChange($event)"
+  >
+  </app-basic-pagination>
+
+  <!-- Templates for Custom Columns (Desktop Table) -->
+
+  <!-- 1. User Info Template -->
+  <ng-template #userTemplate let-user>
+    <div class="flex flex-col">
+      <span class="font-medium text-gray-900">{{ user.displayName || 'Sin Nombre' }}</span>
+      <span class="text-xs text-gray-500">{{ user.email }}</span>
+    </div>
+  </ng-template>
+
+  <!-- 2. Role Template -->
+  <ng-template #roleTemplate let-user>
+    <span
+      [class]="
+        'px-2.5 py-1 rounded-full text-xs font-medium border ' + getRoleBadgeColor(user.role)
+      "
+    >
+      {{ getRoleLabel(user.role) }}
+    </span>
+  </ng-template>
+
+  <!-- 3. Status Template -->
+  <ng-template #statusTemplate let-user>
+    @if (user.isActive) {
+    <span
+      class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 border border-green-200"
+    >
+      <lucide-icon [img]="CheckIcon" class="w-3 h-3"></lucide-icon>
+      Activo
+    </span>
+    } @else {
+    <span
+      class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200"
+    >
+      <lucide-icon [img]="XIcon" class="w-3 h-3"></lucide-icon>
+      Inactivo
+    </span>
     }
-    <!-- Confirmation Modal -->
-    <app-confirmation-modal #confirmModal title="Restablecer Contraseña"
-        message="¿Estás seguro de enviar un correo de restablecimiento de contraseña a este usuario?"
-        confirmText="Sí, enviar correo" cancelText="Cancelar" type="warning" (confirm)="onConfirmResetPassword()">
-    </app-confirmation-modal>
+  </ng-template>
+
+  <!-- 4. Actions Template -->
+  <ng-template #actionsTemplate let-user>
+    <div class="flex justify-end">
+      <app-user-actions-menu (edit)="onEdit(user)" (resetPassword)="onResetPassword(user)">
+      </app-user-actions-menu>
+    </div>
+  </ng-template>
+
+  @if (selectedUser()) {
+  <app-user-edit-modal
+    [user]="selectedUser()"
+    [isSaving]="isSaving"
+    (save)="onSave($event)"
+    (close)="closeEditModal()"
+  >
+  </app-user-edit-modal>
+  } @if (isCreating()) {
+  <app-user-create-modal
+    [isSaving]="isSaving"
+    (save)="onCreate($event)"
+    (close)="closeCreateModal()"
+  >
+  </app-user-create-modal>
+  }
+  <!-- Confirmation Modal -->
+  <app-confirmation-modal
+    #confirmModal
+    title="Restablecer Contraseña"
+    message="¿Estás seguro de enviar un correo de restablecimiento de contraseña a este usuario?"
+    confirmText="Sí, enviar correo"
+    cancelText="Cancelar"
+    type="warning"
+    (confirm)="onConfirmResetPassword()"
+  >
+  </app-confirmation-modal>
 </div>

@@ -1,11 +1,11 @@
+import { Location } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { ArrowLeft, LucideAngularModule } from 'lucide-angular';
 import { Order, OrderDeliveryAddress } from '../../../../../../core/models/order.model';
 import { OrderService } from '../../../../../../core/services/order/order';
 import { OrderHeaderDetail } from './order-header-detail/order-header-detail';
 import { OrderItemsDetail } from './order-items-detail/order-items-detail';
-import { Location } from '@angular/common';
-import { LucideAngularModule, ArrowLeft } from 'lucide-angular';
 
 @Component({
   selector: 'app-order-detail',
