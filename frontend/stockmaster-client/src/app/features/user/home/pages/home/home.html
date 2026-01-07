@@ -20,17 +20,35 @@
     </p>
   </header>
 
+  @if (loading()) {
+    
+  <div class="col-span-full flex justify-center items-center h-32">
+    <p class="text-gray-500">Cargando productos...</p>
+  </div>
+  } @else if (error()) {
+
+  <div class="col-span-full flex justify-center items-center h-32">
+    <p class="text-red-500">Error: {{ error() }}</p>
+  </div>
+  } @else if (products().length === 0) {
+
+  <div class="col-span-full flex justify-center items-center h-32">
+    <p class="text-gray-500">No hay productos</p>
+  </div>
+  } @else {
+
   <ul class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-    @for (product of home.products(); track product.id) {
+    @for (product of products(); track product.id) {
     <li>
       <app-card-product [product]="product"></app-card-product>
     </li>
     }
   </ul>
+  }
 
   <div class="text-center mt-12">
-    <a 
-    [routerLink]="['/shop/catalog']"
+    <a
+      [routerLink]="['/shop/catalog']"
       class="bg-gray-600 text-white px-10 py-2 md:py-4 rounded-sm font-light hover:bg-azul transition-all active:scale-95 shadow-lg"
     >
       Ver Más Productos

@@ -1,7 +1,7 @@
 
 import { LucideAngularModule,ShoppingCart, Tag,Package } from 'lucide-angular';
 import { CurrencyPipe } from '@angular/common';
-import { Component, input,signal,inject } from '@angular/core';
+import { Component, input,signal,inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import type { Product } from '../../../../core/models/product.model';
 import type { CartItem } from '../../../../core/models/cart.model';
@@ -13,11 +13,10 @@ interface PriceTypeIcon {
 }
 @Component({
   selector: 'app-card-product',
-
   imports: [RouterLink, LucideAngularModule, CurrencyPipe,ModalCart],
-
   templateUrl: './card-product.html',
   styleUrl: './card-product.css',
+  changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class CardProduct {
 

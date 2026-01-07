@@ -14,22 +14,34 @@
 
       <!-- Cards -->
       <section class="mt-4 mb-4">
-        <ul class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          @if (products().length === 0) {
-          <li>No hay productos</li>
-          } @else{@for (product of products(); track product.id) {
+        @if (isLoading()) {
+        <div class="col-span-full flex justify-center items-center h-32">
+          <p class="text-gray-500">Cargando productos...</p>
+        </div>
+        } @else if (products().length === 0) {
+        <div>
+          <p class="col-span-full p-4 text-center text-gray-500">No hay productos</p>
+        </div>
+        } @else {
+        <ul
+          class="grid grid-cols-2 justify-items-center md:grid-cols-2 min-h-100 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+        >
+          @for (product of products(); track product.id) {
           <li>
             <app-card-product [product]="product"></app-card-product>
           </li>
-          }}
+          }
         </ul>
+        }
       </section>
 
+      @if (metadata().pages > 1) {
       <app-basic-pagination
         [page]="currentPage()"
         [totalPages]="metadata().pages"
         (pageChange)="onPageChange($event)"
       ></app-basic-pagination>
+      }
     </div>
   </div>
 </section>
