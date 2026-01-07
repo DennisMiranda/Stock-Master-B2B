@@ -1,6 +1,6 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink , Router} from '@angular/router';
 import {
   LucideAngularModule,
   ShoppingCart,
@@ -31,7 +31,7 @@ export class ProductDetailPage implements OnInit {
   private cartService = inject(CartService);
   private categoryService = inject(CategoryService);
   private toastService = inject(ToastService);
-  location = inject(Location);
+private router = inject(Router);
 
   product = signal<ProductModel | null>(null);
   loading = signal(true);
@@ -156,7 +156,7 @@ export class ProductDetailPage implements OnInit {
     return this.variantQuantities().get(variant) || 0;
   }
   goBack() {
-    this.location.back();
+   this.router.navigate(['/shop/catalog'], { queryParams: { page: 1, limit: 4 } }); 
   }
 
   addToCart() {

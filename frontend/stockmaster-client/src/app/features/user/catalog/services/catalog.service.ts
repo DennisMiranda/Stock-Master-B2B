@@ -84,6 +84,7 @@ export class CatalogService implements OnDestroy {
       this.filterService.setInStockOnly(inStockOnly);
 
       // Dispara búsqueda inicial con los parámetros actuales
+      this.loading.set(true);
       this.search$.next(search);
     });
 
@@ -99,6 +100,7 @@ export class CatalogService implements OnDestroy {
   updateSearch({ search, page }: { search: string; page: number }) {
     this.term.set(search);
     this.page.set(page);
+    this.loading.set(true);
     this.search$.next(search);
   }
 

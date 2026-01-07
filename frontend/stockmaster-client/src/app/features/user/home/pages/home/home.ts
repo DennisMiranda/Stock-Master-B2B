@@ -20,7 +20,10 @@ export class Home implements OnInit {
   readonly PackageIcon = Package;
   readonly TruckIcon = Truck;
   readonly ShieldIcon = Shield;
-  home = inject(HomeService);
+  private home = inject(HomeService);
+  products = this.home.products;
+  loading = this.home.loading;
+  error = this.home.error;
 
   ngOnInit(): void {
     this.home.getProducts(1, 12);

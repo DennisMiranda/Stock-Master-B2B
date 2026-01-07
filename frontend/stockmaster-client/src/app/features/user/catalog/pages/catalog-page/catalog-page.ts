@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CardProduct } from '../../../../../shared/ui/cards/card-product/card-product';
 import { BasicPagination } from '../../../../../shared/ui/pagination/basic-pagination/basic-pagination';
@@ -20,6 +20,7 @@ export class CatalogPage implements OnInit {
   currentPage = this.catalogService.page;
   products = this.catalogService.products;
   metadata = this.catalogService.metadata;
+  isLoading = this.catalogService.loading;
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {

@@ -1,4 +1,4 @@
-import { Component, input, output, signal, computed, effect } from '@angular/core';
+import { Component, input, output, signal, computed, effect, ChangeDetectionStrategy } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { LucideAngularModule, Package, Tag, Minus, Plus } from 'lucide-angular';
 import type { Price, Discount } from '../../../../core/models/product.model';
@@ -9,6 +9,7 @@ import type { Price, Discount } from '../../../../core/models/product.model';
     imports: [CurrencyPipe, LucideAngularModule],
     templateUrl: './card-price-variant.html',
     styleUrl: './card-price-variant.css',
+    changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class CardPriceVariant {
     // Inputs
