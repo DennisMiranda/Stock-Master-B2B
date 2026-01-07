@@ -17,8 +17,8 @@ export class OrderService {
     return this.apiService.post('/orders', order);
   }
 
-  getOrders() {
-    return this.apiService.get<OrdersPaginatedResponse>('/orders');
+  getOrders(params: { page?: number } = { page: 1 }) {
+    return this.apiService.get<OrdersPaginatedResponse>('/orders', { params });
   }
 
   updateOrderStatus(id: string, status: string) {
@@ -41,13 +41,10 @@ export class OrderService {
     return this.apiService.put<Order>(`/orders/${id}`, order);
   }
   getPendingForDelivery(page?: number, limit?: number) {
-  const params: any = {};
-  if (page) params.page = page;
-  if (limit) params.limit = limit;
-  
-  return this.apiService.get<OrdersPaginatedResponse>(
-    '/orders/pending/delivery', 
-    { params }
-  );
-}
+    const params: any = {};
+    if (page) params.page = page;
+    if (limit) params.limit = limit;
+
+    return this.apiService.get<OrdersPaginatedResponse>('/orders/pending/delivery', { params });
+  }
 }

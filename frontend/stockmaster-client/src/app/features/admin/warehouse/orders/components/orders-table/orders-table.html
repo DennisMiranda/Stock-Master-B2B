@@ -1,3 +1,4 @@
+
 <!-- Mobile Card Layout (< 1024px) -->
 <div class="lg:hidden">
   @if (isLoading()) {
@@ -42,6 +43,16 @@
 <!-- Desktop Table Layout (>= 1024px) -->
 <div class="hidden lg:block">
   <app-data-table [data]="data()" [columns]="columns()" [isLoading]="isLoading()"></app-data-table>
+
+
+  <div class="p-4 border-t border-gray-100 bg-gray-50 flex justify-end">
+    <app-basic-pagination
+      [page]="page()"
+      [totalPages]="metadata().pages"
+      (pageChange)="onPageChange($event)"
+    ></app-basic-pagination>
+  </div>
+
 </div>
 
 <ng-template #nameTemplate let-row>
