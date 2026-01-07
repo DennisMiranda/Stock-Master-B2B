@@ -1,11 +1,10 @@
 import { Router } from "express";
 import { OrderController  } from "../controllers/order.controller";
-import pdfController  from "../controllers/PDF/PDF.controller";
 
 const orderController = new OrderController();
 const router = Router();
 
-router.post("/", (req, res, next) => orderController.createOrder(req, res, next), (req, res) => pdfController.emitFactura(req, res));
+router.post("/", (req, res) => orderController.createOrder(req, res));
 router.get("/", (req, res) => orderController.getOrders(req, res));
 router.get("/ready", (req, res) => orderController.getReadyOrders(req, res));
 router.get('/pending/delivery', orderController.getPendingForDelivery.bind(orderController));

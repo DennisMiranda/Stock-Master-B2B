@@ -17,6 +17,7 @@ import { paginateQuery } from "../../utils/pagination";
 import { ProductService } from "../product.service";
 import { StatisticService } from "../statistic.service";
 
+
 interface CreateOrderError {
   item: Partial<OrderDetailItem>;
   suggestions?: Product[];
@@ -27,7 +28,8 @@ export class OrderService {
   private productsCollection = db.collection("products");
   constructor(
     private productService: ProductService = new ProductService(),
-    private statisticService: StatisticService = new StatisticService()
+    private statisticService: StatisticService = new StatisticService(),
+
   ) {}
   async getOrdersPaginated(params: { page?: number; limit?: number }) {
     let query = this.ordersCollection.orderBy("createdAt", "desc");
@@ -66,9 +68,9 @@ export class OrderService {
   ): Promise<
     CustomResponseModel<Order | null, ResponseError<CreateOrderError>[] | null>
   > {
-    const errors: ResponseError<CreateOrderError>[] = [];
+     const errors: ResponseError<CreateOrderError>[] = [];
     try {
-      return await db.runTransaction(async (tx) => {
+     return await db.runTransaction(async (tx) => {
         const orderItems: OrderDetailItem[] = [];
 
         const productsMap = await this.productService.getProductsMapById(
@@ -193,6 +195,7 @@ export class OrderService {
 
         return CustomResponse.success(finalOrder, "Orden creada exitosamente");
       });
+
     } catch (error) {
       return CustomResponse.error(
         "ORDER_ERROR",
@@ -234,5 +237,4 @@ export class OrderService {
       metadata,
     };
   }
-
 }

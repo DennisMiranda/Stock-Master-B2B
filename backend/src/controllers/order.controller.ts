@@ -2,13 +2,14 @@ import { Request, Response, NextFunction } from "express";
 import { orderSchema } from "../models/order.model";
 import { OrderService } from "../services/order/order.service";
 import { CustomResponse } from "../utils/custom-response";
+import { NewPdfService } from "../services/PDF/newPDF.service";
 
 export class OrderController {
-  constructor( private orderService: OrderService = new OrderService()) {
+  constructor( private orderService: OrderService = new OrderService(), private pdfService:NewPdfService= new NewPdfService()) {
 
   }
 
-  async createOrder(req: Request, res: Response, next: NextFunction) {
+  async createOrder(req: Request, res: Response) {
     try {
       // Validate body request to match Order schema
       const result = orderSchema.safeParse(req.body);
@@ -25,9 +26,10 @@ export class OrderController {
       }
 
       const createOrderResponse = await this.orderService.createOrder(req.body);
+      const respuestaid = createOrderResponse.data?.id;
+      await this.pdfService.emitFactura(respuestaid!);
 
       // luego de crear la orden, almacenamos el id en res.locals para usarlo en el siguiente controller
-      res.locals.orderId = createOrderResponse.data?.id; // Store orderId in res.locals
          return  res.status(201).json(createOrderResponse);
       
 

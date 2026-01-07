@@ -72,6 +72,7 @@ export class PDFStorageService {
         if( !doc.exists) {
             throw new Error(`Documento ${orderId} no encontrado`);
         }
+        
         const data = doc.data();
         if( !data ) {
             throw new Error("Datos no encontrados");
