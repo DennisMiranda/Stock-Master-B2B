@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { UserDocCheck } from "../../middlewares/PDF/documentCheck.middleware";
 import streamDocController from "../../controllers/PDF/SteamDoc.controller";
-import pdfController from "../../controllers/PDF/PDF.controller";
+import pdfController from "../../controllers/PDF/newPDF.controller";
 const router = Router();
 
 // ruta para mostrar el pdf de factura
