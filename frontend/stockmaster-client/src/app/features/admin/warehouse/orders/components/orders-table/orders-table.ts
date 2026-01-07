@@ -1,19 +1,20 @@
 import {
   AfterViewInit,
   Component,
+  effect,
   inject,
-  OnInit,
   signal,
   TemplateRef,
   ViewChild,
 } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { take } from 'rxjs';
 import { ORDER_STATUS, OrderStatus } from '../../../../../../core/models/order.model';
-import { OrderService } from '../../../../../../core/services/order/order';
+import { OrderService, OrdersPaginatedResponse } from '../../../../../../core/services/order/order';
 import { OrderStatusPipe } from '../../../../../../shared/pipes/order-status.pipe';
 import { DataTableComponent } from '../../../../../../shared/ui/data-table/data-table.component';
 import { TableColumn } from '../../../../../../shared/ui/data-table/models/table.model';
+import { BasicPagination } from '../../../../../../shared/ui/pagination/basic-pagination/basic-pagination';
 import { ORDER_ACTION, OrderAction } from '../order-actions/order-action.model';
 import { OrderActions } from '../order-actions/order-actions';
 import { OrderEditModal } from '../order-edit-modal/order-edit-modal';
@@ -31,11 +32,11 @@ interface OrderRow {
 
 @Component({
   selector: 'app-orders-table',
-  imports: [DataTableComponent, OrderActions, OrderEditModal, OrderStatusPipe],
+  imports: [DataTableComponent, OrderActions, OrderEditModal, OrderStatusPipe, BasicPagination],
   templateUrl: './orders-table.html',
   styleUrl: './orders-table.css',
 })
-export class OrdersTable implements OnInit, AfterViewInit {
+export class OrdersTable implements AfterViewInit {
   @ViewChild('nameTemplate') nameTemplate!: TemplateRef<HTMLElement>;
   @ViewChild('statusTemplate') statusTemplate!: TemplateRef<HTMLElement>;
   @ViewChild('actionTemplate') actionTemplate!: TemplateRef<HTMLElement>;
@@ -49,33 +50,47 @@ export class OrdersTable implements OnInit, AfterViewInit {
 
   orderService = inject(OrderService);
   router = inject(Router);
+  route = inject(ActivatedRoute);
 
-  ngOnInit() {
-    this.orderService
-      .getOrders()
-      .pipe(take(1))
-      .subscribe({
-        next: (response) => {
-          console.log(response);
-          if (response.data) {
-            this.data.set(
-              response.data.orders.map((order) => ({
-                id: order.id || 'unknown',
-                name: order.customer?.companyName || 'Sin nombre',
-                taxId: order.customer?.taxId || 'Sin RUC',
-                createdAt: order.createdAt ? new Date(order.createdAt).toLocaleDateString() : '',
-                items: order.items.length,
-                total: order.payment.total || 0,
-                status: order.status || ORDER_STATUS.created,
-                actions: this.actionTemplate,
-              }))
-            );
-          }
-        },
-        complete: () => {
-          this.isLoading.set(false);
-        },
-      });
+  page = signal(1);
+  metadata = signal<OrdersPaginatedResponse['metadata']>({ count: 0, pages: 0 });
+
+  constructor() {
+    effect(() => {
+      this.orderService
+        .getOrders({ page: this.page() })
+        .pipe(take(1))
+        .subscribe({
+          next: (response) => {
+            console.log(response);
+            if (response.data) {
+              this.data.set(
+                response.data.orders.map((order) => ({
+                  id: order.id || 'unknown',
+                  name: order.customer?.companyName || 'Sin nombre',
+                  taxId: order.customer?.taxId || 'Sin RUC',
+                  createdAt: order.createdAt ? new Date(order.createdAt).toLocaleDateString() : '',
+                  items: order.items.length,
+                  total: order.payment.total || 0,
+                  status: order.status || ORDER_STATUS.created,
+                  actions: this.actionTemplate,
+                }))
+              );
+              this.metadata.set(response.data.metadata);
+            }
+          },
+          complete: () => {
+            this.isLoading.set(false);
+          },
+        });
+    });
+  }
+
+  ngOnInit(): void {
+    this.route.queryParams.subscribe((params) => {
+      const page = params['page'] ? +params['page'] : 1;
+      this.page.set(page);
+    });
   }
 
   ngAfterViewInit(): void {
@@ -113,6 +128,11 @@ export class OrdersTable implements OnInit, AfterViewInit {
       },
     ]);
   }
+
+  onPageChange(page: number) {
+    this.page.set(page);
+  }
+
   getStatusBadgeColor(status: string): string {
     switch (status) {
       case ORDER_STATUS.created:
