@@ -1,7 +1,7 @@
 <li
   (click)="onCardClick()"
   [class.ring-2]="isSelected()"
-  [class.ring-blue-500]="isSelected()"
+  [class.ring-azul]="isSelected()"
   class="group grid grid-cols-2 gap-1 space-y-1 bg-gray-50 hover:bg-white border border-gray-200 rounded-sm p-4 transition-all hover:shadow-md cursor-pointer relative"
 >
   <!-- Menu Button -->
@@ -75,7 +75,7 @@
 <!-- Items resumen -->
 <div class="flex items-start gap-2 p-2 rounded-sm">
   
-    <lucide-icon [img]="ShoppingBagIcon" class="w-4 h-4  text-blue-600"></lucide-icon>
+    <lucide-icon [img]="ShoppingBagIcon" class="w-4 h-4  text-azul"></lucide-icon>
 
   <div class="">
     <p class=" font-semibold text-gray-900">{{ totalItems() }}</p>
@@ -87,7 +87,7 @@
 <div class="flex items-start gap-2 p-2 rounded-sm ">
   <lucide-icon
     [img]="MapPinIcon"
-    class="w-4 h-4 flex-shrink-0 text-blue-600"
+    class="w-4 h-4 flex-shrink-0 text-azul"
   ></lucide-icon>
   <div class="">
     <p class="font-medium text-gray-900">
@@ -102,7 +102,7 @@
 <!-- Total -->
 <div class="mb-3 flex col-span-2 justify-between items-center p-2 rounded-sm">
   <span class="text-sm font-medium text-gray-700">Total</span>
-  <span class="text-lg font-semibold text-blue-600">
+  <span class="text-lg font-semibold text-azul">
     {{ order().payment.currency }} {{ order().payment.total.toFixed(2) }}
   </span>
 </div>
@@ -113,7 +113,7 @@
     <button
       (click)="onAssignToRoute($event)"
       [disabled]="!canAssignToRoute()"
-      class="flex-1 px-3 py-2 bg-gray-800 text-white text-sm font-semibold rounded-sm hover:bg-gray-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+      class="flex-1 px-3 py-2 bg-gray-800 text-white text-sm font-semibold rounded-sm hover:bg-azul transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
     >
       <lucide-icon [img]="TruckIcon" class="w-4 h-4 text-white"></lucide-icon>
       Asignar a Ruta

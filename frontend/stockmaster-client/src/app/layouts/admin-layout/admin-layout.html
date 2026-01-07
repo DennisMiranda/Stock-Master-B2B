@@ -1,16 +1,26 @@
 <div class="flex h-screen bg-gray-50 overflow-hidden">
 
-    <!-- Sidebar (Fixed Left) -->
-    <app-admin-sidebar class="hidden md:flex flex-col w-64 fixed inset-y-0 z-30" />
+    <!-- Desktop Sidebar (Fixed Left, visible ≥1024px) -->
+    <app-admin-sidebar class="hidden lg:flex flex-col w-64 fixed inset-y-0 z-30" />
+
+    <!-- Mobile/Tablet Sidebar Overlay (<1024px) -->
+    @if (layoutService.isSidebarOpen()) {
+    <div class="fixed inset-0 z-40 lg:hidden">
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-black/50 animate-fadeIn" (click)="layoutService.closeSidebar()"></div>
+        <!-- Sidebar -->
+        <app-admin-sidebar class="relative z-50 w-64 h-full animate-slideIn" />
+    </div>
+    }
 
     <!-- Main Content Area -->
-    <div class="flex-1 flex flex-col md:pl-64 h-full w-full transition-all duration-300">
+    <div class="flex-1 flex flex-col lg:pl-64 h-full w-full transition-all duration-300">
 
         <!-- Top Header (Sticky) -->
         <app-admin-header />
 
         <!-- Page Content (Scrollable) -->
-        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6 md:p-8">
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-4 md:p-6 lg:p-8">
             <router-outlet />
         </main>
 

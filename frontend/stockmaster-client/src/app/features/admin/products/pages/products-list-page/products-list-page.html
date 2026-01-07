@@ -5,11 +5,11 @@
             <p class="text-sm text-gray-500 mt-1">Administra el catálogo de productos B2B</p>
         </div>
 
-        <button (click)="openCreateModal()"
-            class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg shadow-sm transition-all text-sm font-medium cursor-pointer">
-            <lucide-icon [img]="PlusIcon" class="w-4 h-4"></lucide-icon>
+
+        <app-primary-button (onClick)="openCreateModal()">
+            <lucide-icon [img]="PlusIcon" class="w-5 h-5 mr-2"></lucide-icon>
             Nuevo Producto
-        </button>
+        </app-primary-button>
     </div>
 
     <!-- Search & Stats -->
@@ -72,7 +72,7 @@
     </ng-template>
 
     <ng-template #actionsTemplate let-item>
-        <div class="flex items-center gap-2 justify-end" (click)="$event.stopPropagation()">
+        <div class="flex items-center gap-2 justify-center lg:justify-end" (click)="$event.stopPropagation()">
             <button (click)="openEditModal(item)" class="p-1 text-blue-600 hover:bg-blue-50 rounded transition-colors"
                 aria-label="Editar">
                 <lucide-icon [img]="EditIcon" class="w-4 h-4" />

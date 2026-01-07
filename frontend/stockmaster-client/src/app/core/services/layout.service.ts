@@ -24,4 +24,15 @@ export class LayoutService {
         this.showLoginModal.set(false);
         this.showRegisterModal.set(false);
     }
+
+    // ===== Sidebar Mobile/Tablet State =====
+    isSidebarOpen = signal(false);
+
+    toggleSidebar() {
+        this.isSidebarOpen.update(v => !v);
+    }
+
+    closeSidebar() {
+        this.isSidebarOpen.set(false);
+    }
 }

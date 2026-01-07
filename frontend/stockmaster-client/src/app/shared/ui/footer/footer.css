@@ -1,9 +1,9 @@
 /* Variables de diseño */
 :host {
-  --footer-bg: #3b3b4f;
+
   --footer-bg-light: #232342;
   --footer-text: #e4e4e7;
-  --footer-text-muted: #a1a1aa;
+  --footer-text-muted: #cdcdd4;
   --footer-accent: #6366f1;
   --footer-accent-hover: #818cf8;
   --footer-border: #3f3f46;
@@ -12,21 +12,13 @@
 
 /* Contenedor principal del footer */
 .footer {
-  background: linear-gradient(135deg, var(--footer-bg) 0%, var(--footer-bg-light) 100%);
   color: var(--footer-text);
-  padding: 4rem 2rem 2rem;
+
   margin-top: auto;
 }
 
 /* Sección principal con grid */
-.footer-main {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 3rem;
-  margin-bottom: 3rem;
-}
+
 
 /* Secciones del footer */
 .footer-section {
@@ -279,10 +271,7 @@
     padding: 3rem 1.5rem 1.5rem;
   }
 
-  .footer-main {
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
-  }
+
 
   .footer-about {
     grid-column: span 1;
@@ -308,10 +297,7 @@
 
 /* Tablet */
 @media (min-width: 641px) and (max-width: 1024px) {
-  .footer-main {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2.5rem;
-  }
+
 
   .footer-about {
     grid-column: span 2;
@@ -325,18 +311,13 @@
 
 /* Laptop y pantallas grandes */
 @media (min-width: 1025px) {
-  .footer-main {
-    grid-template-columns: 2fr repeat(4, 1fr);
-  }
+
 
   .footer-about {
     grid-column: span 1;
   }
 
-  .footer-bottom {
-    flex-direction: row;
-    justify-content: space-between;
-  }
+
 }
 
 /* Pantallas extra grandes */
@@ -345,7 +326,4 @@
     padding: 5rem 3rem 2.5rem;
   }
 
-  .footer-main {
-    gap: 4rem;
-  }
 }

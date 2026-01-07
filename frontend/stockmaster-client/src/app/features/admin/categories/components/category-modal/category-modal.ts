@@ -15,29 +15,28 @@ import { ConfirmationModalComponent } from '../../../../../shared/ui/confirmatio
     imports: [CommonModule, ReactiveFormsModule, Modal, PrimaryButton, LucideAngularModule, ConfirmationModalComponent],
     template: `
     @if (isOpen()) {
-        <app-modal (close)="close()" [title]="isEditing() ? 'Editar Categoría' : 'Nueva Categoría'">
-          <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-6">
+        <app-modal [fullscreenBelow]="'lg'" (close)="close()" [title]="isEditing() ? 'Editar Categoría' : 'Nueva Categoría'">
+          <form [formGroup]="form" (ngSubmit)="submit()" class="flex-1 flex flex-col">
             
             <!-- Category Basic Info -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
-                    <input type="text" formControlName="name" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="Ej. Laptops">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Nombre de la categoría</label>
+                    <input type="text" formControlName="name" 
+                        class="w-full px-4 py-3 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" 
+                        placeholder="Ej. Laptops">
                 </div>
                 <!-- Slug Hidden/Readonly for UX -->
-                <div class="hidden">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Slug</label>
-                    <input type="text" formControlName="slug" class="w-full px-3 py-2 border rounded-lg bg-gray-50 text-gray-500" readonly>
-                </div>
+                <input type="hidden" formControlName="slug">
             </div>
     
             <!-- Subcategories Management -->
-            <div class="border-t pt-4">
-                <div class="flex items-center justify-between mb-2">
+            <div class="border-t border-gray-100 pt-5 mt-5">
+                <div class="flex items-center justify-between mb-3">
                     <h3 class="text-sm font-semibold text-gray-900">Subcategorías</h3>
                     @if (!isAddingSubcategory()) {
-                        <button type="button" (click)="startAddingSubcategory()" class="text-xs flex items-center gap-1 text-blue-600 hover:text-blue-700 font-medium">
-                            <lucide-icon [img]="PlusIcon" class="w-3 h-3"/> Agregar Subcategoría
+                        <button type="button" (click)="startAddingSubcategory()" class="text-sm flex items-center gap-1 text-blue-600 hover:text-blue-700 font-medium">
+                            <lucide-icon [img]="PlusIcon" class="w-4 h-4"/> Agregar
                         </button>
                     }
                 </div>
@@ -49,27 +48,27 @@ import { ConfirmationModalComponent } from '../../../../../shared/ui/confirmatio
                             (keydown.enter)="$event.preventDefault(); saveNewSubcategory()" 
                             (keydown.escape)="cancelAddingSubcategory()"
                             type="text" 
-                            class="flex-1 px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
+                            class="flex-1 px-4 py-2.5 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" 
                             placeholder="Nombre de subcategoría..." 
                             autofocus>
                         
-                        <button type="button" (click)="saveNewSubcategory()" [disabled]="newSubcategoryControl.invalid" class="p-1.5 text-green-600 hover:bg-green-50 rounded disabled:opacity-50">
-                            <lucide-icon [img]="CheckIcon" class="w-4 h-4"/>
+                        <button type="button" (click)="saveNewSubcategory()" [disabled]="newSubcategoryControl.invalid" class="p-2 text-green-600 hover:bg-green-50 rounded-lg disabled:opacity-50">
+                            <lucide-icon [img]="CheckIcon" class="w-5 h-5"/>
                         </button>
-                        <button type="button" (click)="cancelAddingSubcategory()" class="p-1.5 text-gray-400 hover:bg-gray-100 rounded">
-                            <lucide-icon [img]="XIcon" class="w-4 h-4"/>
+                        <button type="button" (click)="cancelAddingSubcategory()" class="p-2 text-gray-400 hover:bg-gray-100 rounded-lg">
+                            <lucide-icon [img]="XIcon" class="w-5 h-5"/>
                         </button>
                     </div>
                 }
     
                 @if(currentSubcategories().length === 0) {
-                    <p class="text-sm text-gray-400 italic">Sin subcategorías asignadas.</p>
+                    <p class="text-sm text-gray-400 italic py-2">Sin subcategorías asignadas.</p>
                 } @else {
                     <div class="space-y-2">
                         @for(sub of currentSubcategories(); track sub.id) {
-                            <div class="flex items-center justify-between p-2 bg-gray-50 rounded border border-gray-100 group">
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100 group">
                                 <span class="text-sm text-gray-700">{{ sub.name }}</span>
-                                <button type="button" (click)="removeSubcategory(sub)" class="text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button type="button" (click)="removeSubcategory(sub)" class="text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity p-1">
                                     <lucide-icon [img]="TrashIcon" class="w-4 h-4"/>
                                 </button>
                             </div>
@@ -78,14 +77,14 @@ import { ConfirmationModalComponent } from '../../../../../shared/ui/confirmatio
                 }
             </div>
     
-            <!-- Actions -->
-            <div class="flex justify-end gap-3 pt-2">
-              <button type="button" (click)="close()" class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+            <!-- Actions - pushed to bottom with visual separation -->
+            <div class="flex justify-end gap-3 pt-4 mt-auto border-t border-gray-100 bg-gray-50/50 -mx-4 px-4 -mb-4 pb-4 max-lg:-mx-4 max-lg:px-4 max-lg:-mb-4 max-lg:pb-6">
+              <button type="button" (click)="close()" class="px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-xl transition-colors">
                 Cancelar
               </button>
               
               @if (isEditing()) {
-                  <button type="button" (click)="confirmDelete()" class="px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 rounded-lg transition-colors">
+                  <button type="button" (click)="confirmDelete()" class="px-5 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 rounded-xl transition-colors">
                     <lucide-icon [img]="TrashIcon" class="w-4 h-4 mr-2 inline-block"/>
                     Eliminar
                   </button>

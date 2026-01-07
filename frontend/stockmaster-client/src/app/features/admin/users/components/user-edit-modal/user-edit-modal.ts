@@ -13,7 +13,7 @@ import { Modal } from '../../../../../shared/ui/modal/modal';
         Modal
     ],
     template: `
-    <app-modal (close)="close.emit()">
+    <app-modal [fullscreenBelow]="'lg'" (close)="close.emit()">
         <div class="p-6">
             <h2 class="text-xl font-bold mb-4">Editar Usuario</h2>
             

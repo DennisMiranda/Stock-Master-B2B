@@ -1,0 +1,74 @@
+<!-- Low Stock Card - Responsive con Container Queries -->
+<div class="@container bg-white rounded-xl border shadow-sm overflow-hidden ring-1 flex flex-col"
+    [class]="borderColorClass">
+
+    <!-- Header -->
+    <div class="px-4 @sm:px-5 py-3 @sm:py-4 border-b flex items-center justify-between" [class]="headerBgClass">
+        <div class="flex items-center gap-2">
+            <lucide-angular [img]="placeholderIcon" class="w-4 h-4" [class]="iconColorClass"></lucide-angular>
+            <h3 class="font-semibold text-sm @sm:text-base" [class]="titleColorClass">{{ title }}</h3>
+        </div>
+        <span class="text-xs font-semibold px-2 py-1 rounded" [class]="badgeBgClass">{{ actionLabel }}</span>
+    </div>
+
+    <!-- Mobile Card View (< 480px) -->
+    <div class="@md:hidden divide-y" [class]="dividerColorClass">
+        @for (item of items; track item.id) {
+        <div class="p-3 bg-white">
+            <div class="flex items-center gap-3">
+                <!-- Image -->
+                @if (item.images.length && item.images[0]) {
+                <img [src]="item.images[0]" class="w-12 h-12 rounded object-cover border border-gray-200">
+                } @else {
+                <div class="w-12 h-12 rounded bg-gray-100 flex items-center justify-center text-gray-400">
+                    <lucide-angular [img]="placeholderIcon" class="w-5 h-5"></lucide-angular>
+                </div>
+                }
+
+                <!-- Info -->
+                <div class="flex-1 min-w-0">
+                    <span class="block font-medium text-gray-700 text-sm truncate">{{ item.name }}</span>
+                    <span class="text-xs text-gray-400">SKU: {{ item.sku }}</span>
+                </div>
+
+                <!-- Stock Badge -->
+                <app-stock-badge [value]="getStockValue(item)" [type]="stockType"></app-stock-badge>
+            </div>
+        </div>
+        }
+    </div>
+
+    <!-- Desktop Table View (>= 480px) -->
+    <div class="hidden @md:block overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead class="bg-gray-50 text-gray-500">
+                <tr>
+                    <th class="px-5 py-2 text-left font-medium">Producto</th>
+                    <th class="px-5 py-2 text-right font-medium">Stock</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y" [class]="dividerColorClass">
+                @for (item of items; track item.id) {
+                <tr class="bg-white">
+                    <td class="px-5 py-3 flex items-center gap-3">
+                        @if (item.images.length && item.images[0]) {
+                        <img [src]="item.images[0]" class="w-9 h-9 rounded object-cover border border-gray-200">
+                        } @else {
+                        <div class="w-9 h-9 rounded bg-gray-100 flex items-center justify-center text-gray-400">
+                            <lucide-angular [img]="placeholderIcon" class="w-4 h-4"></lucide-angular>
+                        </div>
+                        }
+                        <div class="flex flex-col">
+                            <span class="font-medium text-gray-700">{{ item.name }}</span>
+                            <span class="text-xs text-gray-400">SKU: {{ item.sku }}</span>
+                        </div>
+                    </td>
+                    <td class="px-5 py-3 text-right align-middle">
+                        <app-stock-badge [value]="getStockValue(item)" [type]="stockType"></app-stock-badge>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,4 +1,4 @@
-import { Component, input, output, computed, signal } from '@angular/core';
+import { Component, input, output, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {
@@ -19,6 +19,7 @@ import { Order, ORDER_STATUS, OrderStatus } from '../../../../../core/models/ord
   standalone: true,
   imports: [LucideAngularModule, CommonModule, RouterLink],
   templateUrl: './order-card.component.html',
+  changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class OrderCardComponent {
   order = input.required<Order>();
@@ -86,8 +87,6 @@ export class OrderCardComponent {
     event.stopPropagation();
     this.assignToRoute.emit(this.order().id!);
   }
-
-
 
   onChangeStatus(event: Event, status: OrderStatus): void {
     event.stopPropagation();

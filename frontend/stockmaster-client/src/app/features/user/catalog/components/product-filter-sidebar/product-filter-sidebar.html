@@ -1,10 +1,15 @@
-<div class="bg-gray-800 text-white p-6 rounded-lg h-full">
-  <h2 class="text-xl font-bold mb-6">Filtros</h2>
+<aside class="bg-morado  border text-white p-6 rounded-sm h-full">
+  <h2 class="text-xl font-semibold mb-2">Filtros</h2>
 
   <!-- Filtro de Categorías -->
-  <div class="mb-8">
-    <h3 class="text-lg font-semibold mb-4">Categorías</h3>
-    <div class="space-y-3">
+  <details class="mb-6" open>
+    <summary class="text-sm mb-4 cursor-pointer hover:text-azul transition-colors list-none flex items-center justify-between">
+      <span>Categorías</span>
+      <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+      </svg>
+    </summary>
+    <div class="space-y-3 mt-4">
       @for (category of filterOptions().categories; track category.id) {
         <label class="flex items-center space-x-3 cursor-pointer hover:text-blue-300 transition-colors">
           <input
@@ -17,30 +22,42 @@
         </label>
       }
     </div>
-  </div>
+  </details>
 
-  <!-- Subcategorías (dependen de la categoría seleccionada) -->
-  <div class="mb-8" *ngIf="subcategoriesForSelectedCategory().length > 0">
-    <h3 class="text-lg font-semibold mb-4">Subcategorías</h3>
-    <div class="space-y-3">
-      @for (sub of subcategoriesForSelectedCategory(); track sub.id) {
-        <label class="flex items-center space-x-3 cursor-pointer hover:text-blue-300 transition-colors">
-          <input
-            type="checkbox"
-            [checked]="isSubcategorySelected(sub.id)"
-            (change)="onSubcategoryChange(sub.id, $event)"
-            class="w-5 h-5 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
-          />
-          <span class="text-sm">{{ sub.name }}</span>
-        </label>
-      }
-    </div>
-  </div>
+  <!-- Subcategorías -->
+  @if (subcategoriesForSelectedCategory().length > 0) {
+    <details class="mb-6" open>
+      <summary class="text-sm  mb-4 cursor-pointer hover:text-blue-300 transition-colors list-none flex items-center justify-between">
+        <span>Subcategorías</span>
+        <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </summary>
+      <div class="space-y-3 mt-4">
+        @for (sub of subcategoriesForSelectedCategory(); track sub.id) {
+          <label class="flex items-center space-x-3 cursor-pointer hover:text-blue-300 transition-colors">
+            <input
+              type="checkbox"
+              [checked]="isSubcategorySelected(sub.id)"
+              (change)="onSubcategoryChange(sub.id, $event)"
+              class="w-5 h-5 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+            />
+            <span class="text-sm">{{ sub.name }}</span>
+          </label>
+        }
+      </div>
+    </details>
+  }
 
   <!-- Filtro de Marcas -->
-  <div class="mb-8">
-    <h3 class="text-lg font-semibold mb-4">Marcas</h3>
-    <div class="space-y-3">
+  <details class="mb-6">
+    <summary class="text-sm mb-4 cursor-pointer hover:text-blue-300 transition-colors list-none flex items-center justify-between">
+      <span>Marcas</span>
+      <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+      </svg>
+    </summary>
+    <div class="space-y-3 mt-4">
       @for (brand of filterOptions().brands; track brand) {
         <label class="flex items-center space-x-3 cursor-pointer hover:text-blue-300 transition-colors">
           <input
@@ -53,21 +70,28 @@
         </label>
       }
     </div>
-  </div>
+  </details>
 
   <!-- Filtro de Disponibilidad -->
-  <div class="mb-8">
-    <h3 class="text-lg font-semibold mb-4">Disponibilidad</h3>
-    <label class="flex items-center space-x-3 cursor-pointer hover:text-blue-300 transition-colors">
-      <input
-        type="checkbox"
-        [checked]="inStockOnly()"
-        (change)="onInStockChange($event)"
-        class="w-5 h-5 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
-      />
-      <span class="text-sm">Solo mostrar en stock</span>
-    </label>
-  </div>
+  <details class="mb-6">
+    <summary class="text-sm mb-4 cursor-pointer hover:text-blue-300 transition-colors list-none flex items-center justify-between">
+      <span>Disponibilidad</span>
+      <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+      </svg>
+    </summary>
+    <div class="mt-4">
+      <label class="flex items-center space-x-3 cursor-pointer hover:text-blue-300 transition-colors">
+        <input
+          type="checkbox"
+          [checked]="inStockOnly()"
+          (change)="onInStockChange($event)"
+          class="w-5 h-5 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+        />
+        <span class="text-sm">Solo mostrar en stock</span>
+      </label>
+    </div>
+  </details>
 
   <!-- Botón Limpiar Filtros -->
   @if (hasActiveFilters()) {
@@ -79,4 +103,4 @@
       <span>Limpiar Filtros</span>
     </button>
   }
-</div>
+</aside>

@@ -9,25 +9,25 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [CommonModule, LucideAngularModule, RouterLink],
   template: `
-  @if(userRole() === "client"){
- <a
+    @if(userRole() === "client"){
+    <a
       [routerLink]="'/shop/home'"
       class="flex items-center gap-2 mt-2 max-w-4xl mx-auto px-4 py-2 group rounded-md font-extralight  transition-colors"
     >
       <!-- Icono de Angular Lucide -->
-      <lucide-icon [img]="ArrowLeft" class="w-5 h-5 group-hover:-translate-x-1 duration-300"></lucide-icon>
+      <lucide-icon
+        [img]="ArrowLeft"
+        class="w-5 h-5 group-hover:-translate-x-1 duration-300"
+      ></lucide-icon>
 
       <!-- Texto -->
       <span class="text-gray-700">Explorar productos</span>
     </a>
-  }
+    }
 
     <div class="p-6 max-w-4xl mx-auto space-y-6">
       <!-- Header -->
       <div class="flex items-center gap-3 mb-6">
-        <div class="bg-blue-600 p-2 rounded-lg">
-          <lucide-icon [img]="UserIcon" class="w-6 h-6 text-white" />
-        </div>
         <div>
           <h1 class="text-2xl font-bold text-gray-900">Mi Perfil</h1>
           <p class="text-gray-500">Información de tu cuenta personal</p>
@@ -37,7 +37,7 @@ import { RouterLink } from '@angular/router';
       <!-- Profile Card -->
       <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <!-- Cover / Banner Placeholder -->
-        <div class="h-32 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
+        <div class="h-32 bg-gradient-to-r from-azul to-indigo-600"></div>
 
         <div class="px-6 pb-6">
           <!-- Avatar -->
@@ -46,7 +46,15 @@ import { RouterLink } from '@angular/router';
               <div
                 class="w-full h-full bg-gray-100 rounded-full flex items-center justify-center text-3xl font-bold text-gray-400 uppercase"
               >
+                @if (currentUser()?.photoURL) {
+                <img
+                  [src]="currentUser()!.photoURL"
+                  [alt]="'foto de ' + currentUser()!.displayName"
+                  class="w-full h-auto rounded-full object-cover"
+                />
+                } @else {
                 {{ userInitials() }}
+                }
               </div>
             </div>
 
@@ -100,7 +108,7 @@ import { RouterLink } from '@angular/router';
                 <div class="mt-1 flex items-center gap-2">
                   <lucide-icon [img]="ShieldIcon" class="w-4 h-4 text-gray-400" />
                   <span
-                    class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-blue-50 text-blue-700 capitalize"
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-blue-50 text-azul capitalize"
                   >
                     {{ displayRole() }}
                   </span>

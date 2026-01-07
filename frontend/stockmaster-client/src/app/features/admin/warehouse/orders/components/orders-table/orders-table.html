@@ -1,4 +1,59 @@
-<app-data-table [data]="data()" [columns]="columns()" [isLoading]="isLoading()"> </app-data-table>
+
+<!-- Mobile Card Layout (< 1024px) -->
+<div class="lg:hidden">
+  @if (isLoading()) {
+  <div class="p-6 text-center text-gray-500">Cargando...</div>
+  } @else if (data().length === 0) {
+  <div class="p-6 text-center text-gray-500">No se encontraron pedidos</div>
+  } @else {
+  <div class="divide-y divide-gray-100">
+    @for (row of data(); track row.id) {
+    <div class="p-4 bg-white hover:bg-gray-50 transition-colors">
+      <!-- Row 1: Cliente + Estado -->
+      <div class="flex items-start justify-between gap-3 mb-2">
+        <div class="flex-1 min-w-0">
+          <span class="block font-medium text-gray-900 truncate">{{ row.name }}</span>
+          <span class="text-xs text-gray-500">RUC: {{ row.taxId }}</span>
+        </div>
+        <div
+          [class]="'px-2.5 py-1 rounded-full text-center text-xs font-medium border whitespace-nowrap ' + getStatusBadgeColor(row.status)">
+          {{ row.status | orderStatus }}
+        </div>
+      </div>
+
+      <!-- Row 2: Detalles -->
+      <div class="flex items-center justify-between text-sm text-gray-500 mb-3">
+        <div class="flex items-center gap-4">
+          <span>📅 {{ row.createdAt }}</span>
+          <span>📦 {{ row.items }} items</span>
+        </div>
+        <span class="font-semibold text-gray-900">S/ {{ row.total }}</span>
+      </div>
+
+      <!-- Row 3: Acciones -->
+      <div class="flex justify-end">
+        <app-order-actions [status]="row.status" (actionChange)="onAction($event, row)"></app-order-actions>
+      </div>
+    </div>
+    }
+  </div>
+  }
+</div>
+
+<!-- Desktop Table Layout (>= 1024px) -->
+<div class="hidden lg:block">
+  <app-data-table [data]="data()" [columns]="columns()" [isLoading]="isLoading()"></app-data-table>
+
+
+  <div class="p-4 border-t border-gray-100 bg-gray-50 flex justify-end">
+    <app-basic-pagination
+      [page]="page()"
+      [totalPages]="metadata().pages"
+      (pageChange)="onPageChange($event)"
+    ></app-basic-pagination>
+  </div>
+
+</div>
 
 <ng-template #nameTemplate let-row>
   {{ row.name }}
@@ -7,26 +62,18 @@
 </ng-template>
 
 <ng-template #statusTemplate let-row>
-  <div
-    [class]="
+  <div [class]="
       'px-2.5 py-1 rounded-full text-center text-xs font-medium border ' +
       getStatusBadgeColor(row.status)
-    "
-  >
+    ">
     {{ row.status | orderStatus }}
   </div>
 </ng-template>
 <ng-template #actionTemplate let-row>
-  <app-order-actions
-    [status]="row.status"
-    (actionChange)="onAction($event, row)"
-  ></app-order-actions>
+  <app-order-actions [status]="row.status" (actionChange)="onAction($event, row)"></app-order-actions>
 </ng-template>
 
 @if(isEditModalOpen()) {
-<app-order-edit-modal
-  [order]="selectedOrder()!"
-  (close)="closeEditModal()"
-  (save)="onUpdateStatus($event)"
-></app-order-edit-modal>
+<app-order-edit-modal [order]="selectedOrder()!" (close)="closeEditModal()"
+  (save)="onUpdateStatus($event)"></app-order-edit-modal>
 }

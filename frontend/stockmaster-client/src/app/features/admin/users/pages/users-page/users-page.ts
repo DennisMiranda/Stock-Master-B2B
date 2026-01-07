@@ -14,6 +14,7 @@ import { DataTableComponent } from '../../../../../shared/ui/data-table/data-tab
 import { TableColumn, SortEvent } from '../../../../../shared/ui/data-table/models/table.model';
 import { ToastService } from '../../../../../core/services/toast.service';
 import { ConfirmationModalComponent } from '../../../../../shared/ui/confirmation-modal/confirmation-modal.component';
+import { PrimaryButton } from '../../../../../shared/ui/buttons/primary-button/primary-button';
 
 @Component({
     selector: 'app-users-page',
@@ -26,7 +27,8 @@ import { ConfirmationModalComponent } from '../../../../../shared/ui/confirmatio
         UserCreateModal,
         UserActionsMenu,
         DataTableComponent,
-        ConfirmationModalComponent
+        ConfirmationModalComponent,
+        PrimaryButton
     ],
     templateUrl: './users-page.html',
     styleUrl: './users-page.css'

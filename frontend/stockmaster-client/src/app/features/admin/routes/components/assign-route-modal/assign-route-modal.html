@@ -8,9 +8,9 @@
   <!-- Modal -->
   <div class="relative w-full max-w-md transform transition-all duration-300 scale-100 opacity-100">
     <!-- Contenedor del modal -->
-    <div class="bg-white rounded-xl shadow-2xl overflow-hidden">
+    <div class="bg-white rounded-sm shadow-2xl overflow-hidden">
       <!-- Header -->
-      <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-5">
+      <div class="bg-azul px-6 py-5">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
             <div class="bg-white/20 backdrop-blur p-2 rounded-lg">
@@ -36,14 +36,14 @@
         <!-- Indicador de cantidad -->
         <div class="mb-4 flex items-center justify-between">
           <span class="text-sm text-gray-600">
-            Mostrando <span class="font-semibold text-gray-800">{{ routes().length }}</span> rutas
+            Mostrando <span class="font-semibold text-gray-800">{{ filteredRoutes.length }}</span> rutas
             disponibles
           </span>
         </div>
 
         <!-- Lista de rutas -->
         <ul class="space-y-3 max-h-[400px] overflow-y-auto pr-2">
-          @for (route of routes(); track route.id) {
+          @for (route of filteredRoutes; track route.id) {
           <li>
             <button
               (click)="selectRoute(route.id)"
@@ -52,7 +52,7 @@
               <div class="flex items-center justify-between mb-2">
                 <div class="flex items-center gap-3">
                   <div class="bg-blue-100 group-hover:bg-blue-200 p-2 rounded-lg transition-colors">
-                    <lucide-icon [img]="PackageIcon" class="w-4 h-4 text-blue-600"></lucide-icon>
+                    <lucide-icon [img]="PackageIcon" class="w-4 h-4 text-azul"></lucide-icon>
                   </div>
 
                   <span class="font-semibold text-gray-900">
@@ -84,7 +84,7 @@
               <!-- Flecha indicadora -->
               <div class="mt-3 flex justify-end">
                 <span
-                  class="text-blue-600 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all"
+                  class="text-azul text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all"
                 >
                   Seleccionar
                   <lucide-icon

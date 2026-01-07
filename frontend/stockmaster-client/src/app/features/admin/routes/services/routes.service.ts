@@ -8,6 +8,7 @@ import {
   RouteStatus,
   CreateOptimizedRouteDto,
   OptimizedRouteResult,
+  RouteEnriched,
 } from '../../../../core/models/route.model';
 
 @Injectable({
@@ -21,16 +22,11 @@ export class RoutesService {
     return this.apiService.get<Route[]>(this.BASE_PATH);
   }
 
-  getById(id: string): Observable<ApiResponse<Route>> {
-    return this.apiService.get<Route>(`${this.BASE_PATH}/${id}`);
+  getById(id: string): Observable<ApiResponse<RouteEnriched>> {
+    return this.apiService.get<RouteEnriched>(`${this.BASE_PATH}/${id}`);
   }
-
   getByDriver(driverId: string): Observable<ApiResponse<Route[]>> {
     return this.apiService.get<Route[]>(`${this.BASE_PATH}/driver/${driverId}`);
-  }
-
-  getStats(id: string): Observable<ApiResponse<RouteStats>> {
-    return this.apiService.get<RouteStats>(`${this.BASE_PATH}/${id}/stats`);
   }
 
   createOptimized(data: CreateOptimizedRouteDto): Observable<ApiResponse<OptimizedRouteResult>> {
@@ -69,18 +65,12 @@ export class RoutesService {
   delete(id: string): Observable<ApiResponse<void>> {
     return this.apiService.delete<void>(`${this.BASE_PATH}/${id}`);
   }
-  
-markOrderAsDelivered(routeId: string, orderId: string): Observable<ApiResponse<Route>> {
-  return this.apiService.patch<Route>(`${this.BASE_PATH}/${routeId}/orders/${orderId}/deliver`, {});
-}
 
-removeOrder(
-  routeId: string,
-  orderId: string,
-  startLocation: { lat: number; lng: number }
-): Observable<ApiResponse<Route>> {
-  return this.apiService.delete<Route>(`${this.BASE_PATH}/${routeId}/orders/${orderId}`, {
-    body: { startLocation },
-  } as any);
-}
+  markOrderAsDelivered(routeId: string, orderId: string): Observable<ApiResponse<Route>> {
+    return this.apiService.patch<Route>(
+      `${this.BASE_PATH}/${routeId}/orders/${orderId}/deliver`,
+      {}
+    );
+  }
+
 }

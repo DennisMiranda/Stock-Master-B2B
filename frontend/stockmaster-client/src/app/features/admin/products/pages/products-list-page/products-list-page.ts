@@ -11,6 +11,7 @@ import { debounceTime, map, startWith, switchMap, distinctUntilChanged } from 'r
 import { DataTableComponent } from '../../../../../shared/ui/data-table/data-table.component';
 import { TableColumn } from '../../../../../shared/ui/data-table/models/table.model';
 import { ProductModal } from '../../components/product-modal/product-modal';
+import { PrimaryButton } from '../../../../../shared/ui/buttons/primary-button/primary-button';
 
 @Component({
     selector: 'app-products-list-page',
@@ -22,7 +23,8 @@ import { ProductModal } from '../../components/product-modal/product-modal';
         DataTableComponent,
         ProductModal,
         BasicPagination,
-        ConfirmationModalComponent
+        ConfirmationModalComponent,
+        PrimaryButton
     ],
     templateUrl: './products-list-page.html',
     styleUrl: './products-list-page.css'
@@ -101,11 +103,11 @@ export class ProductsListPage implements OnInit, AfterViewInit {
             this.columns = [
                 { key: 'images', label: 'Imagen', template: this.imageTemplate },
                 { key: 'name', label: 'Producto', sortable: true },
-                { key: 'sku', label: 'SKU', sortable: true },
-                { key: 'brand', label: 'Marca', sortable: true },
-                { key: 'prices', label: 'Precio Base', template: this.priceTemplate, sortable: true },
-                { key: 'stockUnits', label: 'Stock', template: this.stockTemplate, sortable: true },
-                { key: 'isActive', label: 'Estado', template: this.statusTemplate, sortable: true },
+                { key: 'sku', label: 'SKU', sortable: true, hideOnMobile: true },
+                { key: 'brand', label: 'Marca', sortable: true, hideOnMobile: true },
+                { key: 'prices', label: 'Precio Base', template: this.priceTemplate, sortable: true, hideOnTablet: true },
+                { key: 'stockUnits', label: 'Stock', template: this.stockTemplate, sortable: true, hideOnTablet: true },
+                { key: 'isActive', label: 'Estado', template: this.statusTemplate, sortable: true, hideOnMobile: true },
                 { key: 'id', label: 'Acciones', template: this.actionsTemplate }
             ];
         });

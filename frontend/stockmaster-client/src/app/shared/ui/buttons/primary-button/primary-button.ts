@@ -11,13 +11,13 @@ import { LucideAngularModule, Loader2 } from 'lucide-angular';
       [type]="type"
       [disabled]="disabled || loading"
       (click)="onClick.emit($event)"
-      [class]="'flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-200 active:scale-[0.98] ' + 
+      [class]="'flex items-center justify-center gap-2 rounded-sm  transition-all duration-200 active:scale-[0.98] ' + 
                (fullWidth ? 'w-full ' : '') + 
                customClass + ' ' +
                (disabled || loading 
                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200' 
-                 : 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-600/20 hover:shadow-blue-600/30')"
-      class="px-6 py-3.5">
+                 : 'bg-azul hover:bg-cyan-600 text-white shadow-lg shadow-blue-600/20 hover:shadow-blue-600/30')"
+      class="px-4 py-3 text-sm">
       
       @if (loading) {
         <lucide-icon [img]="LoaderIcon" class="w-5 h-5 animate-spin"></lucide-icon>

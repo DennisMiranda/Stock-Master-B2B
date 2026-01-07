@@ -61,12 +61,10 @@ export class Checkout implements OnInit {
       })
       .subscribe({
         next: (response) => {
-          console.log(response);
-
           if (response.success) {
             this.toastService.success('Orden creada exitosamente');
             this.cartService.clearCart().subscribe({
-              next: () => console.log('Carrito vaciado en frontend'),
+              next: () => {},
               error: (err) => console.error('Error:', err),
             });
 
@@ -74,13 +72,11 @@ export class Checkout implements OnInit {
           } else {
             // TODO: Show suggestions
             this.toastService.error('Error al crear la orden');
-            console.log('Error al crear la orden', response.error?.details);
-
             if (response.error?.details) {
               const itemsWithError: ItemWithError[] = response.error.details.map(
                 (error) => error.details!
               );
-              this.router.navigate(['/checkout/error'], { state: { itemsWithError } });
+              this.router.navigate(['/shop/checkout/error'], { state: { itemsWithError } });
             }
           }
         },

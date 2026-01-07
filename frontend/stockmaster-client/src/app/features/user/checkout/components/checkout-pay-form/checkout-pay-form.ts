@@ -63,7 +63,6 @@ export class CheckoutPayForm {
   constructor() {
     this.form.valueChanges.subscribe((value) => {
       this.valueChanges.emit(this.mapFormValues(value as CheckoutPayFormValues));
-      console.log('PAY FORM VALUES:', value, this.form.valid);
       this.isValidChange.emit(this.form.valid);
     });
   }

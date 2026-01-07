@@ -25,17 +25,10 @@ interface CreateOrderError {
 export class OrderService {
   private ordersCollection = db.collection("orders");
   private productsCollection = db.collection("products");
-  private productService: ProductService;
-  private statisticService: StatisticService;
-
   constructor(
-    productService: ProductService,
-    statisticService: StatisticService
-  ) {
-    this.productService = productService;
-    this.statisticService = statisticService;
-  }
-
+    private productService: ProductService = new ProductService(),
+    private statisticService: StatisticService = new StatisticService()
+  ) {}
   async getOrdersPaginated(params: { page?: number; limit?: number }) {
     let query = this.ordersCollection.orderBy("createdAt", "desc");
 
@@ -228,10 +221,10 @@ export class OrderService {
     const snapshot = await docRef.get();
     return snapshot.data() as Order;
   }
-  
+
   async getOrdersPendingForDelivery(params: { page?: number; limit?: number }) {
     let query = this.ordersCollection
-      .where("status", "in", [ ORDER_STATUS.ready])
+      .where("status", "in", [ORDER_STATUS.ready])
       .orderBy("createdAt", "desc");
 
     const { data, metadata } = await paginateQuery<Order>(query, params);
@@ -241,4 +234,5 @@ export class OrderService {
       metadata,
     };
   }
+
 }

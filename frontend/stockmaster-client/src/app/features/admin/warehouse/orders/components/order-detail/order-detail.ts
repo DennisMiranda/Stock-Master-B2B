@@ -4,19 +4,28 @@ import { Order, OrderDeliveryAddress } from '../../../../../../core/models/order
 import { OrderService } from '../../../../../../core/services/order/order';
 import { OrderHeaderDetail } from './order-header-detail/order-header-detail';
 import { OrderItemsDetail } from './order-items-detail/order-items-detail';
+import { Location } from '@angular/common';
+import { LucideAngularModule, ArrowLeft } from 'lucide-angular';
 
 @Component({
   selector: 'app-order-detail',
-  imports: [OrderHeaderDetail, OrderItemsDetail],
+  imports: [OrderHeaderDetail, OrderItemsDetail, LucideAngularModule],
   templateUrl: './order-detail.html',
   styleUrl: './order-detail.css',
 })
 export class OrderDetail implements OnInit {
   private orderService = inject(OrderService);
   private route = inject(ActivatedRoute);
+  private location = inject(Location);
+
+  readonly ArrowLeftIcon = ArrowLeft;
 
   order = signal<Order>({} as Order);
   isLoading = signal(true);
+
+  goBack(): void {
+    this.location.back();
+  }
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id')!;

@@ -1,8 +1,10 @@
+import { Order } from './order.model';
+import { Driver} from './driver.model';
 export enum RouteStatus {
   PLANNED = 'PLANNED',
   IN_PROGRESS = 'IN_PROGRESS',
   COMPLETED = 'COMPLETED',
-  CANCELLED = 'CANCELLED'
+  CANCELLED = 'CANCELLED',
 }
 
 export interface RouteGeometry {
@@ -14,9 +16,9 @@ export interface Route {
   id: string;
   name?: string;
   orders: string[];
-  geometry: RouteGeometry; 
+  geometry: RouteGeometry;
   status: RouteStatus;
-  createdAt: number;
+  createdAt?: number;
   deliveredOrders?: string[];
   driver?: {
     id: string;
@@ -46,4 +48,30 @@ export interface OptimizedRouteResult {
   distance: number;
   duration: number;
   optimizedOrderIds: string[];
+}
+
+export interface RouteEnriched extends Omit<Route, 'orders' | 'driver'> {
+  orders: Order[];
+  driver: Driver;
+}
+
+
+// ✅ Tipo enriquecido que recibes del backend GET /routes/:id
+export interface RouteEnriched {
+  id: string;
+  status: RouteStatus;
+  createdAt?: number;
+  geometry: {
+    type: 'LineString';
+    coordinates: [number, number][];
+  };
+  deliveredOrders?: string[];
+  
+  // 🎯 Datos enriquecidos del backend
+  orders: Order[];                    // Array completo de órdenes
+  driver: Driver;         // Información completa del conductor
+  
+  // 📋 IDs originales
+  orderIds: string[];
+  driverId: string;
 }

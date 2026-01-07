@@ -1,4 +1,4 @@
-import { Component, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { 
   LucideAngularModule, 
@@ -16,6 +16,7 @@ import { Driver, DriverStatus } from '../../../../../core/models/driver.model';
   standalone: true,
   imports: [LucideAngularModule, CommonModule],
   templateUrl: './driver-card.component.html',
+  changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class DriverCardComponent {
   driver = input.required<Driver>();

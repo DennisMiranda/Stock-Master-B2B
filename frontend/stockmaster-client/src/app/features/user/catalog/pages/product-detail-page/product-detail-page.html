@@ -44,7 +44,7 @@
                 </div>
 
                 @if (product()?.images?.length) {
-                <ul class="flex h-full gap-4 ">
+                <ul class="flex gap-4 ">
                     @for (img of product()!.images; track $index) {
                     <button (click)="activeImageIndex.set($index)" [class.ring-2]="activeImageIndex() === $index"
                         class="w-20 h-20 rounded-sm  bg-white   cursor-pointer hover:border-blue-400 transition-all ring-offset-2 ring-blue-600 ">
