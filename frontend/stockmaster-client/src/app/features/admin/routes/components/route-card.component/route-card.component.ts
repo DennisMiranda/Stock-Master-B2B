@@ -22,6 +22,7 @@ import { RouterLink } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RouteCardComponent {
+
   route = input.required<Route>();
   isSelected = input<boolean>(false);
   readonly RouteStatus = RouteStatus;
@@ -50,35 +51,25 @@ export class RouteCardComponent {
   readonly PackageIcon = Package;
 
   totalOrders = computed(() => this.route()?.orders.length || 0);
-deliveredOrdersCount = computed(() => this.route()?.deliveredOrders?.length || 0);
-deliveredOrdersList = computed(() => this.route()?.deliveredOrders ?? []);
+  deliveredOrdersCount = computed(() => this.route()?.deliveredOrders?.length || 0);
+  deliveredOrdersList = computed(() => this.route()?.deliveredOrders ?? []);
 
-completedOrdersCount = computed(() => {
-  return this.route()?.orders.filter(orderId =>
-    this.deliveredOrdersList().includes(orderId)
-  ).length;
-});
+  completedOrdersCount = computed(() => {
+    return this.route()?.orders.filter((orderId) => this.deliveredOrdersList().includes(orderId))
+      .length;
+  });
 
-isOrderDelivered(orderId: string): boolean {
-  const delivered = this.deliveredOrdersList().map(id => String(id).trim());
+  isOrderDelivered(orderId: string): boolean {
+    const delivered = this.deliveredOrdersList().map((id) => String(id).trim());
 
-  console.log("orders:", this.route()?.orders);
-  console.log("deliveredOrders:", this.route()?.deliveredOrders);
-  console.log("checking:", orderId, "=>", delivered.includes(String(orderId).trim()));
-console.log("Route object:", this.route());
-console.log("Orders array:", this.route()?.orders);
+    return delivered.includes('a08YEG3CIDAOZHvPW7St'); // => false
+  }
 
-  return delivered.includes("a08YEG3CIDAOZHvPW7St") // => false
-
-}
-
-
-
-progressPercentage = computed(() => {
-  const total = this.totalOrders();
-  if (total === 0) return 0;
-  return Math.round((this.deliveredOrdersCount() / total) * 100);
-});
+  progressPercentage = computed(() => {
+    const total = this.totalOrders();
+    if (total === 0) return 0;
+    return Math.round((this.deliveredOrdersCount() / total) * 100);
+  });
 
   getStatusClass(status: RouteStatus): string {
     const classes: Record<RouteStatus, string> = {
@@ -99,8 +90,6 @@ progressPercentage = computed(() => {
     };
     return labels[status] || status;
   }
-
-
 
   onCardClick(): void {
     this.cardClick.emit(this.route().id);

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { LucideAngularModule, Package, Plus, Route as RouteIcon, Users } from 'lucide-angular';
+import { AuthService } from '../../../../../core/auth/auth.service';
 import { Delivery } from '../../../../../core/models/delivery.model';
 import { Driver, DriverStatus } from '../../../../../core/models/driver.model';
 import { Order, ORDER_STATUS, OrderStatus } from '../../../../../core/models/order.model';
@@ -16,7 +17,6 @@ import { RouteCardComponent } from '../../components/route-card.component/route-
 import { WAREHOUSE_LOCATION } from '../../config/location';
 import { DriversService } from '../../services/drivers.service';
 import { RoutesService } from '../../services/routes.service';
-
 type TabKey = 'drivers' | 'orders' | 'routes';
 
 interface Tab {
@@ -46,8 +46,11 @@ export class RouterPage implements OnInit {
   private routesService = inject(RoutesService);
   private ordersService = inject(OrderService);
   private toastService = inject(ToastService);
+  private authService = inject(AuthService);
 
-  activeTab = signal<TabKey>('drivers');
+  currentUser = this.authService.userRole();
+
+  activeTab = signal<TabKey>('routes');
   selectedDriverId = signal<string | null>(null);
   selectedOrderId = signal<string | null>(null);
   selectedRouteId = signal<string | null>(null);
@@ -65,13 +68,19 @@ export class RouterPage implements OnInit {
   readonly WAREHOUSE_LOCATION = WAREHOUSE_LOCATION;
 
   // Tabs
-  tabs: Tab[] = [
-    { key: 'drivers', label: 'Conductores', icon: Users },
-    { key: 'orders', label: 'Pedidos', icon: Package },
-    { key: 'routes', label: 'Rutas', icon: RouteIcon },
-  ];
+  tabs = computed(() => {
+    const allTabs: Tab[] = [
+      { key: 'routes', label: 'Rutas', icon: RouteIcon },
+      { key: 'drivers', label: 'Conductores', icon: Users },
+      { key: 'orders', label: 'Pedidos', icon: Package },
+    ];
 
-  // Computed - Filtered data for map
+    // Si es conductor, solo mostrar tab de rutas
+    return this.isDriver() ? allTabs.filter((tab) => tab.key === 'routes') : allTabs;
+  });
+
+  isDriver = computed(() => (this.currentUser ?? '') === 'driver');
+
   filteredDrivers = computed(() => {
     const selectedId = this.selectedDriverId();
     return selectedId ? this.drivers().filter((d) => d.id === selectedId) : this.drivers();
@@ -105,7 +114,7 @@ export class RouterPage implements OnInit {
     this.loading.set(true);
     this.error.set(null);
 
-    Promise.all([this.loadDrivers(), this.loadRoutes(), this.loadOrders(), this.loadReadyOrders()])
+    Promise.all([this.loadRoutes(), this.loadDrivers(), this.loadOrders(), this.loadReadyOrders()])
       .catch((error) => {
         console.error('Error loading data:', error);
         this.error.set('Error al cargar los datos. Por favor, intenta de nuevo.');
