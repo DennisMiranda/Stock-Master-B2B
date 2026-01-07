@@ -3,8 +3,12 @@
     <div class="flex items-center justify-between h-16">
       <!-- Logo -->
       <a routerLink="/shop/home" class="flex font-mono font-semibold items-center gap-2 group">
-        <img src="/images/logo.svg" alt="Logo de stock master" class=" h-10  w-full">
-          <img src="/images/logonombre.svg" alt="Logo de stock master" class="h-10 w-full object-cover  px-1">
+        <img src="/images/logo.svg" alt="Logo de stock master" class="h-7 md:h-10 w-full" />
+        <img
+          src="/images/logonombre.svg"
+          alt="Logo de stock master"
+          class="md:h-10 h-7 w-full object-cover px-1"
+        />
       </a>
 
       <!-- Desktop Navigation -->
@@ -45,13 +49,12 @@
             {{ cartCount() }}
           </span>
           }
-      
         </button>
-    <app-cart-page
-            [isOpen]="showCartModal()"
-            (closeModalEvent)="closeCart()"
-            [isModal]="true"
-          />
+        <app-cart-page
+          [isOpen]="showCartModal()"
+          (closeModalEvent)="closeCart()"
+          [isModal]="true"
+        />
         <!-- User Button -->
 
         <!-- Condición previa: El usuario no debe estar logueado (!currentUser()).
@@ -68,13 +71,24 @@
           <lucide-icon [img]="UserIcon" class="w-5 h-5" />
         </button>
         } @if (currentUser()) {
-        <a
+
+        <button
+          (click)="toggleUserMenu()"
+          class="flex items-center gap-2 hover:bg-gray-50 p-2 rounded-lg transition-colors focus:outline-none hidden md:block"
+        >
+          <div class="flex gap-1 items-center">
+            <p class="text-sm text-gray-800 leading-none">{{ displayName() }}</p>
+            <lucide-icon [img]="UserIcon" class="w-6 h-6" />
+          </div>
+        </button>
+
+        <!-- <a
           routerLink="/user/profile"
           class="hidden sm:flex p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer"
           aria-label="Perfil"
         >
           <lucide-icon [img]="UserIcon" class="w-5 h-5" />
-        </a>
+        </a> -->
         }
 
         <!-- Mobile Menu Button -->
@@ -87,24 +101,6 @@
         </button>
       </div>
     </div>
-
-    <!-- Search Bar (Expandible) 
-    @if (isSearchOpen()) {
-    <div class="pb-4 animate-slideDown">
-      <div class="relative">
-        <lucide-icon
-          [img]="SearchIcon"
-          class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
-        />
-        <input
-          type="text"
-          placeholder="Buscar productos..."
-          class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-          autofocus
-        />
-      </div>
-    </div>
-    }-->
   </div>
 
   <!-- Mobile Menu -->
@@ -136,20 +132,74 @@
         routerLink="/user/profile"
         routerLinkActive="text-gray-900 bg-gray-50"
         (click)="closeMenu()"
-        class="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors sm:hidden"
+        class="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors md:hidden"
       >
         <lucide-icon [img]="UserIcon" class="w-5 h-5" />
         Mi Cuenta
       </a>
+      @if(userRole() === 'client') {
+      <a
+        [routerLink]="'/user/orders'"
+        class="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors md:hidden"
+      >
+        <lucide-icon [img]="OrderIcon" class="w-5 h-5" />
+        Mis pedidos </a
+      >}
       <button
         (click)="logout(); closeMenu()"
-        class="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors sm:hidden"
+        class="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors md:hidden"
       >
         <lucide-icon [img]="LogOutIcon" class="w-5 h-5" />
         Cerrar Sesión
       </button>
       }
     </nav>
+  </div>
+  } @if(isUserMenuOpen()) {
+  <div
+    class="absolute right-0 top-full mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-100 py-1 animate-fadeIn"
+  >
+    <!-- Header items -->
+    <div class="px-4 py-3 border-b border-gray-100">
+      <p class="text-sm font-medium text-gray-900">Mi Cuenta</p>
+    </div>
+
+    <a
+      [routerLink]="userRole() !== 'client' ? '/admin/profile' : '/user/profile'"
+      class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+    >
+      <lucide-icon [img]="UserIcon" class="w-4 h-4" />
+      Perfil
+    </a>
+
+    @if(userRole() === 'client') {
+    <a
+      [routerLink]="'/user/orders'"
+      class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+    >
+      <lucide-icon [img]="OrderIcon" class="w-4 h-4" />
+      Mis pedidos
+    </a>
+
+    }
+
+    <a
+      [routerLink]="userRole() !== 'client' ? '/admin/settings' : '/user/settings'"
+      class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+    >
+      <lucide-icon [img]="SettingsIcon" class="w-4 h-4" />
+      Configuración
+    </a>
+
+    <div class="border-t border-gray-100 my-1"></div>
+
+    <button
+      (click)="logout()"
+      class="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors text-left"
+    >
+      <lucide-icon [img]="LogOutIcon" class="w-4 h-4" />
+      Cerrar sesión
+    </button>
   </div>
   }
 </header>
