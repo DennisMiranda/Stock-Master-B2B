@@ -78,17 +78,7 @@
         >
           <div class="flex gap-1 items-center">
             <p class="text-sm text-gray-800 leading-none">{{ displayName() }}</p>
-            <lucide-icon [img]="UserIcon" class="w-6 h-6" />
-          </div>
-        </button>
-
-   <a
-          routerLink="/user/profile"
-          class="hidden sm:flex p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer"
-          aria-label="Perfil"
-        >
-
-               @if (currentUser()?.photoURL) {
+                            @if (currentUser()?.photoURL) {
                 <img
                   [src]="currentUser()!.photoURL"
                   [alt]="'foto de ' + currentUser()!.displayName"
@@ -97,8 +87,10 @@
                 } @else {
                    <lucide-icon [img]="UserIcon" class="w-5 h-5" />
                 }
-      
-        </a>
+          </div>
+        </button>
+
+
 
         }
 
@@ -108,7 +100,15 @@
           class="md:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
           aria-label="Menú"
         >
-          <lucide-icon [img]="isMenuOpen() ? XIcon : MenuIcon" class="w-5 h-5" />
+                @if (currentUser()?.photoURL) {
+                <img
+                  [src]="currentUser()!.photoURL"
+                  [alt]="'foto de ' + currentUser()!.displayName"
+                  class="w-9 h-auto rounded-full object-cover"
+                />
+                } @else {
+                   <lucide-icon [img]="UserIcon" class="w-5 h-5" />
+                }
         </button>
       </div>
     </div>

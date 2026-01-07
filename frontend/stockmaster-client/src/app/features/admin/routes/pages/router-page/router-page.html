@@ -43,22 +43,23 @@
   <!-- Tabs (40%) -->
   <div class="lg:col-span-3 space-y-4 h-[calc(100vh-200px)] w-full min-h-[400px] flex flex-col">
     <!-- Tab Headers -->
-    <ul class="flex gap-2 lg:flex-col xl:flex-row ">
-      @for (tab of tabs; track tab.key) {
-      <button
-        (click)="activeTab.set(tab.key); resetMapFilter()"
-        [class]="
-          activeTab() === tab.key
-            ? 'bg-azul text-white'
-            : 'bg-white text-gray-600 hover:bg-gray-50'
-        "
-        class="flex-1 px-2 active:scale-95 py-3 rounded-sm border border-gray-100 font-semibold transition-all flex items-center justify-center gap-2"
-      >
-        <lucide-icon [img]="tab.icon" class="w-5 h-5"></lucide-icon>
-        <span class="hidden sm:inline text-sm">{{ tab.label }}</span>
-      </button>
-      }
-    </ul>
+  <ul class="flex gap-2 lg:flex-col xl:flex-row">
+  @for (tab of tabs(); track tab.key) {
+  <button
+    (click)="activeTab.set(tab.key); resetMapFilter()"
+    [class]="
+      activeTab() === tab.key
+        ? 'bg-azul text-white'
+        : 'bg-white text-gray-600 hover:bg-gray-50'
+    "
+    class="flex-1 px-2 active:scale-95 py-3 rounded-sm border border-gray-100 font-semibold transition-all flex items-center justify-center gap-2"
+  >
+    <lucide-icon [img]="tab.icon" class="w-5 h-5"></lucide-icon>
+    <span class="hidden sm:inline text-sm">{{ tab.label }}</span>
+  </button>
+  }
+</ul>
+    
 
     <!-- Tab Content -->
     <div class="flex-1 bg-white overflow-hidden flex flex-col">
@@ -72,7 +73,45 @@
           <p class="mt-4 text-gray-600">Cargando datos...</p>
         </div>
       </div>
-      } @if (activeTab() === 'drivers' && !loading()) {
+      } 
+            <!-- 🚚 ROUTES TAB -->
+@if (activeTab() === 'routes' && !loading()) {
+<section class="flex-1 overflow-y-auto p-4">
+  <!-- ✅ Botón para crear ruta -->
+  @if(!isDriver()){
+  <div class="mb-4">
+    <button
+      (click)="showCreateRouteModal.set(true)"
+      class="w-full px-4 py-3 border border-gray-200 text-gray-900 shadow font-semibold rounded-lg hover:bg-azul hover:text-white active:text-white active:scale-95 duration-500 active:bg-azul transition-colors flex items-center justify-center gap-2"
+    >
+      <lucide-icon [img]="PlusIcon" class="w-5 h-5"></lucide-icon>
+      Crear Nueva Ruta
+    </button>
+  </div>
+}
+  @if (routes().length === 0) {
+  <div class="flex items-center justify-center h-full">
+    <p class="text-gray-500">No hay rutas disponibles</p>
+  </div>
+  } @else {
+  <ul class="space-y-2 flex flex-col  gap-4">
+    @for (route of routes(); track route.id) {
+    <app-route-card
+      [route]="route"
+      [isSelected]="selectedRouteId() === route.id"
+      (cardClick)="onRouteClick($event)"
+      (startRoute)="onRouteStart($event)"
+      (completeRoute)="onRouteComplete($event)"
+      (cancelRoute)="onRouteCancel($event)"
+      (markOrderDelivered)="onMarkOrderDelivered($event)"
+      (removeOrder)="onRemoveOrder($event)"
+    />
+    }
+  </ul>
+  }
+</section>
+}
+      @if (activeTab() === 'drivers' && !loading()) {
       <section class="flex-1 overflow-y-auto p-4">
         @if (drivers().length === 0) {
         <div class="flex items-center justify-center h-full">
@@ -117,42 +156,8 @@
       </section>
       }
 
-      <!-- 🚚 ROUTES TAB -->
-@if (activeTab() === 'routes' && !loading()) {
-<section class="flex-1 overflow-y-auto p-4">
-  <!-- ✅ Botón para crear ruta -->
-  <div class="mb-4">
-    <button
-      (click)="showCreateRouteModal.set(true)"
-      class="w-full px-4 py-3 border border-gray-200 text-gray-900 shadow font-semibold rounded-lg hover:bg-azul hover:text-white active:text-white active:scale-95 duration-500 active:bg-azul transition-colors flex items-center justify-center gap-2"
-    >
-      <lucide-icon [img]="PlusIcon" class="w-5 h-5"></lucide-icon>
-      Crear Nueva Ruta
-    </button>
-  </div>
 
-  @if (routes().length === 0) {
-  <div class="flex items-center justify-center h-full">
-    <p class="text-gray-500">No hay rutas disponibles</p>
-  </div>
-  } @else {
-  <ul class="space-y-2 flex flex-col  gap-4">
-    @for (route of routes(); track route.id) {
-    <app-route-card
-      [route]="route"
-      [isSelected]="selectedRouteId() === route.id"
-      (cardClick)="onRouteClick($event)"
-      (startRoute)="onRouteStart($event)"
-      (completeRoute)="onRouteComplete($event)"
-      (cancelRoute)="onRouteCancel($event)"
-      (markOrderDelivered)="onMarkOrderDelivered($event)"
-      (removeOrder)="onRemoveOrder($event)"
-    />
-    }
-  </ul>
-  }
-</section>
-}
+
 
 
     </div>
